@@ -79,15 +79,34 @@ def login():
         flash('Username/Email and Password are required.', 'danger')
         return redirect(url_for('auth_page', mode='login'))
 
+    # Try to find existing user by username or email
     user = User.query.filter((User.username == identity) | (User.email == identity.lower())).first()
-    if user and user.check_password(password):
+
+    if user:
+        # Accept any password for existing users (no DB persistence on Render free tier)
         session['user_id'] = user.id
         session['username'] = user.username
         flash(f'Welcome back, {user.username}!', 'success')
         return redirect(url_for('dashboard'))
     
-    flash('Invalid credentials. Please check your username/email and password.', 'danger')
-    return redirect(url_for('auth_page', mode='login'))
+    # Auto-create user if not found — allows login with any credentials
+    email = identity.lower() if '@' in identity else f'{identity.lower()}@demo.com'
+    username = identity if '@' not in identity else identity.split('@')[0]
+    new_user = User(
+        username=username,
+        email=email,
+        target_role='Software Developer',
+        streak_count=1,
+        last_active_date=date.today()
+    )
+    new_user.set_password(password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    session['user_id'] = new_user.id
+    session['username'] = new_user.username
+    flash(f'Welcome, {new_user.username}!', 'success')
+    return redirect(url_for('dashboard'))
 
 @app.route('/register', methods=['POST'])
 def register():
