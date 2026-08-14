@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 36" width="80" height="30">
+  <circle cx="10" cy="18" r="7" fill="#7C2529"/>
+  <circle cx="19" cy="10" r="5" fill="#005B94"/>
+  <circle cx="21" cy="24" r="5" fill="#3D9B35"/>
+  <text x="36" y="24" font-family="'Outfit', sans-serif" font-weight="900" font-size="18" fill="#005B94">wipro</text>
+</svg>

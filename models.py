@@ -1,0 +1,114 @@
+from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+
+db = SQLAlchemy()
+
+class User(db.Model):
+    __tablename__ = 'users'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, nullable=False, index=True)
+    email = db.Column(db.String(120), unique=True, nullable=False, index=True)
+    password_hash = db.Column(db.String(256), nullable=False)
+    full_name = db.Column(db.String(100), nullable=True, default='Demo User')
+    education = db.Column(db.String(100), nullable=True, default='B.Tech')
+    college = db.Column(db.String(150), nullable=True, default='Demo College of Engineering')
+    location = db.Column(db.String(100), nullable=True, default='India')
+    preferred_domain = db.Column(db.String(100), nullable=True, default='Python / Full Stack')
+    target_companies = db.Column(db.String(200), nullable=True, default='Deloitte, TCS, Infosys')
+    profile_pic = db.Column(db.String(256), nullable=True, default='avatar_default')
+    skills = db.Column(db.Text, nullable=True, default='Python, HTML, CSS, JavaScript, Flask, SQL')
+    completed_courses = db.Column(db.Text, nullable=True, default='Full-Stack Interview Mastery, Data Structures & Algorithms Deep Dive, System Design Principles')
+    certificates = db.Column(db.Text, nullable=True, default='Verified Algorithm Expert, Certified System Architecture Professional')
+    target_role = db.Column(db.String(64), default='Software Developer')
+    streak_count = db.Column(db.Integer, default=1)
+    last_active_date = db.Column(db.Date, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationships
+    progress_entries = db.relationship('UserProgress', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    bookmarks = db.relationship('Bookmark', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'target_role': self.target_role,
+            'created_at': self.created_at.strftime('%Y-%m-%d')
+        }
+
+class Question(db.Model):
+    __tablename__ = 'questions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(64), nullable=False, index=True)  # Frontend, Backend, System Design, Data Structures, Behavioral, Aptitude
+    sub_category = db.Column(db.String(64), nullable=True, index=True) # Number & Arithmetic, Commercial Mathematics, Time-Based Problems
+    topic = db.Column(db.String(64), nullable=True, index=True)        # Number System, Profit & Loss, Boats & Streams, etc.
+    title = db.Column(db.String(200), nullable=False)
+    difficulty = db.Column(db.String(20), nullable=False)  # Easy, Medium, Hard
+    question_text = db.Column(db.Text, nullable=False)
+    sample_answer = db.Column(db.Text, nullable=False)
+    tips = db.Column(db.Text, nullable=True)
+    star_guide = db.Column(db.Text, nullable=True)  # For behavioral questions
+    options = db.Column(db.Text, nullable=True)          # JSON string of options list
+    correct_option = db.Column(db.String(10), nullable=True) # A, B, C, or D
+
+    def get_options_list(self):
+        import json
+        if self.options:
+            try:
+                return json.loads(self.options)
+            except Exception:
+                return []
+        return []
+
+    def to_dict(self, user_id=None):
+        data = {
+            'id': self.id,
+            'category': self.category,
+            'sub_category': self.sub_category,
+            'topic': self.topic,
+            'title': self.title,
+            'difficulty': self.difficulty,
+            'question_text': self.question_text,
+            'sample_answer': self.sample_answer,
+            'tips': self.tips,
+            'star_guide': self.star_guide,
+            'options': self.get_options_list(),
+            'correct_option': self.correct_option
+        }
+        if user_id:
+            progress = UserProgress.query.filter_by(user_id=user_id, question_id=self.id).first()
+            bookmark = Bookmark.query.filter_by(user_id=user_id, question_id=self.id).first()
+            data['status'] = progress.status if progress else 'unattempted'
+            data['user_notes'] = progress.notes if progress else ''
+            data['is_bookmarked'] = bool(bookmark)
+        return data
+
+class UserProgress(db.Model):
+    __tablename__ = 'user_progress'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
+    status = db.Column(db.String(20), default='needs_practice')  # needs_practice, mastered
+    notes = db.Column(db.Text, nullable=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class Bookmark(db.Model):
+    __tablename__ = 'bookmarks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'question_id', name='_user_question_uc'),)

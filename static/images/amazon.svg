@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 36" width="85" height="32">
+  <text x="5" y="22" font-family="'Outfit', sans-serif" font-weight="900" font-size="21" fill="#111111">amazon</text>
+  <path fill="#FF9900" d="M12 28c12 5.5 28 3 36-2.5 1-.7 2.2.3 1.3 1.2-7 7.2-22.5 9-35.8 4.2-1.5-.5-2.8-1.5-1.5-2.9z"/>
+  <path fill="#FF9900" d="M47 24.5c.8.5 1.5 1.5 1 2.2l-1.5 2.5c-.4.6-1.2.8-1.8.4l-3-1.8c-.6-.4-.6-1.2 0-1.6l4-2.2c.4-.3.9-.1 1.3.5z"/>
+</svg>

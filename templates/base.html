@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Interview Prep Portal{% endblock %}</title>
+    <meta name="description" content="Ace your technical and behavioral software engineering interviews with dynamic question banks and mock practice.">
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=v2026_home_only_v24">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-theme');
+            }
+        })();
+    </script>
+</head>
+<body class="{% if request.endpoint != 'auth_page' %}has-perm-sidebar{% endif %}">
+
+    {% if request.endpoint != 'auth_page' %}
+    <!-- PERMANENT LEFT VERTICAL SIDEBAR (MATCHING LET'S CODE TOGETHER DASHBOARD PANEL) -->
+    <aside class="perm-sidebar" id="permSidebar">
+        <div class="sidebar-top">
+            <a href="{{ url_for('index') }}" class="brand-logo">
+                <div class="brand-icon">⚡</div>
+                <span>Interview<span class="gradient-text">Master</span></span>
+            </a>
+            <button type="button" class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close menu">&times;</button>
+        </div>
+
+        <div class="sidebar-body">
+            <ul class="sidebar-menu-list">
+                <li>
+                    <a href="{{ url_for('dashboard') if session.user_id else url_for('auth_page') }}" class="sidebar-item {{ 'active' if request.endpoint == 'dashboard' or request.endpoint == 'index' }}">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('practice') if session.user_id else url_for('auth_page') }}" class="sidebar-item {{ 'active' if request.endpoint == 'practice' }}">
+                        Practice
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('aptitude') if session.user_id else url_for('auth_page') }}" class="sidebar-item {{ 'active' if request.endpoint == 'aptitude' }}">
+                        Aptitude
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('practice') if session.user_id else url_for('auth_page') }}" class="sidebar-item">
+                        Mock Interview
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dashboard') if session.user_id else url_for('auth_page') }}" class="sidebar-item">
+                        Resume Builder
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dashboard') if session.user_id else url_for('auth_page') }}" class="sidebar-item">
+                        Progress
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dashboard') if session.user_id else url_for('auth_page') }}" class="sidebar-item">
+                        Leaderboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('profile') if session.user_id else url_for('auth_page') }}" class="sidebar-item {{ 'active' if request.endpoint == 'profile' }}">
+                        Profile
+                    </a>
+                </li>
+                {% if session.user_id %}
+                    <li class="sidebar-divider"></li>
+                    <li>
+                        <a href="{{ url_for('logout') }}" class="sidebar-item sidebar-item-logout">
+                            Logout
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            <!-- BOTTOM INSTALL APP BUTTON (MATCHING SCREENSHOT) -->
+            <div class="sidebar-bottom-app">
+                <a href="{{ url_for('practice') }}" class="install-app-card">
+                    <div class="app-card-title">
+                        <span>⬇️</span> Install App
+                    </div>
+                    <div class="app-card-sub">Get the full experience ☀️</div>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MOBILE OVERLAY FOR SMALL SCREENS -->
+    <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
+    {% endif %}
+
+    <!-- MAIN PAGE CONTAINER -->
+    <div class="main-page-wrapper">
+        {% if request.endpoint != 'auth_page' %}
+        <!-- TOP HEADER BAR IN MAIN CONTAINER -->
+        <header class="main-top-header">
+            <div class="header-left">
+                <button type="button" class="mobile-menu-trigger" id="mobileMenuTrigger" aria-label="Open Navigation">
+                    <span style="font-size: 1.2rem;">⋮</span> Menu
+                </button>
+            </div>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: 1rem;">
+                {% if session.user_id %}
+                    <a href="{{ url_for('profile') }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.35rem;">
+                        👤 Profile
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth_page', mode='login') }}" class="btn btn-primary btn-sm">Login</a>
+                {% endif %}
+            </div>
+        </header>
+        {% endif %}
+
+        <div class="flash-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <span>{% if category == 'success' %}✓{% elif category == 'danger' %}⚠️{% else %}ℹ️{% endif %}</span>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/portal.js') }}?v=v2026_theme_fix_v6"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

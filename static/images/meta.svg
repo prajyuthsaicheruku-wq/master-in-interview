@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="85" height="34">
+  <defs>
+    <linearGradient id="metaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0064E0"/>
+      <stop offset="50%" stop-color="#0082FB"/>
+      <stop offset="100%" stop-color="#00C6FF"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#metaGrad)" d="M31.2 12.5c-4.2 0-7.8 2.3-9.8 5.7-2-3.4-5.6-5.7-9.8-5.7-6.2 0-11.2 5.1-11.2 11.3S5.4 35 11.6 35c4.2 0 7.8-2.3 9.8-5.7 2 3.4 5.6 5.7 9.8 5.7 6.2 0 11.2-5.1 11.2-11.3s-5-11.2-11.2-11.2zm-19.6 17c-3.1 0-5.6-2.5-5.6-5.7s2.5-5.7 5.6-5.7c3.1 0 5.6 2.5 5.6 5.7s-2.5 5.7-5.6 5.7zm19.6 0c-3.1 0-5.6-2.5-5.6-5.7s2.5-5.7 5.6-5.7c3.1 0 5.6 2.5 5.6 5.7s-2.5 5.7-5.6 5.7z"/>
+  <text x="48" y="27" font-family="'Outfit', sans-serif" font-weight="800" font-size="19" fill="#1c2b46">Meta</text>
+</svg>

@@ -1,0 +1,491 @@
+{% extends "base.html" %}
+
+{% block title %}Practice Hub & Mock Simulator | Interview Prep Portal{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1150px; padding-top: 1rem;">
+
+    <!-- MODEL PAPER FILE DOCUMENT VIEWER -->
+    {% if model_paper %}
+    <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        {% if model_paper.company %}
+        <a href="{{ url_for('company_detail', company_name=model_paper.company) }}" class="btn btn-outline btn-sm" style="font-weight: 700; border-radius: 9999px; border-color: #cbd5e1; color: #0f172a; padding: 0.45rem 1.15rem; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; background: #ffffff;">
+            ← Back to {{ model_paper.company }} Page
+        </a>
+        {% else %}
+        <a href="{{ url_for('practice') }}" class="btn btn-outline btn-sm" style="font-weight: 700; border-radius: 9999px; border-color: #cbd5e1; color: #0f172a; padding: 0.45rem 1.15rem; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; background: #ffffff;">
+            ← Back to Practice Hub
+        </a>
+        {% endif %}
+
+        <button onclick="window.print()" class="btn btn-outline btn-sm">🖨️ Print / Export File</button>
+    </div>
+
+    <!-- MODEL PAPER QUESTION PAPER (UNLOCKED DIRECT ACCESS) -->
+    <div class="glass-card" style="margin-bottom: 2.25rem; padding: 2.25rem; background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.12); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); border-radius: var(--radius-md);" id="modelPaperDoc">
+        <div style="border-bottom: 2px solid #0f172a; padding-bottom: 1.25rem; margin-bottom: 1.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                <span class="badge" style="background: #0f172a; color: #ffffff; font-weight: 800; font-size: 0.78rem;">📄 OFFICIAL ASSESSMENT FILE</span>
+                <span class="badge badge-category">{{ model_paper.company }}</span>
+                <span class="badge badge-easy">{{ model_paper.year }}</span>
+            </div>
+            <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin: 0.25rem 0;">
+                {{ model_paper.title }}
+            </h1>
+            <div style="font-size: 0.88rem; color: #475569; font-weight: 600;">
+                Document Ref: <code>{{ model_paper.file_code }}</code> | Time Allotted: {{ model_paper.duration }} | Total Marks: {{ model_paper.total_marks }}
+            </div>
+        </div>
+
+        <!-- INLINE SCORE SUMMARY BANNER (DISPLAYED ON SUBMISSION) -->
+        <div id="inlineScoreBanner" style="display: none; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 1.5rem 1.75rem; border-radius: 12px; margin-bottom: 1.75rem; border: 1px solid #334155; box-shadow: 0 4px 20px rgba(0,0,0,0.12);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+                <div>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: #38bdf8;" id="bannerScoreTitle">🎉 Assessment Submitted & Graded!</div>
+                    <div style="font-size: 0.88rem; color: #94a3b8; margin-top: 0.25rem;">Your answers are highlighted below: <strong style="color: #4ade80;">Green = Correct</strong> | <strong style="color: #f87171;">Red = Wrong Choice</strong></div>
+                </div>
+                <div style="display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">MCQ Score</div>
+                        <div style="font-size: 1.15rem; font-weight: 800; color: #60a5fa;" id="bannerMcq">0 / 60 Marks</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Coding Score</div>
+                        <div style="font-size: 1.15rem; font-weight: 800; color: #34d399;" id="bannerCoding">0 / 20 Marks</div>
+                    </div>
+                    <div style="text-align: center; background: #334155; padding: 0.5rem 1rem; border-radius: 10px; border: 1px solid #475569;">
+                        <div style="font-size: 0.72rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase;">Total Score</div>
+                        <div style="font-size: 1.3rem; font-weight: 800; color: #c084fc;" id="bannerTotal">0 / 80 (0%)</div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.reload();" style="font-weight: 700; background: #475569; color: #ffffff; border: none; padding: 0.45rem 1rem;">🔄 Retake Test</button>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div style="display: flex; flex-direction: column; gap: 2.5rem; margin-bottom: 2rem;">
+            {% for sec in model_paper.sections %}
+            <div class="glass-card" style="padding: 1.75rem; border-top: 4px solid #2563eb; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04); border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                <!-- SECTION HEADER CARD -->
+                <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                    <div>
+                        <span class="badge" style="margin-bottom: 0.35rem; font-size: 0.78rem; background: #eff6ff; color: #1d4ed8; font-weight: 800; border: 1px solid #bfdbfe;">SECTION 0{{ loop.index }}</span>
+                        <h2 style="font-size: 1.45rem; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.3;">
+                            {{ sec.section_name }}
+                        </h2>
+                        {% if sec.desc %}
+                        <div style="font-size: 0.92rem; font-weight: 600; color: #2563eb; margin-top: 0.3rem;">
+                            📌 {{ sec.desc }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <span style="font-size: 0.88rem; font-weight: 700; background: #f1f5f9; color: #334155; padding: 0.4rem 1rem; border-radius: 9999px; white-space: nowrap; border: 1px solid #cbd5e1;">
+                        ⏱️ {{ sec.time if sec.time else '40 Mins' }} | {{ sec.questions | length }} Questions
+                    </span>
+                </div>
+
+                <!-- QUESTIONS IN THIS SECTION -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    {% for q in sec.questions %}
+                    <div style="background: #f8fafc; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; padding: 1.25rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <span style="font-weight: 800; color: #2563eb; font-size: 0.95rem;">Question {{ q.q_num }}: {{ q.title }}</span>
+                            <div style="display: flex; gap: 0.4rem; align-items: center;">
+                                <span class="badge" style="background: #e0e7ff; color: #3730a3; font-weight: 700; font-size: 0.75rem;">
+                                    {{ q.marks if q.marks else ('2 Marks' if q.type == 'mcq' else '4 Marks') }}
+                                </span>
+                                <span class="badge badge-category" style="font-size: 0.75rem;">{{ q.type | upper }}</span>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 1rem; color: #1e293b; line-height: 1.6; margin-bottom: 1rem; font-weight: 500; white-space: pre-wrap;">{{ q.text | clean_qtext }}</div>
+
+                        {% if q.type == 'mcq' %}
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.65rem; margin-bottom: 1rem;" id="mcq_grid_q_{{ q.q_num }}">
+                            {% for opt in q.options %}
+                            <label style="display: flex; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.88rem; cursor: pointer; color: #334155; transition: all 0.25s ease;" class="mcq-option-label" data-qnum="{{ q.q_num }}" data-val="{{ opt }}">
+                                <input type="radio" name="paper_q_{{ q.q_num }}" value="{{ opt }}">
+                                <span>{{ opt }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div style="margin-bottom: 1rem; background: #ffffff; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                                <span style="font-size: 0.85rem; font-weight: 700; color: #334155;">💻 Code Workspace:</span>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-size: 0.8rem; font-weight: 600; color: #64748b;">Language:</span>
+                                    <select class="form-select lang-select" style="padding: 0.25rem 0.65rem; font-size: 0.82rem; width: auto; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; font-weight: 600;" id="lang_q_{{ q.q_num }}">
+                                        <option value="python" selected>Python 3</option>
+                                        <option value="java">Java 17</option>
+                                        <option value="c">C Language</option>
+                                        <option value="ds">Data Structures (DS)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <textarea class="form-textarea code-input" rows="11" id="code_q_{{ q.q_num }}" style="font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9rem; background: #0f172a; color: #38bdf8; border: 1px solid #334155; border-radius: 8px; width: 100%; min-height: 250px; padding: 1rem; font-weight: 500; line-height: 1.65;" placeholder="Type your solution code here...">def solution():
+    # Write your solution code here
+    pass</textarea>
+
+                            <div style="display: flex; gap: 0.65rem; margin-top: 0.65rem; align-items: center;">
+                                <button type="button" class="btn btn-success btn-sm run-code-btn" data-qnum="{{ q.q_num }}" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-weight: 800; font-size: 0.85rem; padding: 0.45rem 1.25rem; border: none; border-radius: 6px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); cursor: pointer;">
+                                    ▶️ Run Code
+                                </button>
+                                <button type="button" class="btn btn-outline btn-sm reset-code-btn" data-qnum="{{ q.q_num }}" style="font-size: 0.82rem; font-weight: 700; border-color: #cbd5e1; color: #475569; background: #ffffff;">
+                                    🔄 Reset Code
+                                </button>
+                            </div>
+
+                            <!-- TERMINAL OUTPUT / CONSOLE LOG BOX -->
+                            <div id="output_q_{{ q.q_num }}" class="code-output-console" style="display: none; margin-top: 0.85rem; background: #090d16; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.85rem; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 0.4rem; margin-bottom: 0.6rem;">
+                                    <span style="font-weight: 800; color: #38bdf8; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em;">⚡ EXECUTION CONSOLE</span>
+                                    <span id="status_badge_q_{{ q.q_num }}" style="font-size: 0.72rem; font-weight: 700; background: #065f46; color: #34d399; padding: 0.2rem 0.55rem; border-radius: 4px;">Accepted ✅</span>
+                                </div>
+                                <pre id="console_text_q_{{ q.q_num }}" style="margin: 0; white-space: pre-wrap; word-break: break-word; color: #38bdf8; font-size: 0.84rem; line-height: 1.5;"></pre>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div style="display: none; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 0.75rem;" class="paper-sol-actions">
+                            <button type="button" class="btn btn-outline btn-sm toggle-answer-btn paper-toggle-btn" data-target="sol_box_{{ q.q_num }}">
+                                💡 Hide Solution & Explanation
+                            </button>
+                        </div>
+
+                        <div id="sol_box_{{ q.q_num }}" class="answer-box paper-answer-box" style="display: none; margin-top: 1rem; background: #ecfdf5; border: 1px solid #10b981; padding: 1rem; border-radius: 8px;">
+                            {% if q.type == 'mcq' %}
+                            <div style="font-weight: 800; color: #047857; margin-bottom: 0.35rem;">Correct Answer: {{ q.correct }}</div>
+                            {% endif %}
+                            {% if q.sample_answer %}
+                            <div style="font-weight: 700; color: #047857; margin-bottom: 0.25rem;">Sample Code Solution:</div>
+                            <pre style="background: #1e293b; color: #38bdf8; padding: 0.85rem; border-radius: 6px; font-size: 0.85rem; overflow-x: auto;"><code>{{ q.sample_answer }}</code></pre>
+                            {% endif %}
+                            <div style="font-size: 0.88rem; color: #065f46; margin-top: 0.5rem; line-height: 1.5;">
+                                <strong>Explanation:</strong> {{ q.explanation }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- SUBMIT BUTTON SHOWN AT VERY END OF ALL QUESTIONS -->
+        <div style="display: flex; justify-content: flex-end; margin-top: 2rem; margin-bottom: 3rem;">
+            <button type="button" class="btn btn-primary btn-sm submit-paper-btn" style="font-weight: 800; padding: 0.75rem 2.25rem; border-radius: 8px; font-size: 1.05rem; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);">
+                Submit Assessment 🎯
+            </button>
+        </div>
+
+        <script>
+            const modelPaperData = {{ model_paper | tojson }};
+            
+            function gradeAndSubmitPaper() {
+                let mcqMarks = 0; // Max 60 (30 MCQs * 2 Marks)
+                let codingMarks = 0; // Max 20 (5 Coding * 4 Marks)
+                let correctMcq = 0;
+                let totalMcq = 0;
+                let attemptedCoding = 0;
+                let totalCoding = 0;
+
+                const markPerMcq = (modelPaperData.company && modelPaperData.company.toLowerCase().includes('accenture')) ? 1 : 2;
+                const markPerCoding = (modelPaperData.company && modelPaperData.company.toLowerCase().includes('accenture')) ? 20 : 4;
+
+                modelPaperData.sections.forEach(sec => {
+                    sec.questions.forEach(q => {
+                        if (q.type === 'mcq') {
+                            totalMcq++;
+                            const radios = document.getElementsByName(`paper_q_${q.q_num}`);
+                            let userAns = null;
+                            radios.forEach(r => { if (r.checked) userAns = r.value; });
+                            
+                            const isUserCorrect = (userAns && userAns.trim() === q.correct.trim());
+                            if (isUserCorrect) {
+                                correctMcq++;
+                                mcqMarks += markPerMcq;
+                            }
+
+                            // Dynamic Question Document Result Highlights
+                            const labels = document.querySelectorAll(`.mcq-option-label[data-qnum="${q.q_num}"]`);
+                            labels.forEach(lbl => {
+                                const optVal = lbl.getAttribute('data-val').trim();
+                                const correctVal = q.correct.trim();
+                                const isUserChoice = (userAns && userAns.trim() === optVal);
+                                const isCorrectChoice = (optVal === correctVal);
+                                const radioInput = lbl.querySelector('input');
+                                if (radioInput) radioInput.disabled = true;
+
+                                // Clean previous badge if re-submitted
+                                const existingBadge = lbl.querySelector('.result-badge');
+                                if (existingBadge) existingBadge.remove();
+
+                                if (isCorrectChoice) {
+                                    // Highlight CORRECT answer in GREEN
+                                    lbl.style.background = "#dcfce7";
+                                    lbl.style.borderColor = "#10b981";
+                                    lbl.style.color = "#047857";
+                                    lbl.style.fontWeight = "700";
+                                    
+                                    const badge = document.createElement('span');
+                                    badge.className = 'result-badge';
+                                    badge.style.cssText = 'margin-left:auto; background:#10b981; color:#ffffff; font-size:0.75rem; padding:0.2rem 0.65rem; border-radius:9999px; font-weight:800; white-space:nowrap;';
+                                    badge.textContent = isUserChoice ? '✓ Your Answer (Correct)' : '✓ Correct Answer';
+                                    lbl.appendChild(badge);
+                                } else if (isUserChoice && !isCorrectChoice) {
+                                    // Highlight WRONG user selection in RED
+                                    lbl.style.background = "#fee2e2";
+                                    lbl.style.borderColor = "#ef4444";
+                                    lbl.style.color = "#b91c1c";
+                                    lbl.style.fontWeight = "700";
+                                    
+                                    const badge = document.createElement('span');
+                                    badge.className = 'result-badge';
+                                    badge.style.cssText = 'margin-left:auto; background:#ef4444; color:#ffffff; font-size:0.75rem; padding:0.2rem 0.65rem; border-radius:9999px; font-weight:800; white-space:nowrap;';
+                                    badge.textContent = '✗ Your Answer (Wrong)';
+                                    lbl.appendChild(badge);
+                                } else {
+                                    lbl.style.opacity = "0.55";
+                                }
+                            });
+
+                        } else if (q.type === 'coding') {
+                            totalCoding++;
+                            const textareas = document.querySelectorAll(`textarea`);
+                            textareas.forEach(ta => {
+                                if (ta.value.trim().length > 10) attemptedCoding++;
+                            });
+                        }
+                    });
+                });
+
+                attemptedCoding = Math.min(attemptedCoding, totalCoding);
+                codingMarks = attemptedCoding * markPerCoding;
+
+                const maxMcqMarks = totalMcq * markPerMcq;
+                const maxCodingMarks = totalCoding * markPerCoding;
+                const totalMaxMarks = maxMcqMarks + maxCodingMarks;
+
+                const totalObtained = mcqMarks + codingMarks;
+                const totalPct = totalMaxMarks > 0 ? Math.round((totalObtained / totalMaxMarks) * 100) : 0;
+
+                document.getElementById('bannerMcq').textContent = `${mcqMarks} / ${maxMcqMarks} Marks`;
+                document.getElementById('bannerCoding').textContent = `${codingMarks} / ${maxCodingMarks} Marks`;
+                document.getElementById('bannerTotal').textContent = `${totalObtained} / ${totalMaxMarks} (${totalPct}%)`;
+
+                if (totalPct >= 80) {
+                    document.getElementById('bannerScoreTitle').textContent = `🏆 Outstanding Performance! (Score: ${totalObtained}/${totalMaxMarks} Marks)`;
+                } else if (totalPct >= 50) {
+                    document.getElementById('bannerScoreTitle').textContent = `👍 Good Job! Keep Practicing! (Score: ${totalObtained}/${totalMaxMarks} Marks)`;
+                } else {
+                    document.getElementById('bannerScoreTitle').textContent = `📚 Review Needed! (Score: ${totalObtained}/${totalMaxMarks} Marks)`;
+                }
+
+                // Display inline score summary banner
+                const banner = document.getElementById('inlineScoreBanner');
+                banner.style.display = 'block';
+                banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Automatically reveal all sample answers, explanations, and solution boxes post submission
+                document.querySelectorAll('.paper-sol-actions').forEach(actions => {
+                    actions.style.display = 'flex';
+                });
+                document.querySelectorAll('.paper-answer-box').forEach(box => {
+                    box.style.display = 'block';
+                });
+            }
+
+            // PROCTORING & TAB SWITCHING DISCONTINUANCE PROTECTION (MAX 3 WARNINGS)
+            let proctorWarnings = 0;
+            const MAX_WARNINGS = 3;
+            let lastWarningTimestamp = 0;
+            let isExamSubmitted = false;
+            let frameCheckInterval = null;
+
+            function playProctorBeepSound() {
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(880, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.35);
+                    gain.gain.setValueAtTime(0.35, ctx.currentTime);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.4);
+                } catch(e) {}
+            }
+
+            function triggerProctoringViolation(reasonText) {
+                if (isExamSubmitted || !document.getElementById('modelPaperDoc')) return;
+
+                const now = Date.now();
+                if (now - lastWarningTimestamp < 4000) return; // 4s cooldown between warnings
+                lastWarningTimestamp = now;
+
+                proctorWarnings++;
+                playProctorBeepSound();
+
+                // Update UI Warning Counters
+                const warnNumEl = document.getElementById('warnCountNum');
+                const warnReasonEl = document.getElementById('warnReasonText');
+                const warnBanner = document.getElementById('proctorWarningBanner');
+                const widgetWarnCountEl = document.getElementById('widgetWarnCount');
+
+                if (warnNumEl) warnNumEl.innerText = proctorWarnings;
+                if (warnReasonEl) warnReasonEl.innerText = reasonText;
+                if (widgetWarnCountEl) {
+                    widgetWarnCountEl.innerText = `${proctorWarnings} / ${MAX_WARNINGS}`;
+                    widgetWarnCountEl.style.color = proctorWarnings >= 2 ? "#ef4444" : "#f59e0b";
+                }
+
+                if (warnBanner) {
+                    warnBanner.style.display = 'block';
+                    setTimeout(() => {
+                        if (proctorWarnings < MAX_WARNINGS) warnBanner.style.display = 'none';
+                    }, 4000);
+                }
+
+                if (proctorWarnings >= MAX_WARNINGS) {
+                    // TERMINATE EXAM IMMEDIATELY ON 3RD WARNING
+                    isExamSubmitted = true;
+                    if (frameCheckInterval) clearInterval(frameCheckInterval);
+                    alert(`🚫 EXAM DISQUALIFIED & TERMINATED!\n\nYou have received ${MAX_WARNINGS} warning signals for proctoring violations:\n• ${reasonText}\n\nYour test session has been terminated and you are being redirected back to the Practice Hub.`);
+                    window.location.href = "{{ url_for('practice') }}";
+                } else {
+                    alert(`🚨 PROCTORING WARNING (${proctorWarnings}/${MAX_WARNINGS})!\n\nViolation Detected: ${reasonText}\n\nWarning Limit: ${MAX_WARNINGS} Max. If you commit ${MAX_WARNINGS} violations, your exam will be terminated immediately.`);
+                }
+            }
+
+            document.querySelectorAll('.submit-paper-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    isExamSubmitted = true;
+                    gradeAndSubmitPaper();
+                });
+            });
+        </script>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ALL PLATFORMS & ALL COMPANIES PREPINSTA-STYLE DIRECTORY -->
+    {% if not model_paper %}
+    <div class="glass-card" style="margin-bottom: 2.25rem; padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem;">
+                    🚀 Placement Practice & Platform Hub
+                </h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                    Choose your target assessment platform or company to launch realistic practice tests.
+                </p>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="timer-badge" id="practiceTimerDisplay">00:00</div>
+                <button type="button" class="btn btn-primary btn-sm" id="startTimerBtn">Start Timer ⏱️</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="stopTimerBtn" style="display: none;">Pause Timer ⏸️</button>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 1.5rem;" class="prep-directory-grid">
+            
+            <!-- 1. ALL PLATFORMS COLUMN -->
+            <div>
+                <div class="mega-col-title">All Platforms</div>
+                <div class="mega-items-grid" style="grid-template-columns: 1fr;">
+                    <a href="{{ url_for('questions', q='AMCAT') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ef4444;">A</span> AMCAT
+                    </a>
+                    <a href="{{ url_for('questions', q='CoCubes') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #3b82f6;">C</span> CoCubes
+                    </a>
+                    <a href="{{ url_for('questions', q='DevSquare') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #f59e0b;">D</span> DevSquare
+                    </a>
+                    <a href="{{ url_for('questions', q='eLitmus') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #0284c7;">e</span> eLitmus
+                    </a>
+                    <a href="{{ url_for('questions', q='First Naukri') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #10b981;">Fn</span> First Naukri
+                    </a>
+                    <a href="{{ url_for('questions', q='HackerRank') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #16a34a;">H</span> HackerRank
+                    </a>
+                    <a href="{{ url_for('questions', q='HirePro') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #f97316;">H</span> HirePro
+                    </a>
+                    <a href="{{ url_for('questions', q='Merittrac') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #8b5cf6;">M</span> Merittrac
+                    </a>
+                    <a href="{{ url_for('questions', q='Mettl') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #64748b;">M</span> Mettl
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2. ALL COMPANIES COLUMN -->
+            <div>
+                <div class="mega-col-title">All Companies</div>
+                <div class="mega-items-grid" style="display: grid; grid-auto-flow: column; grid-template-rows: repeat(8, auto); grid-template-columns: repeat(2, 1fr); gap: 0.5rem 1rem;">
+                    <a href="{{ url_for('company_detail', company_name='Accenture') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/accenture.svg') }}" alt="Accenture" style="width: 18px; height: 18px; object-fit: contain;"></span> Accenture
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Amazon') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/amazon.svg') }}" alt="Amazon" style="width: 18px; height: 18px; object-fit: contain;"></span> Amazon
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Capgemini') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/capgemini.svg') }}" alt="Capgemini" style="width: 18px; height: 18px; object-fit: contain;"></span> Capgemini
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Cognizant GenC') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/cognizant.svg') }}" alt="Cognizant" style="width: 18px; height: 18px; object-fit: contain;"></span> Cognizant GenC
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Deloitte NLA') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/deloitte.svg') }}" alt="Deloitte" style="width: 18px; height: 18px; object-fit: contain;"></span> Deloitte NLA
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Google') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/google.svg') }}" alt="Google" style="width: 18px; height: 18px; object-fit: contain;"></span> Google
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Apple') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/apple.svg') }}" alt="Apple" style="width: 18px; height: 18px; object-fit: contain;"></span> Apple
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Infosys') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/infosys.svg') }}" alt="Infosys" style="width: 18px; height: 18px; object-fit: contain;"></span> Infosys
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Meta') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/meta.svg') }}" alt="Meta" style="width: 18px; height: 18px; object-fit: contain;"></span> Meta
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Microsoft') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/microsoft.svg') }}" alt="Microsoft" style="width: 18px; height: 18px; object-fit: contain;"></span> Microsoft
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='TCS Digital') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/tcs.svg') }}" alt="TCS" style="width: 18px; height: 18px; object-fit: contain;"></span> TCS Digital
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='TCS Ninja') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/tcs.svg') }}" alt="TCS" style="width: 18px; height: 18px; object-fit: contain;"></span> TCS Ninja
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Tech Mahindra') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/techmahindra.svg') }}" alt="Tech Mahindra" style="width: 18px; height: 18px; object-fit: contain;"></span> Tech Mahindra
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Wipro') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/wipro.svg') }}" alt="Wipro" style="width: 18px; height: 18px; object-fit: contain;"></span> Wipro
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Wipro NTH') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/wipro.svg') }}" alt="Wipro" style="width: 18px; height: 18px; object-fit: contain;"></span> Wipro NTH
+                    </a>
+                    <a href="{{ url_for('company_detail', company_name='Wipro WILP') }}" class="mega-item-link">
+                        <span class="mega-item-icon" style="background: #ffffff; border: 1.5px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center;"><img src="{{ url_for('static', filename='images/wipro.svg') }}" alt="Wipro" style="width: 18px; height: 18px; object-fit: contain;"></span> Wipro WILP
+                    </a>
+                </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+</div>
+{% endblock %}

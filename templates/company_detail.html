@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}{{ company_name }} Placement Papers, Exam Pattern & Round Details | InterviewMaster{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; padding-top: 1.5rem; padding-bottom: 3.5rem;">
+
+    <!-- BACK TO PRACTICE NAVIGATION BAR -->
+    <div style="margin-bottom: 1.25rem;">
+        <a href="{{ url_for('questions') }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; border-radius: var(--radius-full); background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.4); color: var(--accent-cyan); padding: 0.5rem 1.25rem; font-size: 0.92rem;">
+            💻 ← Back to Practice
+        </a>
+    </div>
+
+
+
+    <!-- MAIN CONTENT AREA -->
+    <div>
+
+            <!-- 1. COMPANY HEADER OVERVIEW -->
+            <div class="glass-card" id="overview-section" style="padding: 2.25rem; margin-bottom: 2rem; border-top: 4px solid #10b981;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <span class="badge badge-category" style="margin-bottom: 0.5rem;">Placement Pattern & Model</span>
+                        <h1 style="font-size: 2.4rem; font-weight: 800; line-height: 1.2;">{{ company_name }} Placement Papers & Pattern</h1>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <a href="{{ url_for('practice', company=company_name, paper_type='model') }}" class="btn btn-primary btn-md" style="font-weight: 800; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">📝 Solve Model Paper ⏱️</a>
+                        <a href="{{ url_for('practice', company=company_name, paper_type='practice') }}" class="btn btn-outline btn-md" style="font-weight: 800; border-color: #6366f1; color: #4338ca;">💡 Interactive Practice Test 🎯</a>
+                    </div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin: 0;">
+                    Complete information about {{ company_name }} placement test structure, sectional time limits, question counts, and past memory-based question papers.
+                </p>
+            </div>
+
+            <!-- 2. SELECTION PROCESS PIPELINE (5 STAGES) -->
+            <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">
+                    🔄 Selection Process Pipeline
+                </h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; text-align: center;">
+                    {% for stage in selection_stages %}
+                    <div style="background: #f8fafc; padding: 1.25rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-glass);">
+                        <div style="font-size: 1.85rem; margin-bottom: 0.35rem;">{{ stage.icon }}</div>
+                        <div style="font-size: 0.72rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase;">Stage 0{{ stage.step }}</div>
+                        <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-main); margin-top: 0.2rem;">{{ stage.title }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 3. EXACT PREPINSTA-STYLE EXAM PATTERN TABLE -->
+            <div class="glass-card" id="table-section" style="padding: 2rem; margin-bottom: 2rem;">
+                <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--text-main);">
+                    Details Related to Selection Rounds & Exam Pattern:
+                </h2>
+
+                <!-- STYLED HIGH-CONTRAST DATA TABLE -->
+                <div style="overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); margin-bottom: 1.5rem;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                        <thead>
+                            <tr style="background: #f1f5f9; border-bottom: 2px solid var(--border-glass);">
+                                {% if table_headers and table_headers|length == 2 %}
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 35%;">{{ table_headers[0] }}</th>
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 65%;">{{ table_headers[1] }}</th>
+                                {% elif table_headers and table_headers|length == 3 %}
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 30%;">{{ table_headers[0] }}</th>
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 35%;">{{ table_headers[1] }}</th>
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 35%;">{{ table_headers[2] }}</th>
+                                {% else %}
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 25%;">{% if table_headers %}{{ table_headers[0] }}{% else %}Round{% endif %}</th>
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 35%;">{% if table_headers %}{{ table_headers[1] }}{% else %}Section{% endif %}</th>
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 20%;">{% if table_headers %}{{ table_headers[2] }}{% else %}No. of Questions{% endif %}</th>
+                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 20%;">{% if table_headers %}{{ table_headers[3] }}{% else %}Time Allotted{% endif %}</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for round in table_rounds %}
+                                {% for sec in round.sections %}
+                                <tr style="border-bottom: 1px solid var(--border-glass); background: {% if loop.index % 2 == 0 %}#f8fafc{% else %}#ffffff{% endif %};">
+                                    {% if table_headers and table_headers|length == 2 %}
+                                        <td style="padding: 1rem 1.25rem; font-weight: 700; color: var(--text-main); border-right: 1px solid var(--border-glass); background: rgba(99, 102, 241, 0.04);">
+                                            {{ round.round_name }}
+                                        </td>
+                                        <td style="padding: 1rem 1.25rem; font-weight: 500; color: var(--text-main);">
+                                            {{ sec.name }}
+                                        </td>
+                                    {% else %}
+                                        {% if loop.first %}
+                                        <td rowspan="{{ round.sections | length }}" style="padding: 1.25rem; font-weight: 700; color: var(--accent-cyan); vertical-align: top; border-right: 1px solid var(--border-glass); background: rgba(99, 102, 241, 0.04);">
+                                            {{ round.round_name }}
+                                        </td>
+                                        {% endif %}
+                                        <td style="padding: 1rem 1.25rem; font-weight: 600; color: var(--text-main);">
+                                            {{ sec.name }}
+                                        </td>
+                                        <td style="padding: 1rem 1.25rem; font-weight: 600; color: var(--text-main);">
+                                            {{ sec.qs }}
+                                        </td>
+                                        {% if (not table_headers or table_headers|length > 3) and sec.time is defined and sec.time %}
+                                        <td style="padding: 1rem 1.25rem; color: var(--text-muted); font-weight: 500;">
+                                            {{ sec.time }}
+                                        </td>
+                                        {% endif %}
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- NOTE CALLOUT BOX MATCHING SCREENSHOT -->
+                <div style="background: rgba(239, 68, 68, 0.06); border-left: 4px solid #ef4444; border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin-top: 1.5rem;">
+                    <div style="color: #ef4444; font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem;">
+                        Note:
+                    </div>
+                    <ol style="margin: 0; padding-left: 1.25rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+                        <li>Sections are time-bound in most drives. Candidates cannot switch back to previous sections after time expires.</li>
+                        <li>Coding round requires solving 2 questions in 45 minutes using C, C++, Java, Python, or JavaScript.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 4. PAST YEAR QUESTION PAPERS -->
+            <div class="glass-card" id="papers-section" style="padding: 2rem;">
+                <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--text-main);">
+                    📜 {{ company_name }} Last Year Solved Question Papers
+                </h2>
+
+                <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    {% for paper in past_papers %}
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-glass);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                            <span class="badge badge-category">{{ paper.year }}</span>
+                            <span style="font-size: 0.85rem; color: var(--accent-cyan); font-weight: 600;">{{ paper.duration }}</span>
+                        </div>
+
+                        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.75rem;">{{ paper.title }}</h3>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; font-size: 0.88rem; color: var(--text-muted);">
+                            <div style="background: #ffffff; border: 1px solid var(--border-glass); padding: 0.75rem; border-radius: 6px;">
+                                <strong style="color: #059669;">Coding:</strong> {{ paper.sample_coding }}
+                            </div>
+                            <div style="background: #ffffff; border: 1px solid var(--border-glass); padding: 0.75rem; border-radius: 6px;">
+                                <strong style="color: #d97706;">Quants/Logical:</strong> {{ paper.sample_quant }}
+                            </div>
+                            <div style="background: #ffffff; border: 1px solid var(--border-glass); padding: 0.75rem; border-radius: 6px;">
+                                <strong style="color: #0284c7;">Technical:</strong> {{ paper.sample_tech }}
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 1rem; text-align: right;">
+                            <a href="{{ url_for('practice', company=company_name, paper_title=paper.title, year=paper.year, paper_type='practice') }}" class="btn btn-primary btn-sm" style="font-weight: 700; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">▶️ Solve Paper in Practice Test</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+</div>
+{% endblock %}

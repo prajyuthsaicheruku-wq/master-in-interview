@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Saved Bookmarks | Interview Prep Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="glass-card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>★ Saved Questions</h1>
+            <p style="color: var(--text-muted);">Quick revision list for your bookmarked high-priority questions.</p>
+        </div>
+        <a href="{{ url_for('questions') }}" class="btn btn-secondary btn-sm">Explore Question Library</a>
+    </div>
+
+    {% if questions %}
+        {% for q in questions %}
+        <div class="glass-card question-card" id="q-card-{{ q.id }}">
+            <div class="question-header">
+                <div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                        <span class="badge badge-category">{{ q.category }}</span>
+                        <span class="badge badge-{{ q.difficulty | lower }}">{{ q.difficulty }}</span>
+                    </div>
+                    <h2 class="question-title">{{ q.title }}</h2>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button type="button" class="bookmark-btn active" data-id="{{ q.id }}" title="Remove Bookmark">★</button>
+
+                    <select class="form-select status-select btn-sm" data-id="{{ q.id }}" style="width: auto;">
+                        <option value="needs_practice" {% if q.status != 'mastered' %}selected{% endif %}>Needs Practice</option>
+                        <option value="mastered" {% if q.status == 'mastered' %}selected{% endif %}>✓ Mastered</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="font-size: 1rem; color: var(--text-main); margin-bottom: 1rem; background: rgba(15, 23, 42, 0.4); padding: 1rem; border-radius: var(--radius-md);">
+                {{ q.question_text }}
+            </div>
+
+            <button type="button" class="btn btn-secondary btn-sm toggle-answer-btn" data-target="answer-{{ q.id }}">
+                Reveal Solution
+            </button>
+
+            <div id="answer-{{ q.id }}" class="answer-box" style="display: none;">
+                {{ q.sample_answer }}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="glass-card" style="text-align: center; padding: 3rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⭐</div>
+            <h3>No Bookmarked Questions Yet</h3>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Click the star icon on any question in the Question Library to save it here for fast revision.</p>
+            <a href="{{ url_for('questions') }}" class="btn btn-primary" style="margin-top: 1.25rem;">Browse Question Bank</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

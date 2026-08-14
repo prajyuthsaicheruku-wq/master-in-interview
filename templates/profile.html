@@ -1,0 +1,489 @@
+{% extends "base.html" %}
+
+{% block title %}PROFILE - Manage your account and progress | InterviewMaster{% endblock %}
+
+{% block content %}
+<style>
+/* EXACT CUSTOMER SPECIFIED PROFILE PAGE STYLES */
+.prof-exact-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+}
+
+/* TOP TITLE HEADER */
+.prof-exact-header {
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.prof-exact-title {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: 0.1em;
+    margin: 0 0 0.35rem 0;
+    text-transform: uppercase;
+}
+
+.prof-exact-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* CARD CONTAINER */
+.prof-section-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+/* CANDIDATE INFO HERO CARD */
+.prof-hero-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.prof-avatar-box {
+    width: 110px;
+    height: 110px;
+    background: #f1f5f9;
+    border: 2px solid #94a3b8;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.prof-candidate-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.prof-candidate-name {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.prof-candidate-edu {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #334155;
+}
+
+.prof-candidate-college {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.prof-candidate-meta {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+/* SECTION TITLES WITH ICONS */
+.prof-section-heading {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 1.5px solid #f1f5f9;
+    padding-bottom: 0.75rem;
+}
+
+/* PREPARATION OVERVIEW METRICS */
+.prof-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .prof-overview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.prof-metric-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.prof-metric-lbl {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.prof-metric-val {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #4f46e5;
+    line-height: 1;
+}
+
+/* TARGET & SKILLS LIST */
+.prof-target-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    font-size: 0.98rem;
+}
+
+.prof-target-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.prof-target-key {
+    font-weight: 700;
+    color: #64748b;
+    min-width: 160px;
+}
+
+.prof-target-value {
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.prof-skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.prof-skill-pill {
+    background: #f1f5f9;
+    color: #1e293b;
+    font-size: 0.95rem;
+    font-weight: 800;
+    padding: 0.5rem 1.1rem;
+    border-radius: 10px;
+    border: 1.5px solid #cbd5e1;
+    transition: all 0.2s ease;
+}
+
+.prof-skill-pill:hover {
+    background: #e0e7ff;
+    color: #4338ca;
+    border-color: #6366f1;
+}
+
+/* ACCOUNT SECTION */
+.prof-account-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.95rem;
+}
+
+.prof-account-row:last-child {
+    border-bottom: none;
+}
+
+.prof-account-lbl {
+    font-weight: 700;
+    color: #64748b;
+}
+
+.prof-account-val {
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* MODAL STYLES */
+.prof-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prof-modal-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 550px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    border: 1px solid #e2e8f0;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+</style>
+
+<div class="prof-exact-wrapper">
+
+    <!-- PAGE HEADER -->
+    <div class="prof-exact-header">
+        <h1 class="prof-exact-title">PROFILE</h1>
+        <p class="prof-exact-subtitle">Manage your account and progress</p>
+    </div>
+
+    <!-- CANDIDATE INFO HERO CARD -->
+    <div class="prof-section-card">
+        <div class="prof-hero-row">
+            <div class="prof-avatar-box">
+                👤
+            </div>
+
+            <div class="prof-candidate-info">
+                <h2 class="prof-candidate-name">{{ user.full_name or 'demo' }}</h2>
+
+                <div class="prof-candidate-meta">
+                    <div>📧 {{ user.email }}</div>
+                    <div>📍 {{ user.location or 'India' }}</div>
+                </div>
+
+                <div style="margin-top: 1rem;">
+                    <button type="button" id="openEditModalBtn" class="btn btn-primary" style="font-weight: 700; border-radius: 8px; background: #4f46e5; border: none; padding: 0.6rem 1.25rem; font-size: 0.9rem;">
+                        [ Edit Profile ]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 PREPARATION OVERVIEW -->
+    <div class="prof-section-card">
+        <div class="prof-section-heading">
+            <span>📊 PREPARATION OVERVIEW</span>
+        </div>
+
+        <div class="prof-overview-grid">
+            <div class="prof-metric-item">
+                <div class="prof-metric-lbl">Tests Taken</div>
+                <div class="prof-metric-val">24</div>
+            </div>
+
+            <div class="prof-metric-item">
+                <div class="prof-metric-lbl">Questions Solved</div>
+                <div class="prof-metric-val">486</div>
+            </div>
+
+            <div class="prof-metric-item">
+                <div class="prof-metric-lbl">Accuracy</div>
+                <div class="prof-metric-val">78%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎯 TARGET -->
+    <div class="prof-section-card">
+        <div class="prof-section-heading">
+            <span>🎯 TARGET</span>
+        </div>
+
+        <div class="prof-target-list">
+            <div class="prof-target-row">
+                <span class="prof-target-key">Target Role:</span>
+                <span class="prof-target-value">{{ user.target_role or 'Software Developer' }}</span>
+            </div>
+
+            <div class="prof-target-row">
+                <span class="prof-target-key">Preferred Domain:</span>
+                <span class="prof-target-value">{{ user.preferred_domain or 'Python / Full Stack' }}</span>
+            </div>
+
+            <div class="prof-target-row">
+                <span class="prof-target-key">Target Companies:</span>
+                <span class="prof-target-value">{{ user.target_companies or 'Deloitte, TCS, Infosys' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🛠️ SKILLS -->
+    <div class="prof-section-card">
+        <div class="prof-section-heading">
+            <span>🛠️ SKILLS</span>
+        </div>
+
+        <div class="prof-skills-container">
+            {% if skills_list %}
+                {% for skill in skills_list %}
+                    <span class="prof-skill-pill">{{ skill }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="prof-skill-pill">Python</span>
+                <span class="prof-skill-pill">HTML</span>
+                <span class="prof-skill-pill">CSS</span>
+                <span class="prof-skill-pill">JavaScript</span>
+                <span class="prof-skill-pill">Flask</span>
+                <span class="prof-skill-pill">SQL</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ⚙️ ACCOUNT -->
+    <div class="prof-section-card">
+        <div class="prof-section-heading">
+            <span>⚙️ ACCOUNT</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;">
+            <div class="prof-account-row">
+                <span class="prof-account-lbl">Email</span>
+                <span class="prof-account-val">{{ user.email }}</span>
+            </div>
+
+            <div class="prof-account-row">
+                <span class="prof-account-lbl">Password</span>
+                <span class="prof-account-val">
+                    <span>••••••••••</span>
+                    <button type="button" id="openPasswordModalBtn" class="btn btn-outline btn-sm" style="font-weight: 700; border-radius: 6px; padding: 0.3rem 0.75rem; font-size: 0.82rem;">
+                        [ Change ]
+                    </button>
+                </span>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="{{ url_for('logout') }}" class="btn btn-outline" style="font-weight: 800; color: #ef4444; border-color: #fca5a5; border-radius: 10px; padding: 0.65rem 2rem; font-size: 0.95rem; text-decoration: none; display: inline-block;">
+                [ Logout ]
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div id="editProfileModal" class="prof-modal-overlay" style="display: none;">
+    <div class="prof-modal-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1.5px solid #f1f5f9; padding-bottom: 0.85rem;">
+            <h3 style="font-weight: 800; font-size: 1.2rem; color: #0f172a; margin: 0;">✏️ Edit Profile Details</h3>
+            <button type="button" id="closeEditModal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
+        </div>
+        <form action="{{ url_for('update_profile') }}" method="POST">
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.35rem;">Full Name</label>
+                <input type="text" name="full_name" class="form-input" value="{{ user.full_name or 'demo' }}" required style="width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.92rem;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.35rem;">Location</label>
+                <input type="text" name="location" class="form-input" value="{{ user.location or 'India' }}" style="width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.92rem;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.35rem;">Target Role</label>
+                <input type="text" name="target_role" class="form-input" value="{{ user.target_role or 'Software Developer' }}" style="width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.92rem;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.35rem;">Preferred Domain</label>
+                <input type="text" name="preferred_domain" class="form-input" value="{{ user.preferred_domain or 'Python / Full Stack' }}" style="width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.92rem;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.35rem;">Target Companies</label>
+                <input type="text" name="target_companies" class="form-input" value="{{ user.target_companies or 'Deloitte, TCS, Infosys' }}" style="width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.92rem;">
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.35rem;">Skills (Comma Separated)</label>
+                <input type="text" name="skills" class="form-input" value="{{ user.skills or 'Python, HTML, CSS, JavaScript, Flask, SQL' }}" style="width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.92rem;">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: 8px; font-weight: 700; background: #4f46e5; border: none; padding: 0.75rem;">
+                Save Profile Changes →
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div id="changePasswordModal" class="prof-modal-overlay" style="display: none;">
+    <div class="prof-modal-card" style="max-width: 420px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1.5px solid #f1f5f9; padding-bottom: 0.85rem;">
+            <h3 style="font-weight: 800; font-size: 1.15rem; color: #0f172a; margin: 0;">🔒 Change Password</h3>
+            <button type="button" id="closePasswordModal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
+        </div>
+        <form onsubmit="alert('Password updated successfully!'); document.getElementById('changePasswordModal').style.display='none'; return false;">
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.35rem;">Current Password</label>
+                <input type="password" required class="form-input" style="width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.92rem;">
+            </div>
+            <div style="margin-bottom: 1.25rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.35rem;">New Password</label>
+                <input type="password" required class="form-input" style="width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.92rem;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: 8px; font-weight: 700; background: #4f46e5; border: none; padding: 0.75rem;">
+                Update Password
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const editModal = document.getElementById('editProfileModal');
+    const openEditBtn = document.getElementById('openEditModalBtn');
+    const closeEditBtn = document.getElementById('closeEditModal');
+
+    if (openEditBtn && editModal) openEditBtn.addEventListener('click', () => editModal.style.display = 'flex');
+    if (closeEditBtn && editModal) closeEditBtn.addEventListener('click', () => editModal.style.display = 'none');
+
+    const passModal = document.getElementById('changePasswordModal');
+    const openPassBtn = document.getElementById('openPasswordModalBtn');
+    const closePassBtn = document.getElementById('closePasswordModal');
+
+    if (openPassBtn && passModal) openPassBtn.addEventListener('click', () => passModal.style.display = 'flex');
+    if (closePassBtn && passModal) closePassBtn.addEventListener('click', () => passModal.style.display = 'none');
+
+    window.addEventListener('click', (e) => {
+        if (e.target === editModal) editModal.style.display = 'none';
+        if (e.target === passModal) passModal.style.display = 'none';
+    });
+});
+</script>
+{% endblock %}

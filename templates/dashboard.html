@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Executive Dashboard | InterviewMaster{% endblock %}
+
+{% block content %}
+<div class="pro-dash-wrapper">
+
+    <!-- 1. EXECUTIVE COMMAND HERO BANNER -->
+    <div class="pro-hero-card">
+        <div class="pro-hero-glow-1"></div>
+        <div class="pro-hero-glow-2"></div>
+        <div class="pro-hero-grid-overlay"></div>
+
+        <div class="pro-hero-body">
+            <div class="pro-hero-user">
+                <div class="pro-avatar-ring">
+                    <div class="pro-avatar-inner">{{ user.username[0] | upper }}</div>
+                    <span class="pro-status-dot" title="Active Account"></span>
+                </div>
+
+                <div class="pro-user-info">
+                    <div class="pro-pills-row">
+                        <span class="pro-role-pill">🎯 {{ user.target_role }}</span>
+                        <span class="pro-streak-pill">🔥 {{ user.streak_count or 1 }} Day Streak</span>
+                        <span class="pro-id-pill">ID: #IM-2026-{{ user.id }}</span>
+                    </div>
+
+                    <h1 class="pro-hero-title">
+                        Crack Your Interview With <span class="pro-gradient-name">Confidence</span> 🚀
+                    </h1>
+                    <p class="pro-hero-subtitle">
+                        Welcome back, <strong>{{ user.full_name or user.username }}</strong>! Master algorithms, system design, and placement interview tracks.
+                    </p>
+
+                    <div class="pro-hero-cta-group">
+                        <a href="{{ url_for('questions') }}" class="btn btn-primary btn-md">🚀 Check Out Questions →</a>
+                        <a href="{{ url_for('practice') }}" class="btn btn-outline btn-md">🎙️ Launch AI Mock Session</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- READINESS GAUGE WIDGET -->
+            <div class="pro-gauge-container">
+                <div class="pro-gauge-box">
+                    <svg class="pro-ring-svg" width="110" height="110" viewBox="0 0 100 100">
+                        <circle class="pro-ring-bg" cx="50" cy="50" r="42" stroke-width="8"></circle>
+                        <circle class="pro-ring-fill" cx="50" cy="50" r="42" stroke-width="8"
+                                style="stroke-dasharray: 264; stroke-dashoffset: calc(264 - (264 * {{ readiness_percentage }}) / 100);"></circle>
+                    </svg>
+                    <div class="pro-ring-text">
+                        <span class="pro-ring-num">{{ readiness_percentage }}%</span>
+                        <span class="pro-ring-sub">Readiness</span>
+                    </div>
+                </div>
+                <div class="pro-gauge-caption">Target: 85%+ Ready</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. "HOW TO PREPARE FOR AN INTERVIEW?" SECTION -->
+    <div class="glass-card prep-guide-card">
+        <div class="prep-guide-header">
+            <h2 class="prep-guide-title">Interview Prep Tracks</h2>
+            <p class="prep-guide-desc">
+                Master the 4 core interview rounds for campus and lateral placements:
+            </p>
+        </div>
+
+        <div class="rounds-grid">
+            <div class="round-card">
+                <div class="round-icon icon-cyan">💻</div>
+                <h3 class="round-title">Technical Interview</h3>
+                <p class="round-desc">DSA, live coding, CS fundamentals & system design.</p>
+                <a href="{{ url_for('questions', category='Data Structures') }}" class="round-link">Practice Technical →</a>
+            </div>
+
+            <div class="round-card">
+                <div class="round-icon icon-emerald">👔</div>
+                <h3 class="round-title">Managerial Interview</h3>
+                <p class="round-desc">Project scenarios, decision-making & leadership.</p>
+                <a href="{{ url_for('questions', category='System Design') }}" class="round-link">Practice Managerial →</a>
+            </div>
+
+            <div class="round-card">
+                <div class="round-icon icon-amber">🗣️</div>
+                <h3 class="round-title">Group Discussion</h3>
+                <p class="round-desc">Communication, logical reasoning & topics.</p>
+                <a href="{{ url_for('practice') }}" class="round-link">Practice GD →</a>
+            </div>
+
+            <div class="round-card">
+                <div class="round-icon icon-purple">👥</div>
+                <h3 class="round-title">HR Interview</h3>
+                <p class="round-desc">Behavioral questions, culture fit & background.</p>
+                <a href="{{ url_for('questions', category='Behavioral') }}" class="round-link">Practice HR →</a>
+            </div>
+        </div>
+
+        <div class="prep-guide-footer">
+            <span>💡 Complete practice questions and model tests for every round.</span>
+        </div>
+    </div>
+
+    <!-- 3. "TOP COMPANIES TO PREPARE FOR" SECTION -->
+    <div class="glass-card top-companies-section" id="companies-section">
+        <div class="pro-section-head" style="margin-bottom: 1rem;">
+            <h2>Top Companies To Prepare For</h2>
+            <span class="pro-head-tag">FAANG & Top Product Tech Firms</span>
+        </div>
+
+        <div class="company-badges-grid">
+            <a href="{{ url_for('company_detail', company_name='Amazon') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/amazon.svg') }}" alt="Amazon Logo" class="company-logo-img">
+                <div class="company-info">
+                    <span class="company-role">Software Dev Engineer (SDE)</span>
+                    <span class="company-count">Leadership Principles & DSA</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Google') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/google.svg') }}" alt="Google Logo" class="company-logo-img">
+                <div class="company-info">
+                    <span class="company-role">Software Engineer (L3/L4)</span>
+                    <span class="company-count">Graphs & Algorithms</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Microsoft') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/microsoft.svg') }}" alt="Microsoft Logo" class="company-logo-img">
+                <div class="company-info">
+                    <span class="company-role">SDE & Cloud Engineer</span>
+                    <span class="company-count">System Design & OOPs</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Meta') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/meta.svg') }}" alt="Meta Logo" class="company-logo-img">
+                <div class="company-info">
+                    <span class="company-role">Production Engineer / SDE</span>
+                    <span class="company-count">Trees & Dynamic Prog</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='TCS NQT') }}" class="company-card" style="text-decoration: none;">
+                <div style="display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;">
+                    <img src="{{ url_for('static', filename='images/tcs.svg') }}" alt="TCS Logo" class="company-logo-img" style="height: 24px;">
+                    <img src="{{ url_for('static', filename='images/infosys.svg') }}" alt="Infosys Logo" class="company-logo-img" style="height: 24px;">
+                </div>
+                <div class="company-info">
+                    <span class="company-role">Ninja & Digital Roles</span>
+                    <span class="company-count">Aptitude & Coding</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Wipro') }}" class="company-card" style="text-decoration: none;">
+                <div style="display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;">
+                    <img src="{{ url_for('static', filename='images/ibm.svg') }}" alt="IBM Logo" class="company-logo-img" style="height: 22px;">
+                    <img src="{{ url_for('static', filename='images/wipro.svg') }}" alt="Wipro Logo" class="company-logo-img" style="height: 22px;">
+                </div>
+                <div class="company-info">
+                    <span class="company-role">Associate Software Engineer</span>
+                    <span class="company-count">Technical & Managerial</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 4. EXECUTIVE METRICS STATS BAR -->
+    <div class="pro-metrics-grid">
+        <div class="pro-metric-card">
+            <div class="pro-metric-icon icon-cyan">🎯</div>
+            <div class="pro-metric-data">
+                <div class="pro-metric-val">{{ readiness_percentage }}%</div>
+                <div class="pro-metric-lbl">Readiness Score</div>
+            </div>
+        </div>
+
+        <div class="pro-metric-card">
+            <div class="pro-metric-icon icon-emerald">⚡</div>
+            <div class="pro-metric-data">
+                <div class="pro-metric-val">{{ mastered_count }} <span class="pro-metric-sub">/ {{ total_questions }}</span></div>
+                <div class="pro-metric-lbl">Questions Mastered</div>
+            </div>
+        </div>
+
+        <div class="pro-metric-card">
+            <div class="pro-metric-icon icon-amber">🔥</div>
+            <div class="pro-metric-data">
+                <div class="pro-metric-val">{{ user.streak_count or 1 }} Days</div>
+                <div class="pro-metric-lbl">Active Streak</div>
+            </div>
+        </div>
+
+        <div class="pro-metric-card">
+            <div class="pro-metric-icon icon-purple">📌</div>
+            <div class="pro-metric-data">
+                <div class="pro-metric-val">{{ bookmarked_count }}</div>
+                <div class="pro-metric-lbl">Saved Bookmarks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. QUESTION OF THE DAY & CATEGORY MASTERY SPLIT -->
+    <div class="pro-main-split">
+
+        <!-- LEFT COLUMN: SPOTLIGHT QOTD -->
+        <div class="pro-left-col">
+            {% if question_of_the_day %}
+            <div class="glass-card pro-qotd-card">
+                <div class="pro-card-head">
+                    <span class="pro-pill-badge cyan">⭐ Question of the Day</span>
+                    <span class="badge badge-{{ question_of_the_day.difficulty | lower }}">{{ question_of_the_day.difficulty }}</span>
+                </div>
+                <h3 class="pro-qotd-title">{{ question_of_the_day.title }}</h3>
+                <p class="pro-qotd-snippet">{{ question_of_the_day.question_text | truncate(150) }}</p>
+                <div class="pro-qotd-foot">
+                    <span class="pro-cat-tag">Category: {{ question_of_the_day.category }}</span>
+                    <a href="{{ url_for('questions', q=question_of_the_day.title) }}" class="btn btn-primary btn-sm">Solve Now →</a>
+                </div>
+            </div>
+            {% endif %}
+
+
+        </div>
+
+        <!-- RIGHT COLUMN: CATEGORY MASTERY BREAKDOWN -->
+        <div class="pro-right-col">
+            <div class="glass-card pro-cat-card">
+                <div class="pro-card-head">
+                    <h3>📊 Category Breakdown</h3>
+                </div>
+                <div class="pro-cat-list">
+                    {% for cat in cat_stats %}
+                    <div class="pro-cat-item">
+                        <div class="pro-cat-info">
+                            <span class="pro-cat-name">{{ cat.name }}</span>
+                            <span class="pro-cat-val">{{ cat.mastered }} / {{ cat.total }}</span>
+                        </div>
+                        <div class="pro-progress-bar">
+                            <div class="pro-progress-fill" style="width: {{ cat.percent }}%;"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

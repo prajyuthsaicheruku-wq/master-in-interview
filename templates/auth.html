@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Login / Sign Up | Interview Prep Portal{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper" style="position: relative;">
+    <!-- TOP RIGHT CONTROLS BAR (INSTALL APP) -->
+    <div style="position: absolute; top: 1.25rem; right: 1.5rem; z-index: 100; display: flex; align-items: center; gap: 0.75rem;">
+        <button type="button" id="installAuthAppBtn" onclick="triggerPWAInstall()" class="btn btn-sm" style="display: inline-flex; align-items: center; gap: 0.45rem; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff; font-weight: 700; border: none; padding: 0.55rem 1.15rem; border-radius: var(--radius-full); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); cursor: pointer; transition: all 0.25s ease;">
+            📲 Install App
+        </button>
+    </div>
+    <!-- Animated Ambient Background & Grid Overlay -->
+    <div class="auth-bg-decorations">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+        <div class="auth-grid-pattern"></div>
+        
+        <!-- Floating Tech Pills -->
+        <div class="floating-badge badge-1"><span>⚡ System Design</span></div>
+        <div class="floating-badge badge-2"><span>🚀 Full Stack Dev</span></div>
+        <div class="floating-badge badge-3"><span>🧠 Data Structures</span></div>
+        <div class="floating-badge badge-4"><span>💡 Mock Interviews</span></div>
+        <div class="floating-badge badge-5"><span>🐍 Python & JS</span></div>
+        <div class="floating-badge badge-6"><span>📊 LeetCode Mastery</span></div>
+    </div>
+
+    <div class="glass-card auth-card">
+        <div class="auth-header">
+            <div class="rocket-icon">🚀</div>
+            <h2>Crack Your Interview With <span class="gradient-text">Confidence</span></h2>
+        </div>
+
+        <div class="auth-tabs">
+            <button type="button" class="auth-tab-btn {% if initial_mode != 'register' %}active{% endif %}" id="loginTabBtn">Log In</button>
+            <button type="button" class="auth-tab-btn {% if initial_mode == 'register' %}active{% endif %}" id="registerTabBtn">Create Account</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm" action="{{ url_for('login') }}" method="POST" style="{% if initial_mode == 'register' or initial_mode == 'reset' %}display: none;{% else %}display: block;{% endif %}">
+            <div class="form-group">
+                <label class="form-label" for="loginIdentity">Username or Email</label>
+                <input type="text" id="loginIdentity" name="identity" class="form-input" placeholder="e.g. alex_dev or alex@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label class="form-label" for="loginPassword" style="margin-bottom: 0;">Password</label>
+                    <a href="#" id="forgotPasswordBtn" style="font-size: 0.82rem; color: var(--accent-cyan);">Forgot Password?</a>
+                </div>
+                <div style="position: relative; margin-top: 0.4rem;">
+                    <input type="password" id="loginPassword" name="password" class="form-input" placeholder="••••••••" required>
+                    <button type="button" class="toggle-password" data-target="loginPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Log In to Dashboard →</button>
+        </form>
+
+        <!-- RESET PASSWORD FORM -->
+        <form id="resetForm" action="{{ url_for('reset_password') }}" method="POST" style="{% if initial_mode == 'reset' %}display: block;{% else %}display: none;{% endif %}">
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; text-align: center; color: var(--accent-cyan);">🔑 Password Recovery</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 1.25rem;">
+                Enter your registered email address and a new password to reset access.
+            </p>
+
+            <div class="form-group">
+                <label class="form-label" for="resetEmail">Registered Email</label>
+                <input type="email" id="resetEmail" name="email" class="form-input" placeholder="alex@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="resetNewPassword">New Password</label>
+                <div style="position: relative;">
+                    <input type="password" id="resetNewPassword" name="new_password" class="form-input" placeholder="Minimum 6 characters" minlength="6" required>
+                    <button type="button" class="toggle-password" data-target="resetNewPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Update Password & Log In →</button>
+            <button type="button" id="backToLoginBtn" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.75rem;">← Back to Login</button>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="registerForm" action="{{ url_for('register') }}" method="POST" style="{% if initial_mode == 'register' %}display: block;{% else %}display: none;{% endif %}">
+            <div class="form-group">
+                <label class="form-label" for="regUsername">Username</label>
+                <input type="text" id="regUsername" name="username" class="form-input" placeholder="Choose a unique username" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="regEmail">Email Address</label>
+                <input type="email" id="regEmail" name="email" class="form-input" placeholder="alex@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="regPassword">Password</label>
+                <div style="position: relative;">
+                    <input type="password" id="regPassword" name="password" class="form-input" placeholder="Minimum 6 characters" minlength="6" required>
+                    <button type="button" class="toggle-password" data-target="regPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="targetRole">Target Role</label>
+                <select id="targetRole" name="target_role" class="form-select">
+                    <option value="Software Engineer">Software Engineer (Full Stack)</option>
+                    <option value="Frontend Engineer">Frontend Engineer</option>
+                    <option value="Backend Engineer">Backend Engineer</option>
+                    <option value="System Design Architect">System Design Architect</option>
+                    <option value="Data Engineer">Data Engineer / AI Engineer</option>
+                    <option value="Engineering Manager">Engineering Manager</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account & Begin →</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+{% endblock %}
