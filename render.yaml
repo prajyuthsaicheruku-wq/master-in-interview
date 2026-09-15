@@ -7,3 +7,11 @@ services:
     envVars:
       - key: SECRET_KEY
         generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        value: prajyuthsaicheruku@gmail.com
+      - key: BREVO_SENDER_NAME
+        value: Interview Master
