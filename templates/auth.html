@@ -56,6 +56,13 @@
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Log In to Dashboard →</button>
+            
+            <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
+                Don't have an account? 
+                <button type="button" onclick="switchAuthTab('register')" style="background: none; border: none; color: var(--accent-cyan); font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; font-size: inherit;">
+                    Create an Account
+                </button>
+            </div>
         </form>
 
         <!-- RESET PASSWORD FORM -->
@@ -79,7 +86,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Update Password & Log In →</button>
-            <button type="button" id="backToLoginBtn" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.75rem;">← Back to Login</button>
+            <button type="button" id="backToLoginBtn" onclick="switchAuthTab('login')" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.75rem;">← Back to Login</button>
         </form>
 
         <!-- REGISTER & OTP VERIFICATION FORM -->
@@ -96,7 +103,7 @@
                     <label class="form-label" for="regEmail">Email Address</label>
                     <input type="email" id="regEmail" name="email" class="form-input" placeholder="alex@example.com" required>
                     <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem; display: block;">
-                        🔒 An OTP verification code will be sent to this email via Brevo.
+                        🔒 A 6-digit OTP verification code will be sent to your email.
                     </small>
                 </div>
 
@@ -123,10 +130,17 @@
                 <div id="step1Alert" class="alert-box" style="display: none; margin-top: 0.75rem;"></div>
 
                 <button type="submit" id="sendOtpBtn" class="btn btn-primary" style="width: 100%; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                    <span>Send Verification Code (OTP)</span>
+                    <span>Create Account & Get OTP</span>
                     <span id="sendOtpSpinner" class="spinner-small" style="display: none;">⏳</span>
                     <span>→</span>
                 </button>
+
+                <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
+                    Already have an account? 
+                    <button type="button" onclick="switchAuthTab('login')" style="background: none; border: none; color: var(--accent-cyan); font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; font-size: inherit;">
+                        Log In
+                    </button>
+                </div>
             </form>
 
             <!-- STEP 2: OTP VERIFICATION BOX -->
@@ -160,13 +174,13 @@
                 <div id="step2Alert" class="alert-box" style="display: none; margin-top: 0.75rem;"></div>
 
                 <button type="submit" id="verifyOtpBtn" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                    <span>Verify & Create Account</span>
+                    <span>Verify & Complete Registration</span>
                     <span id="verifySpinner" class="spinner-small" style="display: none;">⏳</span>
                     <span>🚀</span>
                 </button>
 
                 <button type="button" onclick="goBackToStep1()" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.75rem;">
-                    ← Change Email / Details
+                    ← Change Details
                 </button>
             </form>
         </div>

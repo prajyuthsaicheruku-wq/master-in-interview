@@ -1,47 +1,62 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿// --- AUTHENTICATION & TAB SWITCHING LOGIC ---
+function switchAuthTab(mode) {
     const loginTabBtn = document.getElementById('loginTabBtn');
     const registerTabBtn = document.getElementById('registerTabBtn');
     const loginForm = document.getElementById('loginForm');
     const registerContainer = document.getElementById('registerContainer');
     const resetForm = document.getElementById('resetForm');
-    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
-    const backToLoginBtn = document.getElementById('backToLoginBtn');
 
-    if (loginTabBtn && registerTabBtn && loginForm && registerContainer) {
-        loginTabBtn.addEventListener('click', () => {
-            loginTabBtn.classList.add('active');
-            registerTabBtn.classList.remove('active');
-            loginForm.style.display = 'block';
-            registerContainer.style.display = 'none';
-            if (resetForm) resetForm.style.display = 'none';
-        });
+    // Hide any active alerts
+    hideAlert('step1Alert');
+    hideAlert('step2Alert');
 
-        registerTabBtn.addEventListener('click', () => {
-            registerTabBtn.classList.add('active');
-            loginTabBtn.classList.remove('active');
+    if (mode === 'register') {
+        if (registerTabBtn) registerTabBtn.classList.add('active');
+        if (loginTabBtn) loginTabBtn.classList.remove('active');
+        if (loginForm) loginForm.style.display = 'none';
+        if (resetForm) resetForm.style.display = 'none';
+        if (registerContainer) {
             registerContainer.style.display = 'block';
-            loginForm.style.display = 'none';
-            if (resetForm) resetForm.style.display = 'none';
-        });
+            document.getElementById('registerFormStep1').style.display = 'block';
+            document.getElementById('registerFormStep2').style.display = 'none';
+        }
+    } else if (mode === 'reset') {
+        if (loginTabBtn) loginTabBtn.classList.remove('active');
+        if (registerTabBtn) registerTabBtn.classList.remove('active');
+        if (loginForm) loginForm.style.display = 'none';
+        if (registerContainer) registerContainer.style.display = 'none';
+        if (resetForm) resetForm.style.display = 'block';
+    } else {
+        // Default: login
+        if (loginTabBtn) loginTabBtn.classList.add('active');
+        if (registerTabBtn) registerTabBtn.classList.remove('active');
+        if (loginForm) loginForm.style.display = 'block';
+        if (registerContainer) registerContainer.style.display = 'none';
+        if (resetForm) resetForm.style.display = 'none';
     }
+}
 
-    if (forgotPasswordBtn && resetForm) {
-        forgotPasswordBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'none';
-            if (registerContainer) registerContainer.style.display = 'none';
-            resetForm.style.display = 'block';
-        });
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    const loginTabBtn = document.getElementById('loginTabBtn');
+    const registerTabBtn = document.getElementById('registerTabBtn');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
 
-    if (backToLoginBtn && loginForm) {
-        backToLoginBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            resetForm.style.display = 'none';
-            if (registerContainer) registerContainer.style.display = 'none';
-            loginForm.style.display = 'block';
-            loginTabBtn.classList.add('active');
-            registerTabBtn.classList.remove('active');
+    if (loginTabBtn) loginTabBtn.addEventListener('click', () => switchAuthTab('login'));
+    if (registerTabBtn) registerTabBtn.addEventListener('click', () => switchAuthTab('register'));
+    if (forgotPasswordBtn) forgotPasswordBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchAuthTab('reset');
+    });
+
+    // Auto-verify OTP when 6 numeric digits are entered
+    const otpInput = document.getElementById('regOtpCode');
+    if (otpInput) {
+        otpInput.addEventListener('input', (e) => {
+            // Strip any non-digit chars
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            if (e.target.value.length === 6) {
+                handleVerifyOtp();
+            }
         });
     }
 
@@ -112,6 +127,16 @@ async function handleSendOtp(e) {
         return;
     }
 
+    if (username.length < 3) {
+        showAlert('step1Alert', 'Username must be at least 3 characters long.');
+        return;
+    }
+
+    if (password.length < 6) {
+        showAlert('step1Alert', 'Password must be at least 6 characters long.');
+        return;
+    }
+
     const btn = document.getElementById('sendOtpBtn');
     const spinner = document.getElementById('sendOtpSpinner');
     btn.disabled = true;
@@ -126,12 +151,13 @@ async function handleSendOtp(e) {
         const data = await res.json();
 
         if (res.ok && data.success) {
-            // Transition to Step 2
+            // Transition smoothly to Step 2
             document.getElementById('registerFormStep1').style.display = 'none';
             document.getElementById('registerFormStep2').style.display = 'block';
             document.getElementById('displayTargetEmail').textContent = email;
-            document.getElementById('regOtpCode').value = '';
-            document.getElementById('regOtpCode').focus();
+            const otpInput = document.getElementById('regOtpCode');
+            otpInput.value = '';
+            setTimeout(() => otpInput.focus(), 100);
 
             startResendCountdown(45);
         } else {
@@ -156,7 +182,7 @@ async function handleVerifyOtp(e) {
     const otp_code = document.getElementById('regOtpCode').value.trim();
 
     if (!otp_code || otp_code.length !== 6) {
-        showAlert('step2Alert', 'Please enter the 6-digit OTP code.');
+        showAlert('step2Alert', 'Please enter the full 6-digit OTP code.');
         return;
     }
 
@@ -177,14 +203,14 @@ async function handleVerifyOtp(e) {
             showAlert('step2Alert', '✅ OTP Verified! Redirecting to Dashboard...', 'success');
             setTimeout(() => {
                 window.location.href = data.redirect_url || '/';
-            }, 800);
+            }, 700);
         } else {
-            showAlert('step2Alert', data.message || 'Invalid or expired OTP.');
+            showAlert('step2Alert', data.message || 'Invalid or expired OTP code.');
             btn.disabled = false;
             if (spinner) spinner.style.display = 'none';
         }
     } catch (err) {
-        showAlert('step2Alert', 'Network error during verification.');
+        showAlert('step2Alert', 'Network connection error during verification.');
         btn.disabled = false;
         if (spinner) spinner.style.display = 'none';
     }
