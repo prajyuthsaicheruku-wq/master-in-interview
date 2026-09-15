@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}General HR Question Bank - InterviewMaster{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4" style="max-width: 1200px; margin: 0 auto;">
+
+    <!-- TOP HERO BANNER -->
+    <div style="background: #ffffff; color: #0f172a; padding: 2rem 2.25rem; border-radius: 16px; margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04); border: 1.5px solid #e2e8f0;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <span style="background: #f1f5f9; color: #0f172a; font-weight: 800; font-size: 0.78rem; padding: 0.3rem 0.85rem; border-radius: 6px; letter-spacing: 0.5px; border: 1px solid #cbd5e1; text-transform: uppercase;">
+                    📖 QUESTION BANK
+                </span>
+                <h1 style="font-size: 2rem; font-weight: 900; margin: 0.65rem 0 0.4rem 0; color: #0f172a; letter-spacing: -0.5px;">
+                    🗣️ General HR Round Question Bank
+                </h1>
+                <p style="color: #475569; font-size: 0.98rem; font-weight: 500; margin: 0; max-width: 750px;">
+                    Comprehensive collection of 28 curated General HR Round questions across 6 core interview categories with strategic response guides and scoring criteria.
+                </p>
+            </div>
+            
+            <div>
+                <a href="{{ url_for('mock_interview') }}" class="btn" style="background: #ffffff; color: #0f172a; border: 1.5px solid #0f172a; font-weight: 700; border-radius: 10px; padding: 0.65rem 1.25rem; font-size: 0.88rem; text-decoration: none;">
+                    ← Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK CATEGORY NAVIGATION BADGES -->
+    <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem;">
+        <a href="#basic-hr" style="background: #ffffff; border: 1.5px solid #0f172a; color: #0f172a; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease;">
+            1. Basic HR Questions (8)
+        </a>
+        <a href="#education" style="background: #ffffff; border: 1.5px solid #0f172a; color: #0f172a; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease;">
+            2. Education & Background (4)
+        </a>
+        <a href="#project-based" style="background: #ffffff; border: 1.5px solid #0f172a; color: #0f172a; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease;">
+            3. Project-Based Questions (4)
+        </a>
+        <a href="#teamwork" style="background: #ffffff; border: 1.5px solid #0f172a; color: #0f172a; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease;">
+            4. Teamwork & Behavioral (4)
+        </a>
+        <a href="#situational" style="background: #ffffff; border: 1.5px solid #0f172a; color: #0f172a; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease;">
+            5. Situational Questions (4)
+        </a>
+        <a href="#company-career" style="background: #ffffff; border: 1.5px solid #0f172a; color: #0f172a; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease;">
+            6. Company & Career (4)
+        </a>
+    </div>
+
+    <!-- QUESTIONS SECTIONS -->
+
+    <!-- SECTION 1: BASIC HR QUESTIONS -->
+    <div id="basic-hr" style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 1.15rem; border-left: 4px solid #0f172a; padding-left: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>1. Basic HR Questions</span>
+            <span style="font-size: 0.82rem; font-weight: 700; background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; padding: 0.25rem 0.75rem; border-radius: 6px;">8 Questions</span>
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% set basic_qs = [
+                {"id": 1, "q": "Tell me about yourself.", "tip": "Deliver a concise 60-90 second pitch covering Present (Current Studies/Role), Past (Projects & Achievements), and Future (Career Goal)."},
+                {"id": 2, "q": "What are your strengths?", "tip": "Mention 2-3 key strengths with real examples: Analytical Problem Solving, Adaptability & Fast Learning, Teamwork & Reliability."},
+                {"id": 3, "q": "What are your weaknesses?", "tip": "Choose a genuine non-fatal weakness & steps taken to improve. Example: Getting overly focused on minor perfection details in initial code drafts, now managed via timeboxing."},
+                {"id": 4, "q": "Why should we hire you?", "tip": "Highlight solid CS & Coding Fundamentals, hands-on project & practical execution, high enthusiasm, and cultural fit."},
+                {"id": 5, "q": "Why do you want to work for our company?", "tip": "Mention company's technical engineering reputation, product scale/innovation impact, and great learning & mentorship culture for freshers."},
+                {"id": 6, "q": "What motivates you?", "tip": "Solving challenging technical problems, writing software used by real people, and continuous learning and growth."},
+                {"id": 7, "q": "What are your career goals?", "tip": "Short-Term: Master tech stack & deliver high quality code. Long-Term: Grow into Senior Architect / Tech Lead driving engineering vision."},
+                {"id": 8, "q": "Where do you see yourself in 5 years?", "tip": "Key Milestones: Deep domain expertise in full-stack/backend development, taking end-to-end ownership of core system modules, and mentoring junior developers."}
+            ] %}
+
+            {% for item in basic_qs %}
+            <div style="background: #ffffff; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 1.25rem 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.4;">
+                        Q{{ item.id }}. {{ item.q }}
+                    </h3>
+                </div>
+                <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.85rem 1.1rem; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 3.5px solid #0f172a; font-size: 0.9rem; color: #0f172a; line-height: 1.5;">
+                    <strong style="color: #0f172a; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">💡 Strategic Response Guide:</strong>
+                    {{ item.tip }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- SECTION 2: EDUCATION & BACKGROUND -->
+    <div id="education" style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 1.15rem; border-left: 4px solid #0f172a; padding-left: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>2. Education & Background</span>
+            <span style="font-size: 0.82rem; font-weight: 700; background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; padding: 0.25rem 0.75rem; border-radius: 6px;">4 Questions</span>
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% set edu_qs = [
+                {"id": 9, "q": "Why did you choose Computer Science?", "tip": "Passion for logic & building software out of ideas, plus the transformative impact of computing in every industry."},
+                {"id": 10, "q": "Tell me about your academic journey.", "tip": "Academic consistency in B.Tech, favorite subjects & core CS milestones, extracurriculars & coding competitions."},
+                {"id": 11, "q": "What was your favorite subject and why?", "tip": "Data Structures & Algorithms / DBMS / OS. Developed logical thinking, memory management, and structured problem solving."},
+                {"id": 12, "q": "What skills have you learned during your B.Tech?", "tip": "Programming (Python, Java, C++), Web & DB (HTML/CSS, React, SQL/PostgreSQL), Tools (Git, VS Code, Linux)."}
+            ] %}
+
+            {% for item in edu_qs %}
+            <div style="background: #ffffff; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 1.25rem 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);">
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.4;">
+                    Q{{ item.id }}. {{ item.q }}
+                </h3>
+                <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.85rem 1.1rem; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 3.5px solid #0f172a; font-size: 0.9rem; color: #0f172a; line-height: 1.5;">
+                    <strong style="color: #0f172a; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">💡 Strategic Response Guide:</strong>
+                    {{ item.tip }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- SECTION 3: PROJECT-BASED QUESTIONS -->
+    <div id="project-based" style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 1.15rem; border-left: 4px solid #0f172a; padding-left: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>3. Project-Based Questions</span>
+            <span style="font-size: 0.82rem; font-weight: 700; background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; padding: 0.25rem 0.75rem; border-radius: 6px;">4 Questions</span>
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% set proj_qs = [
+                {"id": 13, "q": "Explain your major project.", "tip": "Use STAR Method: Situation (Problem statement), Task (Your individual responsibility), Action (Tech stack, DB design, APIs built), Result (Live app performance & feedback)."},
+                {"id": 14, "q": "What challenges did you face in your project?", "tip": "Explain technical challenge (e.g. Query latency / State synchronization / API integration) and how you debugged & resolved it."},
+                {"id": 15, "q": "What technologies did you use and why?", "tip": "Justify stack choices: Tech A for performance, Tech B for scalability & community support, Tech C for seamless API integration."},
+                {"id": 16, "q": "If given more time, what improvements would you make to your project?", "tip": "Proposed Enhancements: Redis Caching & DB Indexing, Microservices / Dockerization, Automated Unit & End-to-End Tests."}
+            ] %}
+
+            {% for item in proj_qs %}
+            <div style="background: #ffffff; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 1.25rem 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);">
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.4;">
+                    Q{{ item.id }}. {{ item.q }}
+                </h3>
+                <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.85rem 1.1rem; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 3.5px solid #0f172a; font-size: 0.9rem; color: #0f172a; line-height: 1.5;">
+                    <strong style="color: #0f172a; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">💡 Strategic Response Guide:</strong>
+                    {{ item.tip }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- SECTION 4: TEAMWORK & BEHAVIORAL QUESTIONS -->
+    <div id="teamwork" style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 1.15rem; border-left: 4px solid #0f172a; padding-left: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>4. Teamwork & Behavioral Questions</span>
+            <span style="font-size: 0.82rem; font-weight: 700; background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; padding: 0.25rem 0.75rem; border-radius: 6px;">4 Questions</span>
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% set team_qs = [
+                {"id": 17, "q": "Describe a time when you worked in a team.", "tip": "Describe team goal & module allocation, Git collaboration workflow, and final successful delivery. Emphasize collaboration and collective accountability."},
+                {"id": 18, "q": "Tell me about a challenge you faced and how you solved it.", "tip": "STAR Story: Situation (High-pressure situation / bug), Action (Systematic debugging & root cause analysis), Result (Resolution & lesson learned)."},
+                {"id": 19, "q": "Have you ever handled a conflict with a teammate?", "tip": "Listened to teammate's perspective open-mindedly, evaluated options using objective data/benchmarks, reached win-win agreement for project success."},
+                {"id": 20, "q": "Describe a situation where you showed leadership.", "tip": "Took initiative when direction was missing, organized sprint tasks & helped peers overcome blockers, delivered project on schedule."}
+            ] %}
+
+            {% for item in team_qs %}
+            <div style="background: #ffffff; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 1.25rem 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);">
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.4;">
+                    Q{{ item.id }}. {{ item.q }}
+                </h3>
+                <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.85rem 1.1rem; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 3.5px solid #0f172a; font-size: 0.9rem; color: #0f172a; line-height: 1.5;">
+                    <strong style="color: #0f172a; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">💡 Strategic Response Guide:</strong>
+                    {{ item.tip }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- SECTION 5: SITUATIONAL QUESTIONS -->
+    <div id="situational" style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 1.15rem; border-left: 4px solid #0f172a; padding-left: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>5. Situational Questions</span>
+            <span style="font-size: 0.82rem; font-weight: 700; background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; padding: 0.25rem 0.75rem; border-radius: 6px;">4 Questions</span>
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% set sit_qs = [
+                {"id": 21, "q": "What would you do if you missed a project deadline?", "tip": "Proactive early communication with lead, explain bottleneck & revised timeline, prioritize MVP features & put extra effort."},
+                {"id": 22, "q": "How would you handle pressure at work?", "tip": "Break complex tasks into smaller prioritized steps, maintain clear communication with stakeholders, focus on steady execution."},
+                {"id": 23, "q": "How would you deal with negative feedback?", "tip": "Welcome constructive criticism as growth input, ask clarifying questions to understand root cause, create action plan and follow up."},
+                {"id": 24, "q": "What would you do if you disagreed with your manager?", "tip": "Private 1-on-1 discussion backed by data & research, listen carefully to manager's broader perspective, fully commit to final decision once made."}
+            ] %}
+
+            {% for item in sit_qs %}
+            <div style="background: #ffffff; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 1.25rem 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);">
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.4;">
+                    Q{{ item.id }}. {{ item.q }}
+                </h3>
+                <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.85rem 1.1rem; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 3.5px solid #0f172a; font-size: 0.9rem; color: #0f172a; line-height: 1.5;">
+                    <strong style="color: #0f172a; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">💡 Strategic Response Guide:</strong>
+                    {{ item.tip }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- SECTION 6: COMPANY & CAREER QUESTIONS -->
+    <div id="company-career" style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 1.15rem; border-left: 4px solid #0f172a; padding-left: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>6. Company & Career Questions</span>
+            <span style="font-size: 0.82rem; font-weight: 700; background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; padding: 0.25rem 0.75rem; border-radius: 6px;">4 Questions</span>
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% set comp_qs = [
+                {"id": 25, "q": "Why should we select you over other candidates?", "tip": "Unique blend of solid CS fundamentals & hands-on build experience, fast learning speed & adaptability, alignment with company culture & vision."},
+                {"id": 26, "q": "Are you willing to relocate?", "tip": "Yes, I am fully open and flexible to relocate. I look forward to working in a new environment and collaborating with the team in person."},
+                {"id": 27, "q": "What salary do you expect?", "tip": "As a fresher, my primary priority is joining a company with strong learning opportunities. I expect compensation as per company standards and industry norms."},
+                {"id": 28, "q": "Do you have any questions for us?", "tip": "1. What does success look like for a fresher in this role over the first 6 months?\n2. What key engineering challenges is the team currently solving?"}
+            ] %}
+
+            {% for item in comp_qs %}
+            <div style="background: #ffffff; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 1.25rem 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);">
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.4;">
+                    Q{{ item.id }}. {{ item.q }}
+                </h3>
+                <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.85rem 1.1rem; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 3.5px solid #0f172a; font-size: 0.9rem; color: #0f172a; line-height: 1.5; white-space: pre-line;">
+                    <strong style="color: #0f172a; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">💡 Strategic Response Guide:</strong>
+                    {{ item.tip }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- BOTTOM CARD: SCORING CRITERIA BREAKDOWN (PURE BLACK & WHITE) -->
+    <div style="background: #ffffff; color: #0f172a; padding: 2rem 2.25rem; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04); border: 1.5px solid #cbd5e1; margin-top: 3rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.85rem;">
+            <h3 style="font-size: 1.35rem; font-weight: 900; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.6rem;">
+                🎯 HR Round 5-Part Scoring Criteria
+            </h3>
+            <span style="background: #f1f5f9; color: #0f172a; font-weight: 800; font-size: 0.8rem; padding: 0.35rem 0.9rem; border-radius: 6px; border: 1px solid #cbd5e1;">
+                TOTAL: 100% EVALUATION
+            </span>
+        </div>
+
+        <p style="color: #334155; font-size: 0.95rem; line-height: 1.55; margin-bottom: 1.5rem;">
+            Every response in the General HR round is evaluated by interviewers using the following 5 weighted performance dimensions:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.15rem;">
+            
+            <!-- CONFIDENCE -->
+            <div style="background: #ffffff; border: 1.5px solid #cbd5e1; padding: 1.2rem 1rem; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.65rem; margin-bottom: 0.4rem;">💪</div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: #0f172a;">Confidence</div>
+                <div style="font-size: 1.4rem; font-weight: 900; color: #0f172a; margin-top: 0.25rem;">20%</div>
+            </div>
+
+            <!-- COMMUNICATION -->
+            <div style="background: #ffffff; border: 1.5px solid #cbd5e1; padding: 1.2rem 1rem; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.65rem; margin-bottom: 0.4rem;">🗣️</div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: #0f172a;">Communication</div>
+                <div style="font-size: 1.4rem; font-weight: 900; color: #0f172a; margin-top: 0.25rem;">20%</div>
+            </div>
+
+            <!-- CLARITY -->
+            <div style="background: #ffffff; border: 1.5px solid #cbd5e1; padding: 1.2rem 1rem; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.65rem; margin-bottom: 0.4rem;">🎯</div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: #0f172a;">Clarity</div>
+                <div style="font-size: 1.4rem; font-weight: 900; color: #0f172a; margin-top: 0.25rem;">20%</div>
+            </div>
+
+            <!-- RELEVANCE -->
+            <div style="background: #ffffff; border: 1.5px solid #cbd5e1; padding: 1.2rem 1rem; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.65rem; margin-bottom: 0.4rem;">📌</div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: #0f172a;">Relevance</div>
+                <div style="font-size: 1.4rem; font-weight: 900; color: #0f172a; margin-top: 0.25rem;">20%</div>
+            </div>
+
+            <!-- PROFESSIONALISM -->
+            <div style="background: #ffffff; border: 1.5px solid #cbd5e1; padding: 1.2rem 1rem; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.65rem; margin-bottom: 0.4rem;">💼</div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: #0f172a;">Professionalism</div>
+                <div style="font-size: 1.4rem; font-weight: 900; color: #0f172a; margin-top: 0.25rem;">20%</div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

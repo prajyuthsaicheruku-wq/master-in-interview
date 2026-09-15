@@ -2,15 +2,34 @@ import random
 import os
 from datetime import datetime, date, timedelta
 from functools import wraps
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response
-from models import db, User, Question, UserProgress, Bookmark
+from models import db, User, Question, UserProgress, Bookmark, AptitudeTestAttempt, MockInterviewAttempt
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'interview_prep_portal_secret_key_2026')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///interview_portal.db')
+
+db_url = os.environ.get('DATABASE_URL', 'sqlite:///interview_portal.db')
+if db_url.startswith('mysql://'):
+    db_url = db_url.replace('mysql://', 'mysql+pymysql://', 1)
+elif db_url.startswith('postgres://'):
+    db_url = db_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+if 'mysql' in db_url:
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_recycle': 280,
+        'pool_pre_ping': True
+    }
+
 db.init_app(app)
+
+import re
 
 @app.template_filter('clean_qtext')
 def clean_qtext(text):
@@ -23,7 +42,20 @@ def clean_qtext(text):
         if l_str.startswith('Topic:') or l_str.startswith('Output:') or l_str.startswith('Output :') or l_str.startswith('(Explanation:'):
             continue
         filtered.append(line)
-    return '\n'.join(filtered).strip()
+    res = '\n'.join(filtered).strip()
+    if '\n' not in res:
+        res = re.sub(r'^\d+[\.\:]\s*', '', res).strip()
+    return res
+
+@app.template_filter('clean_title')
+def clean_title(title):
+    if not title:
+        return ""
+    s = str(title)
+    # Strip explicit math formula / operator hints after hyphen
+    s = re.sub(r'\s*-\s*\(?n[\²\³\^\*\+\-0-9\s]+\)?.*', '', s, flags=re.IGNORECASE)
+    s = re.sub(r'\s*-\s*(×|\+|\*|Multiply by|n²|n³|n\^2|n\^3|n\*).*', '', s, flags=re.IGNORECASE)
+    return s.strip()
 
 
 # Helper Decorator for Login Protection
@@ -33,6 +65,11 @@ def login_required(f):
         if 'user_id' not in session:
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('auth_page'))
+        user = db.session.get(User, session['user_id'])
+        if not user:
+            session.clear()
+            flash('Session expired. Please log in again.', 'warning')
+            return redirect(url_for('auth_page'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -41,7 +78,10 @@ def login_required(f):
 def inject_user():
     current_user = None
     if 'user_id' in session:
-        current_user = db.session.get(User, session['user_id'])
+        try:
+            current_user = db.session.get(User, session['user_id'])
+        except Exception:
+            current_user = None
     return dict(current_user=current_user)
 
 @app.after_request
@@ -56,13 +96,19 @@ def add_header(response):
 @app.route('/')
 def index():
     if 'user_id' in session:
-        return redirect(url_for('dashboard'))
+        user = db.session.get(User, session['user_id'])
+        if user:
+            return redirect(url_for('dashboard'))
+        session.clear()
     return redirect(url_for('auth_page'))
 
 @app.route('/auth', methods=['GET'])
 def auth_page():
     if 'user_id' in session and not request.args.get('force'):
-        return redirect(url_for('dashboard'))
+        user = db.session.get(User, session['user_id'])
+        if user:
+            return redirect(url_for('dashboard'))
+        session.clear()
     mode = request.args.get('mode', 'login')
     return render_template('auth.html', initial_mode=mode)
 
@@ -70,7 +116,10 @@ def auth_page():
 def login():
     if request.method == 'GET':
         if 'user_id' in session and not request.args.get('force'):
-            return redirect(url_for('dashboard'))
+            user = db.session.get(User, session['user_id'])
+            if user:
+                return redirect(url_for('dashboard'))
+            session.clear()
         return render_template('auth.html', initial_mode='login')
     identity = request.form.get('identity', '').strip()
     password = request.form.get('password', '')
@@ -79,34 +128,15 @@ def login():
         flash('Username/Email and Password are required.', 'danger')
         return redirect(url_for('auth_page', mode='login'))
 
-    # Try to find existing user by username or email
     user = User.query.filter((User.username == identity) | (User.email == identity.lower())).first()
-
-    if user:
-        # Accept any password for existing users (no DB persistence on Render free tier)
+    if user and user.check_password(password):
         session['user_id'] = user.id
         session['username'] = user.username
         flash(f'Welcome back, {user.username}!', 'success')
         return redirect(url_for('dashboard'))
     
-    # Auto-create user if not found — allows login with any credentials
-    email = identity.lower() if '@' in identity else f'{identity.lower()}@demo.com'
-    username = identity if '@' not in identity else identity.split('@')[0]
-    new_user = User(
-        username=username,
-        email=email,
-        target_role='Software Developer',
-        streak_count=1,
-        last_active_date=date.today()
-    )
-    new_user.set_password(password)
-    db.session.add(new_user)
-    db.session.commit()
-
-    session['user_id'] = new_user.id
-    session['username'] = new_user.username
-    flash(f'Welcome, {new_user.username}!', 'success')
-    return redirect(url_for('dashboard'))
+    flash('Invalid credentials. Please check your username/email and password.', 'danger')
+    return redirect(url_for('auth_page', mode='login'))
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -171,15 +201,42 @@ def logout():
 
 # --- PORTAL CORE ROUTES ---
 
-@app.route('/dashboard')
+@app.route('/resume-builder', methods=['GET', 'POST'])
 @login_required
-def dashboard():
+def resume_builder():
     user = db.session.get(User, session['user_id'])
-    
-    # Calculate / Update Streak
+    if request.method == 'POST':
+        data = request.get_json(silent=True) or request.form
+        if data.get('full_name'):
+            user.full_name = data.get('full_name')
+        if data.get('target_role'):
+            user.target_role = data.get('target_role')
+        if data.get('skills'):
+            user.skills = data.get('skills')
+        db.session.commit()
+        if request.is_json:
+            return jsonify({'status': 'success', 'message': 'Resume profile data saved successfully!'})
+        flash('Resume profile data saved successfully!', 'success')
+        return redirect(url_for('resume_builder'))
+        
+    return render_template('resume_builder.html', current_user=user)
+
+def update_user_streak(user):
+    if not user:
+        return
     today = date.today()
     if user.last_active_date:
-        delta = (today - user.last_active_date).days
+        user_last = user.last_active_date
+        if isinstance(user_last, str):
+            try:
+                user_last = datetime.strptime(user_last[:10], '%Y-%m-%d').date()
+            except Exception:
+                user_last = today
+        try:
+            delta = (today - user_last).days
+        except Exception:
+            delta = 0
+
         if delta == 1:
             user.streak_count = (user.streak_count or 0) + 1
             user.last_active_date = today
@@ -188,10 +245,23 @@ def dashboard():
             user.streak_count = 1
             user.last_active_date = today
             db.session.commit()
+        elif delta == 0 and (not user.streak_count or user.streak_count < 1):
+            user.streak_count = 1
+            user.last_active_date = today
+            db.session.commit()
     else:
         user.streak_count = 1
         user.last_active_date = today
         db.session.commit()
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    user = db.session.get(User, session['user_id'])
+    today = date.today()
+    
+    # Calculate / Update Streak
+    update_user_streak(user)
 
     # 1. Total & Mastered Counts
     total_questions = Question.query.count()
@@ -201,10 +271,11 @@ def dashboard():
 
     # 2. Dynamic Readiness Score
     if total_questions > 0:
-        real_readiness = round((mastered_count / total_questions * 100))
-        readiness_score = max(real_readiness, 70) if mastered_count == 0 else real_readiness
+        practiced_only = max(0, attempted_count - mastered_count)
+        weighted_progress = mastered_count + (practiced_only * 0.5)
+        readiness_score = round((weighted_progress / total_questions) * 100)
     else:
-        readiness_score = 70
+        readiness_score = 0
 
     # 3. Dynamic Category Scores for Round Readiness
     rounds_map = {
@@ -283,6 +354,155 @@ def dashboard():
                            todays_topic=todays_topic,
                            recent_questions=recent_questions,
                            question_of_the_day=question_of_the_day)
+
+def get_aptitude_user_metrics(user_id):
+    aptitude_q_ids = [q.id for q in Question.query.filter_by(category='Aptitude').all()]
+    total_aptitude_qs = len(aptitude_q_ids) if aptitude_q_ids else 805
+
+    user_prog_records = UserProgress.query.filter(
+        UserProgress.user_id == user_id,
+        UserProgress.question_id.in_(aptitude_q_ids)
+    ).all() if aptitude_q_ids else []
+
+    attempted_count = len(user_prog_records)
+    mastered_count = len([p for p in user_prog_records if p.status == 'mastered'])
+    correct_count = mastered_count
+    incorrect_count = max(0, attempted_count - mastered_count)
+    unattempted_count = max(0, total_aptitude_qs - attempted_count)
+
+    if total_aptitude_qs > 0 and attempted_count > 0:
+        overall_progress = min(100, max(1, round((attempted_count / total_aptitude_qs) * 100)))
+    else:
+        overall_progress = 0
+
+    avg_score = round((mastered_count / attempted_count) * 100) if attempted_count > 0 else 0
+
+    if total_aptitude_qs > 0:
+        correct_pct = round((mastered_count / total_aptitude_qs) * 100)
+        incorrect_pct = round((incorrect_count / total_aptitude_qs) * 100)
+        if attempted_count > 0 and correct_pct == 0 and mastered_count > 0:
+            correct_pct = 1
+        if attempted_count > 0 and incorrect_pct == 0 and incorrect_count > 0:
+            incorrect_pct = 1
+        unattempted_pct = max(0, 100 - correct_pct - incorrect_pct)
+    else:
+        correct_pct = 0
+        incorrect_pct = 0
+        unattempted_pct = 100
+
+    accuracy_pct = round((mastered_count / attempted_count) * 100) if attempted_count > 0 else 0
+    error_pct = 100 - accuracy_pct if attempted_count > 0 else 0
+
+    today = date.today()
+    start_of_week = today - timedelta(days=today.weekday())
+    days_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    weekly_curve = []
+    has_activity = False
+
+    for day_idx in range(7):
+        curr_day = start_of_week + timedelta(days=day_idx)
+        day_progs = [p for p in user_prog_records if p.updated_at and p.updated_at.date() == curr_day]
+        if day_progs:
+            has_activity = True
+            day_mastered = len([p for p in day_progs if p.status == 'mastered'])
+            day_score = round((day_mastered / len(day_progs)) * 100)
+            y_coord = round(95 - (day_score * 0.8))
+            weekly_curve.append({'day': days_names[day_idx], 'score': day_score, 'count': len(day_progs), 'y': y_coord, 'active': True})
+        else:
+            weekly_curve.append({'day': days_names[day_idx], 'score': 0, 'count': 0, 'y': 95, 'active': False})
+
+    x_coords = [20, 63, 106, 150, 193, 236, 280]
+    points = [(x_coords[idx], day_info['y']) for idx, day_info in enumerate(weekly_curve)]
+
+    path_d = f"M {points[0][0]},{points[0][1]}"
+    for i in range(len(points) - 1):
+        p0 = points[i]
+        p1 = points[i+1]
+        cp1x = (p0[0] + p1[0]) / 2
+        path_d += f" C {cp1x},{p0[1]} {cp1x},{p1[1]} {p1[0]},{p1[1]}"
+
+    area_d = f"{path_d} L {points[-1][0]},110 L {points[0][0]},110 Z"
+
+    recent_attempts = AptitudeTestAttempt.query.filter_by(user_id=user_id).order_by(AptitudeTestAttempt.created_at.desc()).limit(5).all()
+    recent_tests = []
+    for att in recent_attempts:
+        diff = datetime.utcnow() - att.created_at
+        if diff.days == 0:
+            meta = f"Today • {att.correct_count}/{att.total_questions} Correct"
+        elif diff.days == 1:
+            meta = f"Yesterday • {att.correct_count}/{att.total_questions} Correct"
+        else:
+            meta = f"{att.created_at.strftime('%b %d')} • {att.correct_count}/{att.total_questions} Correct"
+        recent_tests.append({
+            'title': att.test_title,
+            'meta': meta,
+            'score': att.score_percentage
+        })
+
+    if not recent_tests and user_prog_records:
+        topic_counts = {}
+        for p in user_prog_records:
+            q = db.session.get(Question, p.question_id)
+            if q and q.topic:
+                t = q.topic
+                if t not in topic_counts:
+                    topic_counts[t] = {'total': 0, 'mastered': 0, 'date': p.updated_at or datetime.utcnow()}
+                topic_counts[t]['total'] += 1
+                if p.status == 'mastered':
+                    topic_counts[t]['mastered'] += 1
+                if p.updated_at and p.updated_at > topic_counts[t]['date']:
+                    topic_counts[t]['date'] = p.updated_at
+
+        for t_name, t_stat in list(topic_counts.items())[:3]:
+            sc = round((t_stat['mastered'] / t_stat['total']) * 100) if t_stat['total'] > 0 else 0
+            recent_tests.append({
+                'title': f"{t_name} Practice",
+                'meta': f"Practiced • {t_stat['mastered']}/{t_stat['total']} Solved",
+                'score': sc
+            })
+
+    topic_progress = {}
+    categories_map = {
+        'Number & Arithmetic': ['Number System', 'HCF & LCM', 'Divisibility', 'Simplification', 'Averages', 'Percentages', 'Ratio & Proportion', 'Problems on Ages'],
+        'Commercial Mathematics': ['Profit & Loss', 'Simple Interest', 'Compound Interest', 'Discount'],
+        'Time-Based Problems': ['Time & Work', 'Pipes & Cisterns', 'Time, Speed & Distance', 'Boats & Streams', 'Trains'],
+        'Logical Reasoning': ['Number Series', 'Alphabet Series', 'Coding & Decoding', 'Blood Relations', 'Direction Sense'],
+        'Verbal Ability': ['Reading Comprehension', 'Grammar', 'Sentence Correction', 'Para Jumbles', 'Fill in the Blanks']
+    }
+
+    for cat_name, top_list in categories_map.items():
+        cat_qs = Question.query.filter(Question.category == 'Aptitude', Question.topic.in_(top_list)).all()
+        cat_q_ids = [q.id for q in cat_qs]
+        cat_att = len([p for p in user_prog_records if p.question_id in cat_q_ids])
+        topic_progress[cat_name] = round((cat_att / len(cat_qs)) * 100) if cat_qs else 0
+
+        for t_name in top_list:
+            t_qs = [q for q in cat_qs if q.topic == t_name]
+            t_q_ids = [q.id for q in t_qs]
+            t_att = len([p for p in user_prog_records if p.question_id in t_q_ids])
+            topic_progress[t_name] = round((t_att / len(t_qs)) * 100) if t_qs else 0
+
+    user_stats = {
+        'total_questions': total_aptitude_qs,
+        'attempted_count': attempted_count,
+        'mastered_count': mastered_count,
+        'overall_progress': overall_progress,
+        'avg_score': avg_score,
+        'correct_count': correct_count,
+        'incorrect_count': incorrect_count,
+        'unattempted_count': unattempted_count,
+        'correct_pct': correct_pct,
+        'incorrect_pct': incorrect_pct,
+        'unattempted_pct': unattempted_pct,
+        'accuracy_pct': accuracy_pct,
+        'error_pct': error_pct,
+        'has_activity': has_activity,
+        'curve_path': path_d,
+        'area_path': area_d,
+        'weekly_curve': weekly_curve
+    }
+
+    return user_stats, topic_progress, recent_tests
 
 @app.route('/aptitude')
 @login_required
@@ -374,8 +594,9 @@ def aptitude():
     ]
 
     difficulties = ['All', 'Easy', 'Medium', 'Hard']
+    user_stats, topic_progress, recent_tests = get_aptitude_user_metrics(user_id)
 
-    resp = make_response(render_template('questions.html',
+    resp = make_response(render_template('aptitude.html',
                            questions=all_q_dicts,
                            aptitude_modules=aptitude_modules,
                            categories=['Aptitude'],
@@ -384,11 +605,137 @@ def aptitude():
                            selected_side_heading=side_heading,
                            selected_topic=selected_topic,
                            selected_difficulty=difficulty,
-                           search_query=search_query))
+                           search_query=search_query,
+                           user_stats=user_stats,
+                           topic_progress=topic_progress,
+                           recent_tests=recent_tests))
     resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     resp.headers["Pragma"] = "no-cache"
     resp.headers["Expires"] = "0"
     return resp
+
+@app.route('/api/record-aptitude-attempt', methods=['POST'])
+@login_required
+def record_aptitude_attempt():
+    user_id = session['user_id']
+    data = request.get_json() or {}
+    question_id = data.get('question_id')
+    is_correct = data.get('is_correct', False)
+    selected_option = data.get('selected_option', '')
+    topic = data.get('topic', '')
+
+    if not question_id:
+        return jsonify({'error': 'Question ID missing'}), 400
+
+    status = 'mastered' if is_correct else 'needs_practice'
+    prog = UserProgress.query.filter_by(user_id=user_id, question_id=question_id).first()
+    if not prog:
+        prog = UserProgress(
+            user_id=user_id,
+            question_id=question_id,
+            status=status,
+            notes=f"Selected Option: {selected_option}"
+        )
+        db.session.add(prog)
+    else:
+        prog.status = status
+        prog.notes = f"Selected Option: {selected_option}"
+        prog.updated_at = datetime.utcnow()
+
+    db.session.commit()
+
+    stats, topic_prog, recent_tests = get_aptitude_user_metrics(user_id)
+    return jsonify({
+        'success': True,
+        'stats': stats,
+        'topic_progress': topic_prog,
+        'recent_tests': recent_tests
+    })
+
+@app.route('/api/get-quick-test-questions')
+@login_required
+def get_quick_test_questions():
+    topic = request.args.get('topic', 'All')
+    count = int(request.args.get('count', 10))
+
+    query = Question.query.filter_by(category='Aptitude')
+    if topic != 'All':
+        query = query.filter_by(topic=topic)
+
+    all_q = query.all()
+    if not all_q:
+        all_q = Question.query.all()
+
+    sampled = random.sample(all_q, min(count, len(all_q)))
+    q_list = []
+    for q in sampled:
+        q_list.append({
+            'id': q.id,
+            'title': q.title,
+            'topic': q.topic or 'Aptitude',
+            'sub_category': q.sub_category or '',
+            'difficulty': q.difficulty or 'Medium',
+            'question_text': q.question_text,
+            'sample_answer': q.sample_answer,
+            'tips': q.tips,
+            'options': q.get_options_list(),
+            'correct_option': q.get_correct_option()
+        })
+
+    return jsonify({'questions': q_list})
+
+@app.route('/api/submit-aptitude-test', methods=['POST'])
+@login_required
+def submit_aptitude_test():
+    user_id = session['user_id']
+    data = request.get_json() or {}
+    test_title = data.get('test_title', 'Quick Aptitude Test')
+    topic = data.get('topic', 'General Aptitude')
+    answers = data.get('answers', [])
+
+    total_q = len(answers)
+    correct_count = sum(1 for a in answers if a.get('is_correct'))
+    incorrect_count = total_q - correct_count
+    score_pct = round((correct_count / total_q) * 100) if total_q > 0 else 0
+
+    for a in answers:
+        q_id = a.get('question_id')
+        is_corr = a.get('is_correct', False)
+        sel_opt = a.get('selected_option', '')
+        st = 'mastered' if is_corr else 'needs_practice'
+
+        prog = UserProgress.query.filter_by(user_id=user_id, question_id=q_id).first()
+        if not prog:
+            prog = UserProgress(user_id=user_id, question_id=q_id, status=st, notes=f"Test Pick: {sel_opt}")
+            db.session.add(prog)
+        else:
+            prog.status = st
+            prog.notes = f"Test Pick: {sel_opt}"
+            prog.updated_at = datetime.utcnow()
+
+    attempt = AptitudeTestAttempt(
+        user_id=user_id,
+        test_title=test_title,
+        topic=topic,
+        total_questions=total_q,
+        correct_count=correct_count,
+        incorrect_count=incorrect_count,
+        score_percentage=score_pct
+    )
+    db.session.add(attempt)
+    db.session.commit()
+
+    stats, topic_prog, recent_tests = get_aptitude_user_metrics(user_id)
+    return jsonify({
+        'success': True,
+        'score': correct_count,
+        'total': total_q,
+        'score_percentage': score_pct,
+        'stats': stats,
+        'topic_progress': topic_prog,
+        'recent_tests': recent_tests
+    })
+
 
 @app.route('/questions')
 @login_required
@@ -1350,6 +1697,98 @@ def company_detail(company_name):
             {'step': 5, 'title': 'Mock Interview', 'desc': '10–20 Questions | 20–40 Mins', 'icon': '🎙️'}
         ]
 
+    # Build enriched company_meta for UI branding & stats
+    company_meta = {
+        'ctc': '₹4.5 - ₹6.5 LPA',
+        'roles': 'Software Engineer / Associate Analyst',
+        'eligibility': '60% or 6.5 CGPA in 10th, 12th & Graduation',
+        'difficulty': 'Moderate',
+        'difficulty_class': 'badge-warning',
+        'logo_icon': '⚡',
+        'brand_color': '#6366f1',
+        'accent_bg': 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
+        'tagline': f'Complete placement exam pattern, syllabus, sectional cutoffs & solved model papers for {comp_clean}.',
+        'syllabus': [
+            {'category': 'Cognitive Assessment', 'icon': '🧠', 'qs': '50 Qs', 'time': '50 Mins', 'topics': ['Quantitative Aptitude', 'Logical & Critical Reasoning', 'Abstract Reasoning', 'Verbal Ability & RC']},
+            {'category': 'Technical & Pseudocode', 'icon': '💻', 'qs': '40 Qs', 'time': '40 Mins', 'topics': ['Pseudocode & Bitwise Operators', 'Data Structures & Logic', 'Networking & Cloud Basics', 'DBMS, SQL & Security']},
+            {'category': 'Coding Assessment', 'icon': '⚡', 'qs': '2 Qs', 'time': '45 Mins', 'topics': ['Array Subsegment Logic', 'String Manipulation', 'Bit Operations', 'Optimized Algorithm Design']},
+            {'category': 'Communication Assessment', 'icon': '🗣️', 'qs': '6 Modules', 'time': '20 Mins', 'topics': ['Sentence Reading & Repeat', 'Vocabulary & Pronunciation', 'Short Story Retelling', 'Fluency & Conversation']}
+        ],
+        'faqs': [
+            {'q': f'Is there negative marking in {comp_clean} online assessment?', 'a': 'No, there is no negative marking in the assessment. Candidates are encouraged to attempt all questions.'},
+            {'q': f'Can candidates switch between sections during the exam?', 'a': 'No. Sections are strictly time-bound. Once the allocated time for a section expires, candidates automatically proceed to the next section.'},
+            {'q': f'Which programming languages can be used in the coding section?', 'a': 'Supported languages include C, C++, Java, Python, and JavaScript.'},
+            {'q': f'What is the minimum eligibility criteria for {comp_clean} campus recruitment?', 'a': 'A minimum of 60% or 6.5 CGPA in 10th, 12th, and Graduation with no active backlogs.'}
+        ]
+    }
+
+    if 'accenture' in c_lower:
+        company_meta.update({
+            'logo_icon': '⚡',
+            'brand_color': '#a100ff',
+            'accent_bg': 'linear-gradient(135deg, #a100ff 0%, #4f46e5 100%)',
+            'roles': 'Associate Software Engineer (ASE) & Advanced ASE',
+            'ctc': '₹4.5 - ₹6.5 LPA',
+            'eligibility': '60% or 6.5 CGPA in B.E/B.Tech/MCA/M.Sc',
+            'difficulty': 'Moderate to Hard',
+            'difficulty_class': 'badge-warning'
+        })
+    elif 'tcs' in c_lower:
+        company_meta.update({
+            'logo_icon': '🏆',
+            'brand_color': '#0284c7',
+            'accent_bg': 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+            'roles': 'TCS Ninja (₹3.36 LPA) & TCS Digital (₹7.0 - ₹9.0 LPA)',
+            'ctc': '₹3.36 - ₹9.0 LPA',
+            'eligibility': '60% throughout academics (10th, 12th, UG/PG)',
+            'difficulty': 'Moderate to Advanced',
+            'difficulty_class': 'badge-danger'
+        })
+    elif 'infosys' in c_lower or 'infy' in c_lower:
+        company_meta.update({
+            'logo_icon': '🚀',
+            'brand_color': '#007cc3',
+            'accent_bg': 'linear-gradient(135deg, #007cc3 0%, #1e40af 100%)',
+            'roles': 'System Engineer (SE) & Specialist Programmer (SP)',
+            'ctc': '₹3.6 - ₹9.5 LPA',
+            'eligibility': '60% or 6.0 CGPA in B.E/B.Tech/MCA/M.Sc',
+            'difficulty': 'Moderate',
+            'difficulty_class': 'badge-warning'
+        })
+    elif 'amazon' in c_lower:
+        company_meta.update({
+            'logo_icon': '📦',
+            'brand_color': '#ff9900',
+            'accent_bg': 'linear-gradient(135deg, #ff9900 0%, #d97706 100%)',
+            'roles': 'Software Development Engineer (SDE-1)',
+            'ctc': '₹18.0 - ₹45.0 LPA',
+            'eligibility': 'B.E / B.Tech / M.Tech in CS/IT/EC',
+            'difficulty': 'Hard / Advanced',
+            'difficulty_class': 'badge-danger'
+        })
+    elif 'google' in c_lower:
+        company_meta.update({
+            'logo_icon': '🌐',
+            'brand_color': '#4285f4',
+            'accent_bg': 'linear-gradient(135deg, #4285f4 0%, #34a853 100%)',
+            'roles': 'Software Engineer (L3 / Early Career)',
+            'ctc': '₹25.0 - ₹60.0 LPA',
+            'eligibility': 'B.S / M.S / Ph.D in CS or STEM',
+            'difficulty': 'Very Hard',
+            'difficulty_class': 'badge-danger'
+        })
+    elif 'wipro' in c_lower:
+        company_meta.update({
+            'logo_icon': '💼',
+            'brand_color': '#4e148c',
+            'accent_bg': 'linear-gradient(135deg, #4e148c 0%, #6b21a8 100%)',
+            'roles': 'Project Engineer (Elite NTH & Turbo)',
+            'ctc': '₹3.5 - ₹6.5 LPA',
+            'eligibility': '60% or 6.0 CGPA in 10th, 12th & Graduation',
+            'difficulty': 'Easy to Moderate',
+            'difficulty_class': 'badge-info'
+        })
+
     return render_template('company_detail.html',
                            company_name=comp_clean,
                            exam_pattern=exam_pattern,
@@ -1358,7 +1797,8 @@ def company_detail(company_name):
                            table_rounds=table_rounds,
                            table_headers=table_headers,
                            total_qs=total_qs,
-                           total_mins=total_mins)
+                           total_mins=total_mins,
+                           company_meta=company_meta)
 
 def get_quant_logical_10_qs(comp_name, title_str):
     t_lower = title_str.lower()
@@ -8661,6 +9101,180 @@ def practice():
 
     return render_template('practice.html', questions=q_data, selected_category=category, model_paper=model_paper, available_papers=available_papers)
 
+def get_mock_user_metrics(user_id):
+    user = db.session.get(User, user_id)
+    attempts = MockInterviewAttempt.query.filter_by(user_id=user_id).order_by(MockInterviewAttempt.created_at.desc()).all()
+    
+    tests_completed = len(attempts)
+    total_rounds = 8  # 8 Technical Domains + 2 HR modules
+    
+    if tests_completed > 0:
+        total_score_sum = sum(a.score_percentage for a in attempts)
+        avg_performance = round(total_score_sum / tests_completed)
+        correct_sum = sum(a.correct_count for a in attempts)
+        total_q_sum = sum(a.total_questions for a in attempts)
+        accuracy_pct = round((correct_sum / total_q_sum) * 100) if total_q_sum > 0 else 0
+        unique_topics_covered = len(set(a.topic_key for a in attempts))
+        overall_progress = min(100, round((unique_topics_covered / total_rounds) * 100))
+    else:
+        avg_performance = 0
+        accuracy_pct = 0
+        overall_progress = 0
+        
+    streak_count = user.streak_count if user and user.streak_count else 0
+    
+    # Topic-specific highest score / completion state
+    topic_attempts = {}
+    for a in attempts:
+        if a.topic_key not in topic_attempts:
+            topic_attempts[a.topic_key] = {
+                'score_percentage': a.score_percentage,
+                'correct_count': a.correct_count,
+                'total_questions': a.total_questions,
+                'date': a.created_at
+            }
+        elif a.score_percentage > topic_attempts[a.topic_key]['score_percentage']:
+            topic_attempts[a.topic_key] = {
+                'score_percentage': a.score_percentage,
+                'correct_count': a.correct_count,
+                'total_questions': a.total_questions,
+                'date': a.created_at
+            }
+
+    recent_mock_tests = []
+    for att in attempts[:5]:
+        diff = datetime.utcnow() - att.created_at
+        if diff.days == 0:
+            meta = f"Today • {att.correct_count}/{att.total_questions} Score"
+        elif diff.days == 1:
+            meta = f"Yesterday • {att.correct_count}/{att.total_questions} Score"
+        else:
+            meta = f"{att.created_at.strftime('%b %d')} • {att.correct_count}/{att.total_questions} Score"
+        recent_mock_tests.append({
+            'topic_key': att.topic_key,
+            'topic_name': att.topic_name,
+            'meta': meta,
+            'score': att.score_percentage
+        })
+
+    mock_stats = {
+        'total_rounds': total_rounds,
+        'tests_completed': tests_completed,
+        'avg_performance': avg_performance,
+        'accuracy_pct': accuracy_pct,
+        'overall_progress': overall_progress,
+        'streak_count': streak_count,
+        'topic_attempts': topic_attempts,
+        'recent_tests': recent_mock_tests,
+        'has_activity': tests_completed > 0
+    }
+    return mock_stats
+
+@app.route('/mock-interview')
+@login_required
+def mock_interview():
+    user_id = session['user_id']
+    user = db.session.get(User, user_id)
+    update_user_streak(user)
+    mock_stats = get_mock_user_metrics(user_id)
+    return render_template('mock_interview.html', mock_stats=mock_stats, current_user=user)
+
+@app.route('/api/submit-mock-test', methods=['POST'])
+@login_required
+def submit_mock_test():
+    user_id = session['user_id']
+    data = request.get_json() or {}
+    topic_key = data.get('topic_key', 'general')
+    topic_name = data.get('topic_name', 'Mock Assessment')
+    total_questions = int(data.get('total_questions', 20))
+    correct_count = int(data.get('correct_count', 0))
+    score_percentage = int(data.get('score_percentage', 0))
+    incorrect_count = max(0, total_questions - correct_count)
+
+    user = db.session.get(User, user_id)
+    update_user_streak(user)
+
+    attempt = MockInterviewAttempt(
+        user_id=user_id,
+        topic_key=topic_key,
+        topic_name=topic_name,
+        total_questions=total_questions,
+        correct_count=correct_count,
+        incorrect_count=incorrect_count,
+        score_percentage=score_percentage
+    )
+    db.session.add(attempt)
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Mock test attempt recorded successfully'})
+
+@app.route('/hr-question-bank')
+@login_required
+def hr_question_bank():
+    return render_template('hr_question_bank.html')
+
+@app.route('/mock-interview/test/<topic_key>')
+@login_required
+def mock_test_session(topic_key):
+    if topic_key == 'hr_general' or topic_key.startswith('hr_'):
+        return redirect(url_for('hr_question_bank'))
+
+    import importlib
+    import copy
+    import random
+    import mock_data
+    importlib.reload(mock_data)
+    from mock_data import MOCK_TOPICS_DATA
+    topic_info = MOCK_TOPICS_DATA.get(topic_key)
+    if not topic_info:
+        flash('Invalid Mock Interview topic selected.', 'danger')
+        return redirect(url_for('mock_interview'))
+
+    # Jumble/shuffle options dynamically for choose the correct answer questions
+    raw_questions = copy.deepcopy(topic_info['questions'])
+    letters = ['A', 'B', 'C', 'D']
+    jumbled_questions = []
+
+    for q in raw_questions:
+        if q.get('options') and len(q['options']) == 4:
+            correct_opt = str(q.get('correct_option', 'A')).strip().upper()
+            raw_options = []
+            correct_text = None
+
+            for idx, opt in enumerate(q['options']):
+                clean_opt = opt
+                if len(opt) > 3 and opt[0] in 'ABCD' and opt[1] in '):.':
+                    clean_opt = opt[3:].strip()
+                raw_options.append(clean_opt)
+
+                if idx < len(letters) and letters[idx] == correct_opt:
+                    correct_text = clean_opt
+
+            if not correct_text and raw_options:
+                correct_text = raw_options[0]
+
+            random.shuffle(raw_options)
+
+            new_options = []
+            new_correct_opt = 'A'
+            for idx, text in enumerate(raw_options):
+                prefix = f"{letters[idx]}) "
+                new_options.append(f"{prefix}{text}")
+                if text == correct_text:
+                    new_correct_opt = letters[idx]
+
+            q['options'] = new_options
+            q['correct_option'] = new_correct_opt
+
+        jumbled_questions.append(q)
+
+    return render_template(
+        'mock_test_session.html',
+        topic_key=topic_key,
+        topic_name=topic_info['name'],
+        questions=jumbled_questions
+    )
+
 @app.route('/bookmarks')
 @login_required
 def bookmarks():
@@ -8673,6 +9287,292 @@ def bookmarks():
 
     return render_template('bookmarks.html', questions=q_data)
 
+@app.route('/progress')
+@login_required
+def progress():
+    user = db.session.get(User, session['user_id'])
+    
+    # 1. ACTUAL QUESTIONS SOLVED & MASTERED
+    total_questions = Question.query.count()
+    attempted_count = UserProgress.query.filter_by(user_id=user.id).count()
+    mastered_count = UserProgress.query.filter_by(user_id=user.id, status='mastered').count()
+    questions_solved = attempted_count
+
+    # 2. ACTUAL MOCK INTERVIEWS COMPLETED
+    mock_attempts_count = MockInterviewAttempt.query.filter_by(user_id=user.id).count()
+    mock_interviews_completed = mock_attempts_count
+
+    # 3. ACTUAL APTITUDE TESTS ATTEMPTED
+    aptitude_attempts_count = AptitudeTestAttempt.query.filter_by(user_id=user.id).count()
+    aptitude_tests_attempted = aptitude_attempts_count
+
+    # 4. ACTUAL RESUME COMPLETION PERCENTAGE
+    resume_score = 0
+    if user.full_name and user.full_name not in ['Demo User', '']:
+        resume_score += 20
+    if user.education and user.education not in ['B.Tech', '']:
+        resume_score += 15
+    if user.college and user.college not in ['Demo College of Engineering', '']:
+        resume_score += 15
+    if user.skills and user.skills not in ['Python, HTML, CSS, JavaScript, Flask, SQL', '']:
+        resume_score += 20
+    if user.target_role and user.target_role not in ['Software Developer', '']:
+        resume_score += 15
+    if user.completed_courses or user.certificates:
+        resume_score += 15
+    resume_completion = min(100, resume_score)
+
+    # 5. CURRENT STREAK
+    streak_days = getattr(user, 'streak_count', None) or 1
+
+    # 6. OVERALL READINESS SCORE (Dynamic Calculation)
+    if total_questions > 0 and attempted_count > 0:
+        practiced_only = max(0, attempted_count - mastered_count)
+        weighted_progress = (mastered_count * 1.0) + (practiced_only * 0.5)
+        readiness_score = round(((weighted_progress / total_questions) * 70) + ((resume_completion / 100) * 15) + (min(mock_interviews_completed, 5) * 3))
+        readiness_score = min(100, max(0, readiness_score))
+    else:
+        readiness_score = 0
+
+    # 7. DYNAMIC SKILL BREAKDOWN & ASCII BARS
+    skill_categories = [
+        ('Technical Skills', ['Frontend', 'Backend', 'Data Structures', 'System Design'], '#3b82f6'),
+        ('Aptitude', ['Aptitude'], '#f59e0b'),
+        ('HR Interview', ['Behavioral'], '#10b981'),
+        ('Group Discussion', ['Group Discussion'], '#8b5cf6')
+    ]
+    
+    skills_breakdown = []
+    for name, cats, color in skill_categories:
+        cat_q_ids = [q.id for q in Question.query.filter(Question.category.in_(cats)).all()]
+        cat_total = len(cat_q_ids)
+        cat_solved = UserProgress.query.filter(
+            UserProgress.user_id == user.id,
+            UserProgress.question_id.in_(cat_q_ids)
+        ).count() if cat_q_ids else 0
+        
+        pct = round((cat_solved / cat_total * 100)) if cat_total > 0 and cat_solved > 0 else 0
+        filled_blocks = int(round(pct / 10))
+        empty_blocks = 10 - filled_blocks
+        ascii_bar = ('█' * filled_blocks) + ('░' * empty_blocks)
+        
+        skills_breakdown.append({
+            'name': name,
+            'ascii': ascii_bar,
+            'percent': pct,
+            'solved': cat_solved,
+            'total': cat_total,
+            'color': color
+        })
+
+    # 8. DYNAMIC WEEKLY ACTIVITY CHART (Last 7 Days)
+    today = date.today()
+    weekly_activity = []
+    days_abbr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    
+    for i in range(6, -1, -1):
+        day_date = today - timedelta(days=i)
+        day_name = days_abbr[day_date.weekday()]
+        
+        day_solved = UserProgress.query.filter(
+            UserProgress.user_id == user.id,
+            db.func.date(UserProgress.updated_at) == day_date
+        ).count()
+        
+        weekly_activity.append({
+            'day': day_name,
+            'questions': day_solved,
+            'interviews': 1 if day_solved > 5 else 0,
+            'time_mins': day_solved * 5
+        })
+
+    total_weekly_questions = sum(d['questions'] for d in weekly_activity)
+    total_weekly_interviews = sum(d['interviews'] for d in weekly_activity)
+    total_weekly_time_hrs = round(sum(d['time_mins'] for d in weekly_activity) / 60, 1)
+
+    # 9. DYNAMIC ACHIEVEMENTS & BADGES
+    achievements = [
+        {
+            'icon': '🏆',
+            'title': 'First Mock Interview',
+            'desc': 'Complete your first AI-guided interview session',
+            'unlocked': mock_interviews_completed > 0,
+            'date': 'Unlocked ✓' if mock_interviews_completed > 0 else 'Locked 🔒'
+        },
+        {
+            'icon': '🔥',
+            'title': '7-Day Streak',
+            'desc': 'Maintain a consistent daily practice streak for 7 days',
+            'unlocked': streak_days >= 7,
+            'date': 'Unlocked ✓' if streak_days >= 7 else f'{streak_days}/7 Days'
+        },
+        {
+            'icon': '💯',
+            'title': '100 Questions Solved',
+            'desc': 'Cross the milestone of solving 100 placement questions',
+            'unlocked': questions_solved >= 100,
+            'date': 'Unlocked ✓' if questions_solved >= 100 else f'{questions_solved}/100 Solved'
+        },
+        {
+            'icon': '⭐',
+            'title': 'Top Performer',
+            'desc': 'Score 80%+ on overall interview readiness rating',
+            'unlocked': readiness_score >= 80,
+            'date': 'Unlocked ✓' if readiness_score >= 80 else 'Requires 80% Score'
+        }
+    ]
+
+    # 10. DYNAMIC RECENT ACTIVITIES
+    recent_user_progress = UserProgress.query.filter_by(user_id=user.id).order_by(UserProgress.updated_at.desc()).limit(5).all()
+    recent_activities = []
+    
+    for up in recent_user_progress:
+        q = Question.query.get(up.question_id)
+        if q:
+            time_ago = 'Recently'
+            if up.updated_at:
+                delta_sec = (datetime.utcnow() - up.updated_at).total_seconds()
+                if delta_sec < 3600:
+                    time_ago = f"{int(delta_sec // 60)} mins ago"
+                elif delta_sec < 86400:
+                    time_ago = f"{int(delta_sec // 3600)} hours ago"
+                else:
+                    time_ago = f"{int(delta_sec // 86400)} days ago"
+
+            recent_activities.append({
+                'title': f"Solved {q.title}",
+                'time': time_ago,
+                'icon': '✓',
+                'badge': q.category
+            })
+
+    return render_template('progress.html',
+                           user=user,
+                           readiness_score=readiness_score,
+                           questions_solved=questions_solved,
+                           mock_interviews_completed=mock_interviews_completed,
+                           aptitude_tests_attempted=aptitude_tests_attempted,
+                           resume_completion=resume_completion,
+                           streak_days=streak_days,
+                           skills_breakdown=skills_breakdown,
+                           weekly_activity=weekly_activity,
+                           total_weekly_questions=total_weekly_questions,
+                           total_weekly_interviews=total_weekly_interviews,
+                           total_weekly_time_hrs=total_weekly_time_hrs,
+                           achievements=achievements,
+                           recent_activities=recent_activities)
+
+@app.route('/leaderboard')
+@login_required
+def leaderboard():
+    current_user_obj = db.session.get(User, session['user_id'])
+    filter_type = request.args.get('filter', 'all_time')
+
+    # Query all real registered portal users from database
+    all_users = User.query.all()
+    user_list = []
+
+    for u in all_users:
+        attempted = UserProgress.query.filter_by(user_id=u.id).count()
+        mastered = UserProgress.query.filter_by(user_id=u.id, status='mastered').count()
+        streak = getattr(u, 'streak_count', None) or 1
+        
+        # Real calculated user score (0 if no questions solved yet)
+        if attempted > 0:
+            score = (mastered * 20) + (attempted * 10) + (streak * 5)
+            user_streak_val = streak
+        else:
+            score = 0
+            user_streak_val = 0
+            
+        display_name = u.full_name or u.username or f"User #{u.id}"
+        
+        if score >= 100:
+            badge = "🏆 Grandmaster"
+        elif score >= 50:
+            badge = "⚡ Algorithm Master"
+        elif score >= 20:
+            badge = "🔥 Code Ninja"
+        else:
+            badge = "⭐ Rising Star"
+            
+        user_list.append({
+            'id': u.id,
+            'name': display_name,
+            'score': score,
+            'streak': user_streak_val,
+            'solved': attempted,
+            'mastered': mastered,
+            'badge': badge,
+            'avatar': display_name[0].upper() if display_name else 'U',
+            'is_current': (u.id == current_user_obj.id)
+        })
+
+    # Sort candidates by score descending, then solved descending, then streak descending
+    user_list.sort(key=lambda x: (x['score'], x['solved'], x['streak']), reverse=True)
+
+    candidates = []
+    current_user_data = None
+    current_user_rank = 1
+
+    for idx, cand in enumerate(user_list, start=1):
+        cand['rank'] = idx
+        if idx == 1:
+            cand['badge_icon'] = '🥇'
+        elif idx == 2:
+            cand['badge_icon'] = '🥈'
+        elif idx == 3:
+            cand['badge_icon'] = '🥉'
+        else:
+            cand['badge_icon'] = str(idx)
+            
+        candidates.append(cand)
+        
+        if cand['is_current']:
+            current_user_data = cand
+            current_user_rank = idx
+
+    user_score = current_user_data['score'] if current_user_data else 0
+    user_rank = current_user_rank
+
+    if candidates and len(candidates) > 0:
+        top_score = candidates[0]['score']
+        top_needed = max(0, top_score - user_score + 10) if user_rank > 1 else 0
+        spotlight = candidates[0]
+    else:
+        top_needed = 0
+        spotlight = {
+            'rank': 1, 'badge_icon': '🥇', 'name': current_user_obj.full_name or current_user_obj.username,
+            'score': user_score, 'streak': 0, 'badge': '⭐ Rising Star', 'avatar': (current_user_obj.username or 'U')[0].upper()
+        }
+
+    total_solved_sum = sum(c['solved'] for c in candidates)
+    total_streak_sum = sum(c['streak'] for c in candidates)
+
+    # Calculate actual percentage metrics based on solved questions
+    mock_score_val = round((total_solved_sum * 0.5)) if total_solved_sum > 0 else 0
+    aptitude_score_val = round((total_solved_sum * 0.4)) if total_solved_sum > 0 else 0
+    readiness_score_val = round((total_solved_sum * 0.6)) if total_solved_sum > 0 else 0
+    streak_points_val = total_streak_sum * 10 if total_solved_sum > 0 else 0
+
+    metrics_summary = {
+        'total_questions_solved': total_solved_sum,
+        'avg_mock_score': min(100, mock_score_val),
+        'avg_aptitude_score': min(100, aptitude_score_val),
+        'avg_readiness_score': min(100, readiness_score_val),
+        'total_streak_points': streak_points_val
+    }
+
+    return render_template('leaderboard.html',
+                           user=current_user_obj,
+                           candidates=candidates,
+                           spotlight=spotlight,
+                           user_score=user_score,
+                           user_rank=user_rank,
+                           top10_needed=top_needed,
+                           filter_type=filter_type,
+                           metrics_summary=metrics_summary)
+
 @app.route('/profile')
 @login_required
 def profile():
@@ -8683,7 +9583,12 @@ def profile():
     attempted_count = UserProgress.query.filter_by(user_id=user.id).count()
     bookmarked_count = Bookmark.query.filter_by(user_id=user.id).count()
 
-    readiness_percentage = round((mastered_count / total_questions * 100), 1) if total_questions > 0 else 0
+    if total_questions > 0:
+        practiced_only = max(0, attempted_count - mastered_count)
+        weighted_progress = mastered_count + (practiced_only * 0.5)
+        readiness_percentage = round((weighted_progress / total_questions) * 100, 1)
+    else:
+        readiness_percentage = 0
 
     skills_str = getattr(user, 'skills', None) or 'Python, JavaScript, Data Structures, System Design, SQL, React'
     courses_str = getattr(user, 'completed_courses', None) or 'Full-Stack Interview Mastery, Data Structures & Algorithms Deep Dive, System Design Principles'
@@ -8736,6 +9641,21 @@ def update_profile():
     db.session.commit()
     flash('Profile updated successfully!', 'success')
     return redirect(url_for('profile'))
+
+@app.route('/about')
+@app.route('/about-us')
+def about_us():
+    user = None
+    if 'user_id' in session:
+        user = db.session.get(User, session['user_id'])
+    
+    total_questions = Question.query.count()
+    total_users = User.query.count()
+    
+    return render_template('about.html',
+                           user=user,
+                           total_questions=total_questions,
+                           total_users=total_users)
 
 # --- AJAX API ENDPOINTS ---
 
@@ -8814,36 +9734,92 @@ def update_role():
 with app.app_context():
     db.create_all()
     try:
-        from sqlalchemy import text
-        with db.engine.connect() as conn:
-            user_cols = [row[1] for row in conn.execute(text("PRAGMA table_info(users)")).fetchall()]
-            if 'full_name' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN full_name VARCHAR(100)"))
-            if 'education' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN education VARCHAR(100) DEFAULT 'B.Tech – 3rd Year'"))
-            if 'college' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN college VARCHAR(150) DEFAULT 'Sir CR Reddy College of Engineering'"))
-            if 'location' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN location VARCHAR(100) DEFAULT 'India'"))
-            if 'preferred_domain' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN preferred_domain VARCHAR(100) DEFAULT 'Python / Full Stack'"))
-            if 'target_companies' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN target_companies VARCHAR(200) DEFAULT 'Deloitte, TCS, Infosys'"))
-            if 'profile_pic' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN profile_pic VARCHAR(256) DEFAULT 'avatar_default'"))
-            if 'skills' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN skills TEXT DEFAULT 'Python, HTML, CSS, JavaScript, Flask, SQL'"))
-            if 'completed_courses' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN completed_courses TEXT DEFAULT 'Full-Stack Interview Mastery, Data Structures & Algorithms Deep Dive, System Design Principles'"))
-            if 'certificates' not in user_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN certificates TEXT DEFAULT 'Verified Algorithm Expert, Certified System Architecture Professional'"))
-            conn.commit()
+        from sqlalchemy import inspect, text
+        inspector = inspect(db.engine)
+        if 'users' in inspector.get_table_names():
+            user_cols = [col['name'] for col in inspector.get_columns('users')]
+            with db.engine.connect() as conn:
+                if 'full_name' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN full_name VARCHAR(100)"))
+                if 'education' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN education VARCHAR(100) DEFAULT 'B.Tech – 3rd Year'"))
+                if 'college' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN college VARCHAR(150) DEFAULT 'Sir CR Reddy College of Engineering'"))
+                if 'location' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN location VARCHAR(100) DEFAULT 'India'"))
+                if 'preferred_domain' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN preferred_domain VARCHAR(100) DEFAULT 'Python / Full Stack'"))
+                if 'target_companies' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN target_companies VARCHAR(200) DEFAULT 'Deloitte, TCS, Infosys'"))
+                if 'profile_pic' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN profile_pic VARCHAR(256) DEFAULT 'avatar_default'"))
+                if 'skills' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN skills TEXT"))
+                if 'completed_courses' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN completed_courses TEXT"))
+                if 'certificates' not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN certificates TEXT"))
+                conn.commit()
     except Exception as m_err:
         print(f"Migration check: {m_err}")
 
     # Auto-seed disabled per user directive to clear questions
     pass
 
+@app.errorhandler(500)
+def handle_500_error(e):
+    app.logger.error(f"Internal Server Error: {e}")
+    if 'user_id' in session:
+        try:
+            if not db.session.get(User, session['user_id']):
+                session.clear()
+                return redirect(url_for('auth_page'))
+        except Exception:
+            session.clear()
+            return redirect(url_for('auth_page'))
+    return redirect(url_for('auth_page'))
+
+import socket
+import sys
+
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+    return ip
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    local_ip = get_local_ip()
+    mobile_url = f"http://{local_ip}:{port}"
+    desktop_url = f"http://127.0.0.1:{port}"
+
+    if sys.platform == 'win32':
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except Exception:
+            pass
+
+    print("\n" + "=" * 65)
+    print(" 🚀 INTERVIEW PREP PORTAL RUNNING")
+    print("=" * 65)
+    print(f" 💻 Laptop / Desktop Browser :  {desktop_url}")
+    print(f" 📱 Mobile Phone Browser     :  {mobile_url}")
+    print("=" * 65)
+    print(" 📸 Scan QR Code with your Mobile Camera to open instantly:\n")
+    try:
+        import qrcode
+        qr = qrcode.QRCode(border=1)
+        qr.add_data(mobile_url)
+        qr.print_ascii(invert=True)
+    except Exception:
+        pass
+    print("\n 💡 Make sure your phone is on the same Wi-Fi / Hotspot.")
+    print("=" * 65 + "\n")
+
     app.run(debug=False, host='0.0.0.0', port=port)

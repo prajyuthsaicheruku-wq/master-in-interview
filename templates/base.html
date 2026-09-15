@@ -7,19 +7,21 @@
     <meta name="description" content="Ace your technical and behavioral software engineering interviews with dynamic question banks and mock practice.">
     <meta name="theme-color" content="#6366f1">
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=v2026_home_only_v24">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=v2026_dark_theme_live_v27">
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-theme');
+            } else if (savedTheme === 'dark') {
+                document.documentElement.classList.remove('light-theme');
             }
         })();
     </script>
 </head>
-<body class="{% if request.endpoint != 'auth_page' %}has-perm-sidebar{% endif %}">
+<body class="{% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' %}has-perm-sidebar{% endif %}">
 
-    {% if request.endpoint != 'auth_page' %}
+    {% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' %}
     <!-- PERMANENT LEFT VERTICAL SIDEBAR (MATCHING LET'S CODE TOGETHER DASHBOARD PANEL) -->
     <aside class="perm-sidebar" id="permSidebar">
         <div class="sidebar-top">
@@ -33,43 +35,48 @@
         <div class="sidebar-body">
             <ul class="sidebar-menu-list">
                 <li>
-                    <a href="{{ url_for('dashboard') if session.user_id else url_for('auth_page') }}" class="sidebar-item {{ 'active' if request.endpoint == 'dashboard' or request.endpoint == 'index' }}">
+                    <a href="{{ url_for('dashboard') }}" class="sidebar-item {{ 'active' if request.endpoint == 'dashboard' or request.endpoint == 'index' }}">
                         Home
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('practice') if session.user_id else url_for('auth_page') }}" class="sidebar-item {{ 'active' if request.endpoint == 'practice' }}">
-                        Practice
+                    <a href="{{ url_for('practice') }}" class="sidebar-item {{ 'active' if request.endpoint == 'practice' or request.endpoint == 'company_detail' or request.endpoint == 'questions' }}">
+                        Companies
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('aptitude') if session.user_id else url_for('auth_page') }}" class="sidebar-item {{ 'active' if request.endpoint == 'aptitude' }}">
+                    <a href="{{ url_for('aptitude') }}" class="sidebar-item {{ 'active' if request.endpoint == 'aptitude' }}">
                         Aptitude
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('practice') if session.user_id else url_for('auth_page') }}" class="sidebar-item">
+                    <a href="{{ url_for('mock_interview') }}" class="sidebar-item {{ 'active' if request.endpoint == 'mock_interview' or request.endpoint == 'mock_test_session' }}">
                         Mock Interview
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('dashboard') if session.user_id else url_for('auth_page') }}" class="sidebar-item">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-item {{ 'active' if request.endpoint == 'resume_builder' }}">
                         Resume Builder
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('dashboard') if session.user_id else url_for('auth_page') }}" class="sidebar-item">
+                    <a href="{{ url_for('progress') }}" class="sidebar-item {{ 'active' if request.endpoint == 'progress' }}">
                         Progress
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('dashboard') if session.user_id else url_for('auth_page') }}" class="sidebar-item">
+                    <a href="{{ url_for('leaderboard') }}" class="sidebar-item {{ 'active' if request.endpoint == 'leaderboard' }}">
                         Leaderboard
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('profile') if session.user_id else url_for('auth_page') }}" class="sidebar-item {{ 'active' if request.endpoint == 'profile' }}">
+                    <a href="{{ url_for('profile') }}" class="sidebar-item {{ 'active' if request.endpoint == 'profile' }}">
                         Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('about_us') }}" class="sidebar-item {{ 'active' if request.endpoint == 'about_us' }}">
+                        About Us
                     </a>
                 </li>
                 {% if session.user_id %}
@@ -82,14 +89,13 @@
                 {% endif %}
             </ul>
 
-            <!-- BOTTOM INSTALL APP BUTTON (MATCHING SCREENSHOT) -->
-            <div class="sidebar-bottom-app">
-                <a href="{{ url_for('practice') }}" class="install-app-card">
-                    <div class="app-card-title">
-                        <span>⬇️</span> Install App
-                    </div>
-                    <div class="app-card-sub">Get the full experience ☀️</div>
-                </a>
+            <!-- BOTTOM APP INSTALL BUTTON (COMPACT) -->
+            <div class="sidebar-bottom-app" id="installAppSidebarCard">
+                <button type="button" class="btn-install-app-small" id="btnInstallApp" onclick="handleInstallAppClick()" title="Install App">
+                    <span class="install-small-icon">📲</span>
+                    <span class="install-small-text">Install App</span>
+                    <span class="install-small-badge">⬇️</span>
+                </button>
             </div>
         </div>
     </aside>
@@ -100,19 +106,33 @@
 
     <!-- MAIN PAGE CONTAINER -->
     <div class="main-page-wrapper">
-        {% if request.endpoint != 'auth_page' %}
+        {% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' %}
         <!-- TOP HEADER BAR IN MAIN CONTAINER -->
-        <header class="main-top-header">
-            <div class="header-left">
+        <header class="main-top-header" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem; gap: 1rem;">
+            <div class="header-left" style="display: flex; align-items: center; gap: 1rem;">
                 <button type="button" class="mobile-menu-trigger" id="mobileMenuTrigger" aria-label="Open Navigation">
                     <span style="font-size: 1.2rem;">⋮</span> Menu
                 </button>
             </div>
 
-            <div class="header-right" style="display: flex; align-items: center; gap: 1rem;">
+            <div class="header-right" style="display: flex; align-items: center; gap: 0.85rem; margin-left: auto;">
+                <!-- DARK / WHITE MODE TOGGLE BUTTON -->
+                <button type="button" id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Dark or White Mode" title="Toggle Dark / White Mode">
+                    <span class="theme-icon-dark">🌙</span>
+                    <span class="theme-icon-light" style="display: none;">☀️</span>
+                    <span class="theme-label">Dark Mode</span>
+                </button>
+
+                <!-- USER PROFILE PILL -->
                 {% if session.user_id %}
-                    <a href="{{ url_for('profile') }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.35rem;">
-                        👤 Profile
+                    <a href="{{ url_for('profile') }}" class="user-profile-pill">
+                        <div class="user-avatar-circle">
+                            {{ (current_user.username[0] if current_user and current_user.username else 'D') | upper }}
+                        </div>
+                        <div class="user-meta-info">
+                            <span class="user-name-text">{{ current_user.full_name or current_user.username or 'Demo Candidate' }}</span>
+                            <span class="user-role-text">Profile ⌄</span>
+                        </div>
                     </a>
                 {% else %}
                     <a href="{{ url_for('auth_page', mode='login') }}" class="btn btn-primary btn-sm">Login</a>
@@ -139,7 +159,7 @@
         </main>
     </div>
 
-    <script src="{{ url_for('static', filename='js/portal.js') }}?v=v2026_theme_fix_v6"></script>
+    <script src="{{ url_for('static', filename='js/portal.js') }}?v=v2026_theme_live_v26"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

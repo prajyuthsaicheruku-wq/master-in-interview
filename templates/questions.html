@@ -7,7 +7,7 @@
 
     {% if search_query %}
     <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
-        <a href="{{ url_for('company_detail', company_name=search_query) }}" class="btn btn-outline btn-sm" style="font-weight: 800; border-radius: 9999px; background: #ffffff; border: 1.5px solid #6366f1; color: #4338ca; padding: 0.5rem 1.25rem; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.45rem; text-decoration: none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);">
+        <a href="{{ url_for('company_detail', company_name=search_query) }}" class="btn btn-outline btn-sm" style="font-weight: 800; border-radius: 9999px; padding: 0.5rem 1.25rem; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.45rem; text-decoration: none; box-shadow: var(--shadow-glow);">
             ⬅ Back to {{ search_query }} Company Page
         </a>
     </div>
@@ -25,7 +25,7 @@
                     Select an assessment platform or target company to start practicing tailored questions.
                 </p>
             </div>
-            <a href="{{ url_for('practice') }}" class="btn btn-primary btn-sm">🎙️ Launch AI Mock Practice</a>
+            <a href="{{ url_for('mock_interview') }}" class="btn btn-primary btn-sm">🎙️ Launch AI Mock Practice</a>
         </div>
 
         <div style="display: grid; grid-template-columns: 210px 1fr 1.3fr; gap: 1.5rem;" class="prep-directory-grid">
@@ -194,11 +194,11 @@
 
             {% if selected_category != 'Aptitude' %}
             <!-- SEARCH & DIFFICULTY FILTER BAR -->
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; background: #ffffff; padding: 1rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid rgba(0,0,0,0.12); box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <div class="question-filter-bar">
                 <form action="{{ url_for(request.endpoint) }}" method="GET" style="display: flex; gap: 0.75rem; flex: 1; min-width: 280px;">
                     <input type="hidden" name="category" value="{{ selected_category }}">
                     <input type="hidden" name="difficulty" value="{{ selected_difficulty }}">
-                    <input type="text" name="q" value="{{ search_query }}" placeholder="Search questions by topic, keyword, or company..." class="form-input search-input-white" style="padding: 0.55rem 1rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff !important; color: #0f172a !important; font-size: 0.9rem;">
+                    <input type="text" name="q" value="{{ search_query }}" placeholder="Search questions by topic, keyword, or company..." class="form-input" style="padding: 0.55rem 1rem; border-radius: 8px; font-size: 0.9rem;">
                     <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700;">🔍 Search</button>
                     {% if search_query %}
                     <a href="{{ url_for(request.endpoint, category=selected_category) }}" class="btn btn-outline btn-sm">Clear</a>
@@ -206,11 +206,11 @@
                 </form>
 
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="font-size: 0.85rem; font-weight: 700; color: #64748b;">Difficulty:</span>
+                    <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Difficulty:</span>
                     {% for diff in difficulties %}
                     <a href="{{ url_for(request.endpoint, category=selected_category, difficulty=diff, q=search_query) }}" 
                        class="badge" 
-                       style="font-size: 0.78rem; padding: 0.3rem 0.65rem; border-radius: 6px; text-decoration: none; {% if selected_difficulty == diff %}background: #0f172a; color: #ffffff; font-weight: 700;{% else %}background: #ffffff; color: #64748b; border: 1px solid #e2e8f0;{% endif %}">
+                       style="font-size: 0.78rem; padding: 0.3rem 0.65rem; border-radius: 6px; text-decoration: none; {% if selected_difficulty == diff %}background: var(--primary); color: #ffffff; font-weight: 700;{% else %}background: var(--bg-card-hover); color: var(--text-muted); border: 1px solid var(--border-glass);{% endif %}">
                         {{ diff }}
                     </a>
                     {% endfor %}
@@ -226,7 +226,7 @@
             <!-- 1. FILE DIRECTORY VIEW (SHOWING MODULE FOLDERS & FILE CARDS) -->
             <div id="aptitude-directory-container" style="display: {% if selected_topic and selected_topic != 'All' %}none{% else %}block{% endif %};">
                 <!-- PATH NAVIGATION BANNER -->
-                <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #ffffff; padding: 1.25rem 1.5rem; border-radius: 14px; margin-bottom: 1.5rem; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div class="aptitude-header-banner">
                     <div style="display: flex; align-items: center; gap: 0.75rem;">
                         <span style="font-size: 1.5rem;">📂</span>
                         <div>
@@ -235,10 +235,10 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
-                        <span class="badge" style="background: rgba(255,255,255,0.1); color: #38bdf8; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.82rem;">
+                        <span class="badge" style="background: rgba(255,255,255,0.15); color: #38bdf8; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.82rem;">
                             📄 27 Practice Study Files
                         </span>
-                        <span class="badge" style="background: rgba(255,255,255,0.1); color: #4ade80; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.82rem;">
+                        <span class="badge" style="background: rgba(255,255,255,0.15); color: #4ade80; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.82rem;">
                             ✓ Solved Answers
                         </span>
                     </div>
@@ -247,16 +247,16 @@
                 <!-- MODULE FOLDERS GRID -->
                 <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                     {% for mod in aptitude_modules %}
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 0.85rem;">
+                    <div class="aptitude-module-card">
+                        <div class="aptitude-module-header">
                             <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                <span style="font-size: 1.35rem; background: #e0e7ff; padding: 0.4rem 0.6rem; border-radius: 8px;">📁</span>
+                                <span class="aptitude-folder-icon">📁</span>
                                 <div>
-                                    <h3 style="font-weight: 800; font-size: 1.15rem; color: #0f172a; margin: 0;">{{ loop.index }}. {{ mod.side_heading }}</h3>
-                                    <div style="font-size: 0.8rem; color: #64748b;">Contains {{ mod.topics | length }} Topic Study Files</div>
+                                    <h3 class="aptitude-module-title">{{ loop.index }}. {{ mod.side_heading }}</h3>
+                                    <div class="aptitude-module-subtitle">Contains {{ mod.topics | length }} Topic Study Files</div>
                                 </div>
                             </div>
-                            <span class="badge" style="background: #f1f5f9; color: #475569; font-weight: 700; font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 9999px;">
+                            <span class="aptitude-module-badge">
                                 {{ mod.topics | length }} Files
                             </span>
                         </div>
@@ -266,20 +266,20 @@
                             {% for top_obj in mod.topics %}
                             {% set file_slug = top_obj.name | replace(' ', '_') | replace('&', 'and') %}
                             
-                            <div class="aptitude-file-card" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 1.1rem; transition: all 0.2s ease; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                            <div class="aptitude-file-card">
                                 <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
                                     <div style="font-size: 1.75rem; line-height: 1;">📄</div>
                                     <div style="flex: 1;">
-                                        <div style="font-weight: 800; font-size: 0.98rem; color: #0f172a; margin-bottom: 0.25rem;">
+                                        <div class="aptitude-file-title">
                                             {{ top_obj.name }}.pdf
                                         </div>
-                                        <div style="font-size: 0.78rem; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 0.4rem;">
+                                        <div class="aptitude-file-meta">
                                             <span>📝 {{ top_obj.questions | length }} Solved Questions</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <button type="button" onclick="showAptitudeDocument('doc-view-{{ file_slug }}')" class="btn btn-primary btn-sm" style="width: 100%; border-radius: 8px; font-weight: 700; background: #4f46e5; border: none; padding: 0.5rem; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+                                <button type="button" onclick="showAptitudeDocument('doc-view-{{ file_slug }}')" class="btn btn-primary btn-sm" style="width: 100%; border-radius: 8px; font-weight: 700; padding: 0.5rem; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
                                     📖 Open Study File
                                 </button>
                             </div>
@@ -298,31 +298,31 @@
             
             <div id="doc-view-{{ file_slug }}" class="aptitude-doc-panel" style="display: {% if is_selected_doc %}block{% else %}none{% endif %}; max-width: 920px; margin: 0 auto;">
                 <!-- DOCUMENT STICKY NAV BAR WITH TOP LEFT BACK BUTTON -->
-                <div style="position: sticky; top: 1rem; z-index: 100; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
-                    <button type="button" onclick="showAptitudeDirectory()" class="btn btn-primary btn-sm" style="font-weight: 800; border-radius: 9999px; display: flex; align-items: center; gap: 0.5rem; background: #4f46e5; color: #ffffff; border: none; padding: 0.55rem 1.1rem; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); transition: all 0.2s ease;">
+                <div class="aptitude-doc-sticky-bar">
+                    <button type="button" onclick="showAptitudeDirectory()" class="btn btn-primary btn-sm" style="font-weight: 800; border-radius: 9999px; display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); transition: all 0.2s ease;">
                         ⬅ Back to Study Directory
                     </button>
 
-                    <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+                    <div class="aptitude-doc-breadcrumb">
                         <span>📂 Aptitude</span>
-                        <span style="color: #94a3b8;">/</span>
-                        <span style="color: #6366f1;">{{ mod.side_heading }}</span>
-                        <span style="color: #94a3b8;">/</span>
-                        <span style="color: #0f172a; background: #e0e7ff; padding: 0.25rem 0.65rem; border-radius: 6px;">📄 {{ top_obj.name }}.pdf</span>
+                        <span style="color: var(--text-dim);">/</span>
+                        <span style="color: var(--primary);">{{ mod.side_heading }}</span>
+                        <span style="color: var(--text-dim);">/</span>
+                        <span class="aptitude-breadcrumb-pill">📄 {{ top_obj.name }}.pdf</span>
                     </div>
                 </div>
 
                 <!-- DOCUMENT SHEET PAPER -->
-                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 14px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+                <div class="aptitude-doc-paper">
                     <!-- DOCUMENT TITLE BANNER -->
-                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div class="aptitude-doc-banner">
                         <div>
-                            <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1; font-weight: 800; margin-bottom: 0.2rem;">
+                            <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); font-weight: 800; margin-bottom: 0.2rem;">
                                 {{ mod.side_heading }} — Official Study Sheet
                             </div>
-                            <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0;">📄 {{ top_obj.name }} ({{ top_obj.questions | length }} Solved Practice Questions)</h2>
+                            <h2 class="aptitude-doc-banner-heading">📄 {{ top_obj.name }} ({{ top_obj.questions | length }} Solved Practice Questions)</h2>
                         </div>
-                        <span class="badge" style="background: #e0e7ff; color: #4338ca; font-weight: 800; padding: 0.4rem 0.85rem; border-radius: 9999px; font-size: 0.82rem;">
+                        <span class="badge" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; font-weight: 800; padding: 0.4rem 0.85rem; border-radius: 9999px; font-size: 0.82rem; border: 1px solid rgba(99, 102, 241, 0.3);">
                             ✓ Verified Solutions
                         </span>
                     </div>
@@ -331,22 +331,23 @@
                     {% if top_obj.questions %}
                     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                         {% for q in top_obj.questions %}
-                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+                        <div class="aptitude-q-card">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span style="background: #4f46e5; color: #ffffff; font-weight: 800; font-size: 0.8rem; padding: 0.3rem 0.65rem; border-radius: 6px;">Q{{ loop.index }}</span>
-                                    <h4 style="font-size: 1.08rem; font-weight: 700; color: #0f172a; margin: 0;">{{ q.title }}</h4>
+                                    <span style="background: var(--primary); color: #ffffff; font-weight: 800; font-size: 0.8rem; padding: 0.3rem 0.65rem; border-radius: 6px;">Q{{ loop.index }}</span>
+                                    {% if q.title and (q.title | clean_title) != top_obj.name and (q.title | clean_title) != 'Reading Comprehension' and (q.title | clean_title) != 'Alphabet Series' and (q.title | clean_title) != 'Number Series' and (q.title | clean_title) != 'Coding & Decoding' and (q.title | clean_title) != 'Blood Relations' and (q.title | clean_title) != 'Direction Sense' %}
+                                    <h4 class="aptitude-q-title">{{ q.title | clean_title }}</h4>
+                                    {% endif %}
                                 </div>
-                                <span class="badge badge-{{ q.difficulty | lower }}">{{ q.difficulty }}</span>
                             </div>
 
-                            <div style="font-size: 0.98rem; color: #334155; line-height: 1.6; margin-bottom: 1.25rem; white-space: pre-wrap; font-weight: 500; background: #f8fafc; padding: 1rem 1.15rem; border-radius: 8px; border: 1px solid #f1f5f9;">
-                                {{ q.question_text }}
+                            <div class="aptitude-q-text">
+                                {{ q.question_text | clean_qtext }}
                             </div>
 
                             <!-- MULTIPLE CHOICE PRACTICE OPTIONS -->
                             <div style="margin-bottom: 1.25rem;">
-                                <div style="font-size: 0.85rem; font-weight: 700; color: #64748b; margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                                <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
                                     <span>🎯 Select Your Practice Answer:</span>
                                     <span id="opt-feedback-{{ q.id }}" style="font-size: 0.82rem; font-weight: 800;"></span>
                                 </div>
@@ -354,40 +355,40 @@
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
                                     {% if q.options %}
                                         {% for opt in q.options %}
-                                        <div onclick="selectPracticeOption(this, {{ 'true' if opt.is_correct else 'false' }}, '{{ opt.label }}', 'opt-feedback-{{ q.id }}')" class="practice-opt-card" style="border: 1.5px solid #cbd5e1; background: #ffffff; border-radius: 10px; padding: 0.75rem 1rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; transition: all 0.2s ease;">
+                                        <div onclick="selectPracticeOption(this, {{ 'true' if opt.is_correct else 'false' }}, '{{ opt.label }}', 'opt-feedback-{{ q.id }}')" class="practice-opt-card">
                                             <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                                <span style="font-weight: 800; background: #f1f5f9; color: #475569; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem;">{{ opt.label }}</span>
-                                                <span style="font-size: 0.92rem; font-weight: 700; color: #1e293b;">{{ opt.text }}</span>
+                                                <span class="practice-opt-label">{{ opt.label }}</span>
+                                                <span class="practice-opt-text">{{ opt.text }}</span>
                                             </div>
                                             <span class="opt-status-icon" style="font-size: 0.85rem; font-weight: 800;"></span>
                                         </div>
                                         {% endfor %}
                                     {% else %}
-                                        <div onclick="selectPracticeOption(this, false, 'A', 'opt-feedback-{{ q.id }}')" class="practice-opt-card" style="border: 1.5px solid #cbd5e1; background: #ffffff; border-radius: 10px; padding: 0.65rem 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;">
+                                        <div onclick="selectPracticeOption(this, false, 'A', 'opt-feedback-{{ q.id }}')" class="practice-opt-card">
                                             <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                                <span style="font-weight: 800; background: #f1f5f9; color: #475569; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">A</span>
-                                                <span style="font-size: 0.88rem; font-weight: 600; color: #1e293b;">Option A</span>
+                                                <span class="practice-opt-label">A</span>
+                                                <span class="practice-opt-text">Option A</span>
                                             </div>
                                             <span class="opt-status-icon" style="font-size: 0.85rem; font-weight: 800;"></span>
                                         </div>
-                                        <div onclick="selectPracticeOption(this, true, 'B', 'opt-feedback-{{ q.id }}')" class="practice-opt-card" style="border: 1.5px solid #cbd5e1; background: #ffffff; border-radius: 10px; padding: 0.65rem 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;">
+                                        <div onclick="selectPracticeOption(this, true, 'B', 'opt-feedback-{{ q.id }}')" class="practice-opt-card">
                                             <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                                <span style="font-weight: 800; background: #f1f5f9; color: #475569; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">B</span>
-                                                <span style="font-size: 0.88rem; font-weight: 600; color: #1e293b;">Option B</span>
+                                                <span class="practice-opt-label">B</span>
+                                                <span class="practice-opt-text">Option B</span>
                                             </div>
                                             <span class="opt-status-icon" style="font-size: 0.85rem; font-weight: 800;"></span>
                                         </div>
-                                        <div onclick="selectPracticeOption(this, false, 'C', 'opt-feedback-{{ q.id }}')" class="practice-opt-card" style="border: 1.5px solid #cbd5e1; background: #ffffff; border-radius: 10px; padding: 0.65rem 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;">
+                                        <div onclick="selectPracticeOption(this, false, 'C', 'opt-feedback-{{ q.id }}')" class="practice-opt-card">
                                             <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                                <span style="font-weight: 800; background: #f1f5f9; color: #475569; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">C</span>
-                                                <span style="font-size: 0.88rem; font-weight: 600; color: #1e293b;">Option C</span>
+                                                <span class="practice-opt-label">C</span>
+                                                <span class="practice-opt-text">Option C</span>
                                             </div>
                                             <span class="opt-status-icon" style="font-size: 0.85rem; font-weight: 800;"></span>
                                         </div>
-                                        <div onclick="selectPracticeOption(this, false, 'D', 'opt-feedback-{{ q.id }}')" class="practice-opt-card" style="border: 1.5px solid #cbd5e1; background: #ffffff; border-radius: 10px; padding: 0.65rem 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;">
+                                        <div onclick="selectPracticeOption(this, false, 'D', 'opt-feedback-{{ q.id }}')" class="practice-opt-card">
                                             <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                                <span style="font-weight: 800; background: #f1f5f9; color: #475569; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">D</span>
-                                                <span style="font-size: 0.88rem; font-weight: 600; color: #1e293b;">Option D</span>
+                                                <span class="practice-opt-label">D</span>
+                                                <span class="practice-opt-text">Option D</span>
                                             </div>
                                             <span class="opt-status-icon" style="font-size: 0.85rem; font-weight: 800;"></span>
                                         </div>
@@ -397,7 +398,7 @@
 
                             <!-- TOGGLE SOLUTION BUTTON -->
                             <div style="margin-top: 1rem; margin-bottom: 0.25rem;">
-                                <button type="button" onclick="toggleQuestionSolution('solution-box-{{ q.id }}', this)" class="btn btn-outline btn-sm" style="font-weight: 700; border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 0.4rem; background: #f8fafc; color: #4f46e5; border: 1.5px solid #cbd5e1;">
+                                <button type="button" onclick="toggleQuestionSolution('solution-box-{{ q.id }}', this)" class="aptitude-sol-btn">
                                     <span>👁️</span> View Solution & Step-by-Step Answer
                                 </button>
                             </div>
@@ -405,16 +406,16 @@
                             <!-- HIDDEN SOLUTION & EXPLANATION CONTAINER -->
                             <div id="solution-box-{{ q.id }}" style="display: none; margin-top: 1rem; transition: all 0.3s ease;">
                                 {% if q.tips %}
-                                <div style="background: #f0fdf4; border-left: 3.5px solid #10b981; padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #166534; margin-bottom: 1rem;">
+                                <div class="aptitude-tips-box">
                                     <strong>💡 Shortcut Formula / Exam Tip:</strong> {{ q.tips }}
                                 </div>
                                 {% endif %}
 
-                                <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 1.15rem;">
-                                    <div style="font-weight: 700; color: #0f172a; font-size: 0.9rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.35rem;">
+                                <div class="aptitude-expl-box">
+                                    <div class="aptitude-expl-title">
                                         <span>📝</span> Solved Step-by-Step Answer & Explanation:
                                     </div>
-                                    <pre style="background: #1e293b; color: #38bdf8; padding: 1rem; border-radius: 8px; font-size: 0.9rem; overflow-x: auto; white-space: pre-wrap; font-family: inherit; margin: 0;"><code>{{ q.sample_answer }}</code></pre>
+                                    <pre style="background: #090d16; color: #38bdf8; padding: 1rem; border-radius: 8px; font-size: 0.9rem; overflow-x: auto; white-space: pre-wrap; font-family: inherit; margin: 0; border: 1px solid var(--border-glass);"><code>{{ q.sample_answer }}</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -435,8 +436,7 @@
             
             // Reset cards in this question group
             cards.forEach(c => {
-                c.style.background = '#ffffff';
-                c.style.borderColor = '#cbd5e1';
+                c.classList.remove('opt-correct', 'opt-incorrect');
                 const icon = c.querySelector('.opt-status-icon');
                 if (icon) icon.innerHTML = '';
             });
@@ -445,18 +445,16 @@
             const iconSpan = element.querySelector('.opt-status-icon');
 
             if (isCorrect) {
-                element.style.background = '#f0fdf4';
-                element.style.borderColor = '#10b981';
-                if (iconSpan) iconSpan.innerHTML = '<span style="color: #15803d; font-weight: 800; font-size: 0.82rem;">✓ Correct</span>';
+                element.classList.add('opt-correct');
+                if (iconSpan) iconSpan.innerHTML = '<span style="color: #10b981; font-weight: 800; font-size: 0.82rem;">✓ Correct</span>';
                 if (feedbackSpan) {
-                    feedbackSpan.innerHTML = '<span style="color: #15803d; background: #dcfce7; padding: 0.25rem 0.65rem; border-radius: 6px;">✓ Correct Answer!</span>';
+                    feedbackSpan.innerHTML = '<span style="color: #10b981; background: rgba(16, 185, 129, 0.15); padding: 0.25rem 0.65rem; border-radius: 6px;">✓ Correct Answer!</span>';
                 }
             } else {
-                element.style.background = '#fef2f2';
-                element.style.borderColor = '#ef4444';
-                if (iconSpan) iconSpan.innerHTML = '<span style="color: #b91c1c; font-weight: 800; font-size: 0.82rem;">✗ Incorrect</span>';
+                element.classList.add('opt-incorrect');
+                if (iconSpan) iconSpan.innerHTML = '<span style="color: #ef4444; font-weight: 800; font-size: 0.82rem;">✗ Incorrect</span>';
                 if (feedbackSpan) {
-                    feedbackSpan.innerHTML = '<span style="color: #b91c1c; background: #fee2e2; padding: 0.25rem 0.65rem; border-radius: 6px;">✗ Incorrect — Try another option or view solution below</span>';
+                    feedbackSpan.innerHTML = '<span style="color: #ef4444; background: rgba(239, 68, 68, 0.15); padding: 0.25rem 0.65rem; border-radius: 6px;">✗ Incorrect — Try another option or view solution below</span>';
                 }
             }
         }
@@ -466,16 +464,12 @@
             if (box) {
                 if (box.style.display === 'none' || !box.style.display) {
                     box.style.display = 'block';
+                    btn.classList.add('active');
                     btn.innerHTML = '<span>🙈</span> Hide Solution & Step-by-Step Answer';
-                    btn.style.background = '#e0e7ff';
-                    btn.style.color = '#3730a3';
-                    btn.style.borderColor = '#6366f1';
                 } else {
                     box.style.display = 'none';
+                    btn.classList.remove('active');
                     btn.innerHTML = '<span>👁️</span> View Solution & Step-by-Step Answer';
-                    btn.style.background = '#f8fafc';
-                    btn.style.color = '#4f46e5';
-                    btn.style.borderColor = '#cbd5e1';
                 }
             }
         }
@@ -530,50 +524,49 @@
         {% if questions %}
         <div style="display: flex; flex-direction: column; gap: 1.25rem;">
             {% for q in questions %}
-            <div class="glass-card" id="q-card-{{ q.id }}" style="padding: 1.5rem; background: #ffffff; border: 1px solid {% if q.status == 'mastered' %}rgba(16, 185, 129, 0.4){% else %}var(--border-glass){% endif %}; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+            <div class="glass-card" id="q-card-{{ q.id }}" style="padding: 1.5rem; border: 1px solid {% if q.status == 'mastered' %}rgba(16, 185, 129, 0.4){% else %}var(--border-glass){% endif %}; border-radius: 12px; box-shadow: var(--shadow-sm);">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
                     <div>
                         <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.35rem;">
                             <span class="badge badge-category">{{ q.category }}</span>
                             {% if q.sub_category %}
-                            <span class="badge" style="background: #e0e7ff; color: #3730a3; font-weight: 700; font-size: 0.75rem;">📂 {{ q.sub_category }}</span>
+                            <span class="badge" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(99, 102, 241, 0.3);">📂 {{ q.sub_category }}</span>
                             {% endif %}
                             {% if q.topic %}
-                            <span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 700; font-size: 0.75rem;">📌 {{ q.topic }}</span>
+                            <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(245, 158, 11, 0.3);">📌 {{ q.topic }}</span>
                             {% endif %}
-                            <span class="badge badge-{{ q.difficulty | lower }}">{{ q.difficulty }}</span>
                             {% if q.company %}
-                            <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 700; font-size: 0.75rem;">🏢 {{ q.company }}</span>
+                            <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(56, 189, 248, 0.3);">🏢 {{ q.company }}</span>
                             {% endif %}
                             {% if q.paper_year %}
                             <span class="badge badge-easy" style="font-size: 0.75rem;">{{ q.paper_year }}</span>
                             {% endif %}
                         </div>
-                        <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0;">{{ q.title }}</h3>
+                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ q.title }}</h3>
                     </div>
 
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                         <button type="button" class="btn btn-outline btn-sm bookmark-btn {{ 'active' if q.is_bookmarked }}" data-id="{{ q.id }}" style="padding: 0.35rem 0.75rem; font-size: 0.9rem;">
                             {% if q.is_bookmarked %}★{% else %}☆{% endif %}
                         </button>
-                        <select class="form-select status-select" data-id="{{ q.id }}" style="padding: 0.35rem 0.65rem; font-size: 0.82rem; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; cursor: pointer;">
+                        <select class="form-select status-select" data-id="{{ q.id }}" style="padding: 0.35rem 0.65rem; font-size: 0.82rem; border-radius: 6px; cursor: pointer;">
                             <option value="needs_practice" {% if q.status != 'mastered' %}selected{% endif %}>⏳ Needs Practice</option>
                             <option value="mastered" {% if q.status == 'mastered' %}selected{% endif %}>✓ Mastered</option>
                         </select>
                     </div>
                 </div>
 
-                <div style="font-size: 0.95rem; color: #334155; line-height: 1.6; margin-bottom: 1rem; white-space: pre-wrap; font-weight: 500;">
-                    {{ q.question_text }}
+                <div style="font-size: 0.95rem; color: var(--text-main); line-height: 1.6; margin-bottom: 1rem; white-space: pre-wrap; font-weight: 500;">
+                    {{ q.question_text | clean_qtext }}
                 </div>
 
                 <!-- INTERACTIVE CODE WORKSPACE -->
-                <div style="margin-bottom: 1rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 10px;">
+                <div class="code-workspace-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                        <span style="font-size: 0.85rem; font-weight: 700; color: #334155;">💻 Code Workspace & Test Runner:</span>
+                        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">💻 Code Workspace & Test Runner:</span>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 0.8rem; font-weight: 600; color: #64748b;">Language:</span>
-                            <select class="form-select lang-select" style="padding: 0.25rem 0.65rem; font-size: 0.82rem; width: auto; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; font-weight: 600;" id="lang_card_{{ q.id }}">
+                            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Language:</span>
+                            <select class="form-select lang-select" style="padding: 0.25rem 0.65rem; font-size: 0.82rem; width: auto; border-radius: 6px; font-weight: 600;" id="lang_card_{{ q.id }}">
                                 <option value="python" selected>Python 3</option>
                                 <option value="java">Java 17</option>
                                 <option value="c">C Language</option>
@@ -581,7 +574,7 @@
                             </select>
                         </div>
                     </div>
-                    <textarea class="form-textarea code-input" rows="10" id="code_card_{{ q.id }}" style="font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9rem; background: #0f172a; color: #38bdf8; border: 1px solid #334155; border-radius: 8px; width: 100%; min-height: 230px; padding: 1rem; font-weight: 500; line-height: 1.65;" placeholder="Type your solution / code snippet here..."># Write your solution here
+                    <textarea class="form-textarea code-input" rows="10" id="code_card_{{ q.id }}" style="font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9rem; background: #090d16; color: #38bdf8; border: 1px solid var(--border-glass); border-radius: 8px; width: 100%; min-height: 230px; padding: 1rem; font-weight: 500; line-height: 1.65;" placeholder="Type your solution / code snippet here..."># Write your solution here
 def solution():
     pass</textarea>
 
@@ -589,7 +582,7 @@ def solution():
                         <button type="button" class="btn btn-success btn-sm run-code-btn" data-qid="{{ q.id }}" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-weight: 800; font-size: 0.85rem; padding: 0.45rem 1.25rem; border: none; border-radius: 6px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); cursor: pointer;">
                             ▶️ Run Code
                         </button>
-                        <button type="button" class="btn btn-outline btn-sm reset-code-btn" data-qid="{{ q.id }}" style="font-size: 0.82rem; font-weight: 700; border-color: #cbd5e1; color: #475569; background: #ffffff;">
+                        <button type="button" class="btn btn-outline btn-sm reset-code-btn" data-qid="{{ q.id }}" style="font-size: 0.82rem; font-weight: 700;">
                             🔄 Reset Code
                         </button>
                     </div>
@@ -604,24 +597,24 @@ def solution():
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 0.75rem;">
                     <button type="button" class="btn btn-outline btn-sm toggle-answer-btn" data-target="sol_box_q_{{ q.id }}">
                         💡 Reveal Solution & Explanation
                     </button>
                 </div>
 
-                <div id="sol_box_q_{{ q.id }}" class="answer-box" style="display: none; margin-top: 1rem; background: #ecfdf5; border: 1px solid #10b981; padding: 1rem; border-radius: 8px;">
-                    <div style="font-weight: 700; color: #047857; margin-bottom: 0.35rem;">Sample Answer / Explanation:</div>
-                    <pre style="background: #1e293b; color: #38bdf8; padding: 0.85rem; border-radius: 6px; font-size: 0.88rem; overflow-x: auto; white-space: pre-wrap; font-family: inherit;"><code>{{ q.sample_answer }}</code></pre>
+                <div id="sol_box_q_{{ q.id }}" class="answer-box" style="display: none; margin-top: 1rem; background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; padding: 1rem; border-radius: 8px;">
+                    <div style="font-weight: 700; color: #10b981; margin-bottom: 0.35rem;">Sample Answer / Explanation:</div>
+                    <pre style="background: #090d16; color: #38bdf8; padding: 0.85rem; border-radius: 6px; font-size: 0.88rem; overflow-x: auto; white-space: pre-wrap; font-family: inherit; border: 1px solid var(--border-glass);"><code>{{ q.sample_answer }}</code></pre>
                 </div>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <div style="text-align: center; padding: 3rem 1rem; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
+        <div style="text-align: center; padding: 3rem 1rem; background: var(--bg-card); border-radius: 12px; border: 1px dashed var(--border-glass);">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
-            <h3 style="font-size: 1.2rem; font-weight: 700; color: #334155; margin-bottom: 0.5rem;">No questions found matching your criteria</h3>
-            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">Try clearing your search query or selecting a different category filter.</p>
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">No questions found matching your criteria</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Try clearing your search query or selecting a different category filter.</p>
             <a href="{{ url_for('questions') }}" class="btn btn-primary btn-sm">View All Questions</a>
         </div>
         {% endif %}

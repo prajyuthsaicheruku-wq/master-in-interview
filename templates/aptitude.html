@@ -1,0 +1,1164 @@
+{% extends "base.html" %}
+
+{% block title %}Aptitude Practice & Study Portal | InterviewMaster{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1280px; padding: 1rem 0 3rem;">
+
+    <!-- 1. PAGE TITLE & SUBTITLE -->
+    <div class="aptitude-page-header">
+        <div class="aptitude-title-row">
+            <span class="aptitude-title-icon">🎯</span>
+            <h1 class="aptitude-main-title">Aptitude</h1>
+        </div>
+        <p class="aptitude-main-subtitle">Practice Quantitative Aptitude, Logical Reasoning & Verbal Ability questions.</p>
+    </div>
+
+    <!-- 2. MAIN 2-COLUMN DASHBOARD GRID -->
+    <div id="aptitudeDashboardMainView" class="aptitude-dashboard-grid">
+        
+        <!-- ================= LEFT / MAIN COLUMN ================= -->
+        <div class="aptitude-main-col">
+            
+            <!-- A. HERO BANNER CARD -->
+            <div class="aptitude-hero-card">
+                <div class="hero-content-flex">
+                    <div class="hero-left-side">
+                        <div class="hero-tagline">Strengthen Your Basics.</div>
+                        <h2 class="hero-headline">Practice. Analyze. <span class="highlight">Improve.</span></h2>
+                        <p class="hero-desc">Access curated study files, topic-wise questions and track your progress in real time.</p>
+                        
+                        <div class="hero-pills-row">
+                            <div class="hero-stat-pill">
+                                <span>📄</span>
+                                <div><span class="pill-num">{{ user_stats.total_questions if user_stats else 805 }}+</span> Practice Questions</div>
+                            </div>
+                            <div class="hero-stat-pill">
+                                <span>✓</span>
+                                <div><span class="pill-num">27</span> Study Files</div>
+                            </div>
+                            <div class="hero-stat-pill">
+                                <span>📊</span>
+                                <div><span id="heroAvgScoreText" class="pill-num">{{ user_stats.avg_score if user_stats else 0 }}%</span> Your Avg Score</div>
+                            </div>
+                            <div class="hero-stat-pill">
+                                <span>🔥</span>
+                                <div><span id="heroStreakCount" class="pill-num">{{ current_user.streak_count if current_user and current_user.streak_count else 1 }}</span> Day Streak</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-right-side">
+                        <div class="hero-ring-container">
+                            <svg class="hero-ring-svg" viewBox="0 0 100 100">
+                                <circle class="hero-ring-bg" cx="50" cy="50" r="45"></circle>
+                                <circle id="heroOverallProgCircle" class="hero-ring-prog" cx="50" cy="50" r="45" style="stroke-dasharray: {{ (((user_stats.overall_progress if user_stats else 0) * 283) / 100) | round(1) }}, 283;"></circle>
+                            </svg>
+                            <div class="hero-ring-text">
+                                <div id="heroOverallProgText" class="hero-ring-val">{{ user_stats.overall_progress if user_stats else 0 }}%</div>
+                                <div class="hero-ring-sub">Overall Progress</div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="scrollToStudyTopics()" class="hero-continue-btn">
+                            Continue Practice →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B. QUICK ACTIONS (4 CARDS ROW) -->
+            <div class="quick-actions-section">
+                <h3 class="quick-actions-title">Quick Actions</h3>
+                <div class="quick-actions-grid">
+                    <div onclick="openQuickTestModal()" class="quick-act-card" style="cursor: pointer;">
+                        <div class="quick-act-icon icon-mint">⚡</div>
+                        <div class="quick-act-info">
+                            <span class="quick-act-name">Take a Quick Test</span>
+                            <span class="quick-act-sub">10 Random Questions</span>
+                        </div>
+                    </div>
+
+                    <div onclick="scrollToStudyTopics()" class="quick-act-card" style="cursor: pointer;">
+                        <div class="quick-act-icon icon-lavender">📋</div>
+                        <div class="quick-act-info">
+                            <span class="quick-act-name">Topic-wise Practice</span>
+                            <span class="quick-act-sub">Select a Topic</span>
+                        </div>
+                    </div>
+
+                    <div onclick="scrollToRecentTests()" class="quick-act-card" style="cursor: pointer;">
+                        <div class="quick-act-icon icon-blue">🔄</div>
+                        <div class="quick-act-info">
+                            <span class="quick-act-name">Previous Attempts</span>
+                            <span class="quick-act-sub">View Test History</span>
+                        </div>
+                    </div>
+
+                    <div onclick="openWeakArea()" class="quick-act-card" style="cursor: pointer;">
+                        <div class="quick-act-icon icon-coral">🎯</div>
+                        <div class="quick-act-info">
+                            <span class="quick-act-name">Weak Areas</span>
+                            <span class="quick-act-sub">Focus & Improve</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- C. STUDY TOPICS SECTION -->
+            <div class="study-topics-section" id="studyTopicsSection">
+                <div class="study-topics-header">
+                    <div>
+                        <h3 class="study-topics-title">Study Topics</h3>
+                        <p class="study-topics-sub">Choose a topic to practice and master it step by step.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <select onchange="filterTopicCategory(this.value)" class="widget-filter-select" style="padding: 0.35rem 0.75rem; font-size: 0.82rem; cursor: pointer;">
+                            <option value="All">🌪️ All Categories</option>
+                            <option value="Number & Arithmetic">Number & Arithmetic</option>
+                            <option value="Commercial Mathematics">Commercial Mathematics</option>
+                            <option value="Time-Based Problems">Time-Based Problems</option>
+                            <option value="Logical Reasoning">Logical Reasoning</option>
+                            <option value="Verbal Ability">Verbal Ability</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 5 CORE STUDY TOPIC CATEGORY CARDS -->
+                <div class="topics-8-grid">
+                    <!-- 1. Number & Arithmetic -->
+                    {% set p1 = topic_progress.get('Number & Arithmetic', 0) if topic_progress else 0 %}
+                    <div class="topic-dash-card" data-category="Number & Arithmetic">
+                        <div class="topic-dash-head">
+                            <div class="topic-icon-box" style="background: #dcfce7; color: #15803d; font-size: 1.3rem;">🔢</div>
+                            <div class="topic-dash-meta">
+                                <div class="topic-dash-name">1. Number & Arithmetic</div>
+                                <div class="topic-dash-files">8 Topics • 240 Solved Questions</div>
+                            </div>
+                        </div>
+                        <div class="topic-progress-wrap">
+                            <div class="topic-progress-track">
+                                <div id="topic-prog-fill-1" class="topic-progress-fill" style="width: {{ p1 }}%; background: #10b981;"></div>
+                            </div>
+                            <span id="topic-prog-lbl-1" class="topic-progress-label">{{ p1 }}%</span>
+                        </div>
+                        <button type="button" onclick="openTopicStudy('Number_System')" class="topic-dash-btn">
+                            Practice Topics →
+                        </button>
+                    </div>
+
+                    <!-- 2. Commercial Mathematics -->
+                    {% set p2 = topic_progress.get('Commercial Mathematics', 0) if topic_progress else 0 %}
+                    <div class="topic-dash-card" data-category="Commercial Mathematics">
+                        <div class="topic-dash-head">
+                            <div class="topic-icon-box" style="background: #fef3c7; color: #d97706; font-size: 1.3rem;">💰</div>
+                            <div class="topic-dash-meta">
+                                <div class="topic-dash-name">2. Commercial Mathematics</div>
+                                <div class="topic-dash-files">4 Topics • 120 Solved Questions</div>
+                            </div>
+                        </div>
+                        <div class="topic-progress-wrap">
+                            <div class="topic-progress-track">
+                                <div id="topic-prog-fill-2" class="topic-progress-fill" style="width: {{ p2 }}%; background: #f59e0b;"></div>
+                            </div>
+                            <span id="topic-prog-lbl-2" class="topic-progress-label">{{ p2 }}%</span>
+                        </div>
+                        <button type="button" onclick="openTopicStudy('Profit_and_Loss')" class="topic-dash-btn">
+                            Practice Topics →
+                        </button>
+                    </div>
+
+                    <!-- 3. Time-Based Problems -->
+                    {% set p3 = topic_progress.get('Time-Based Problems', 0) if topic_progress else 0 %}
+                    <div class="topic-dash-card" data-category="Time-Based Problems">
+                        <div class="topic-dash-head">
+                            <div class="topic-icon-box" style="background: #ffedd5; color: #ea580c; font-size: 1.3rem;">⏱️</div>
+                            <div class="topic-dash-meta">
+                                <div class="topic-dash-name">3. Time-Based Problems</div>
+                                <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
+                            </div>
+                        </div>
+                        <div class="topic-progress-wrap">
+                            <div class="topic-progress-track">
+                                <div id="topic-prog-fill-3" class="topic-progress-fill" style="width: {{ p3 }}%; background: #ea580c;"></div>
+                            </div>
+                            <span id="topic-prog-lbl-3" class="topic-progress-label">{{ p3 }}%</span>
+                        </div>
+                        <button type="button" onclick="openTopicStudy('Time_and_Work')" class="topic-dash-btn">
+                            Practice Topics →
+                        </button>
+                    </div>
+
+                    <!-- 4. Logical Reasoning -->
+                    {% set p4 = topic_progress.get('Logical Reasoning', 0) if topic_progress else 0 %}
+                    <div class="topic-dash-card" data-category="Logical Reasoning">
+                        <div class="topic-dash-head">
+                            <div class="topic-icon-box" style="background: #ede9fe; color: #7c3aed; font-size: 1.3rem;">🧠</div>
+                            <div class="topic-dash-meta">
+                                <div class="topic-dash-name">4. Logical Reasoning</div>
+                                <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
+                            </div>
+                        </div>
+                        <div class="topic-progress-wrap">
+                            <div class="topic-progress-track">
+                                <div id="topic-prog-fill-4" class="topic-progress-fill" style="width: {{ p4 }}%; background: #7c3aed;"></div>
+                            </div>
+                            <span id="topic-prog-lbl-4" class="topic-progress-label">{{ p4 }}%</span>
+                        </div>
+                        <button type="button" onclick="openTopicStudy('Number_Series')" class="topic-dash-btn">
+                            Practice Topics →
+                        </button>
+                    </div>
+
+                    <!-- 5. Verbal Ability -->
+                    {% set p5 = topic_progress.get('Verbal Ability', 0) if topic_progress else 0 %}
+                    <div class="topic-dash-card" data-category="Verbal Ability">
+                        <div class="topic-dash-head">
+                            <div class="topic-icon-box" style="background: #e0f2fe; color: #0284c7; font-size: 1.3rem;">📚</div>
+                            <div class="topic-dash-meta">
+                                <div class="topic-dash-name">5. Verbal Ability</div>
+                                <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
+                            </div>
+                        </div>
+                        <div class="topic-progress-wrap">
+                            <div class="topic-progress-track">
+                                <div id="topic-prog-fill-5" class="topic-progress-fill" style="width: {{ p5 }}%; background: #0284c7;"></div>
+                            </div>
+                            <span id="topic-prog-lbl-5" class="topic-progress-label">{{ p5 }}%</span>
+                        </div>
+                        <button type="button" onclick="openTopicStudy('Reading_Comprehension')" class="topic-dash-btn">
+                            Practice Topics →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ALL 27 TOPICS EXPANDABLE ACCORDION CONTAINER -->
+                <div id="expandedTopicsSection" style="display: none; margin-top: 1.5rem;">
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        {% for mod in aptitude_modules %}
+                        <div class="aptitude-module-card">
+                            <div class="aptitude-module-header">
+                                <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                    <span class="aptitude-folder-icon">{{ mod.icon }}</span>
+                                    <div>
+                                        <h3 class="aptitude-module-title">{{ loop.index }}. {{ mod.side_heading }}</h3>
+                                        <div class="aptitude-module-subtitle">Contains {{ mod.topics | length }} Topic Study Files</div>
+                                    </div>
+                                </div>
+                                <span class="aptitude-module-badge">
+                                    {{ mod.topics | length }} Files
+                                </span>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem;">
+                                {% for top_obj in mod.topics %}
+                                {% set file_slug = top_obj.name | replace(' ', '_') | replace('&', 'and') %}
+                                <div class="aptitude-file-card">
+                                    <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                                        <div style="font-size: 1.6rem; line-height: 1;">📄</div>
+                                        <div style="flex: 1;">
+                                            <div class="aptitude-file-title">{{ top_obj.name }}.pdf</div>
+                                            <div class="aptitude-file-meta">
+                                                <span>📝 {{ top_obj.questions | length }} Solved Questions</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="openTopicStudy('{{ file_slug }}')" class="btn btn-primary btn-sm" style="width: 100%; border-radius: 8px; font-weight: 700; padding: 0.45rem; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+                                        📖 Open Study File
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- VIEW ALL TOPICS BUTTON -->
+                <button type="button" id="toggleAllTopicsBtn" onclick="toggleAllTopicsView()" class="view-all-topics-toggle-btn">
+                    <span id="allTopicsBtnText">View All Topics ⌄</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ================= RIGHT SIDEBAR COLUMN ================= -->
+        <div class="aptitude-sidebar-col">
+            
+            <!-- 1. YOUR PERFORMANCE WIDGET -->
+            <div class="dash-widget-card">
+                <div class="widget-head-row">
+                    <h4 class="widget-title">Your Performance</h4>
+                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); background: var(--border-glass); padding: 0.2rem 0.6rem; border-radius: 6px;">This Week</span>
+                </div>
+
+                <div class="perf-chart-wrap" id="perfChartWrap">
+                    <svg class="perf-chart-svg" viewBox="0 0 300 110" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="perfGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
+                                <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0"/>
+                            </linearGradient>
+                        </defs>
+                        {% set avg_perf = user_stats.avg_score if user_stats else 0 %}
+                        {% set has_act = user_stats.has_activity if user_stats and user_stats.has_activity else false %}
+                        
+                        <!-- Area Fill -->
+                        <path id="perfAreaPath" d="{{ user_stats.area_path if has_act else '' }}" fill="url(#perfGrad)" style="{{ 'display: block;' if has_act else 'display: none;' }}"></path>
+                        
+                        <!-- Stroke Curve Line -->
+                        <path id="perfLinePath" d="{{ user_stats.curve_path if has_act else '' }}" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" style="{{ 'display: block;' if has_act else 'display: none;' }}"></path>
+                        
+                        <!-- Baseline dashed line when no activity -->
+                        <line id="perfBaseDashed" x1="0" y1="95" x2="300" y2="95" stroke="var(--border-glass)" stroke-dasharray="4,4" stroke-width="1.5" style="{{ 'display: none;' if has_act else 'display: block;' }}"></line>
+                        <line id="perfBaseSolid" x1="0" y1="95" x2="300" y2="95" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" style="{{ 'display: none;' if has_act else 'display: block;' }}"></line>
+                        
+                        <!-- Indicator circle & score pill -->
+                        <circle id="perfDotCircle" cx="280" cy="{{ 95 - (avg_perf * 0.8) | round if has_act else 95 }}" r="4.5" fill="#4f46e5" stroke="#ffffff" stroke-width="2"></circle>
+                        <g id="perfScoreBadgeG" transform="translate(240, {{ (95 - (avg_perf * 0.8) - 22) | round if has_act else 70 }})">
+                            <rect width="46" height="18" rx="6" fill="#4f46e5"></rect>
+                            <text id="perfScoreBadgeText" x="23" y="13" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">{{ avg_perf }}%</text>
+                        </g>
+                    </svg>
+
+                    <div class="perf-days-labels">
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                        <span>Sun</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. ACCURACY OVERVIEW WIDGET -->
+            <div class="dash-widget-card">
+                <div class="widget-head-row">
+                    <h4 class="widget-title">Accuracy Overview</h4>
+                </div>
+
+                <div class="accuracy-donut-flex">
+                    {% set correct_c = user_stats.correct_count if user_stats else 0 %}
+                    {% set incorrect_c = user_stats.incorrect_count if user_stats else 0 %}
+                    {% set unattempted_c = user_stats.unattempted_count if user_stats else 805 %}
+                    {% set correct_p = user_stats.correct_pct if user_stats else 0 %}
+                    {% set incorrect_p = user_stats.incorrect_pct if user_stats else 0 %}
+                    {% set unattempted_p = user_stats.unattempted_pct if user_stats else 100 %}
+
+                    <div class="donut-chart-box">
+                        <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                            <!-- Background unattempted ring -->
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--border-glass)" stroke-width="4.5" stroke-dasharray="100, 100" opacity="0.35"/>
+                            <!-- Incorrect ring -->
+                            <path id="donutIncorrectPath" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ef4444" stroke-width="4.5" stroke-dasharray="{{ incorrect_p }}, 100" stroke-dashoffset="-{{ correct_p }}" style="{{ 'display: block;' if incorrect_p > 0 else 'display: none;' }}"/>
+                            <!-- Correct ring -->
+                            <path id="donutCorrectPath" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-width="4.5" stroke-dasharray="{{ correct_p }}, 100" stroke-dashoffset="0" style="{{ 'display: block;' if correct_p > 0 else 'display: none;' }}"/>
+                        </svg>
+                    </div>
+
+                    <div class="accuracy-legend-list">
+                        <div class="accuracy-legend-item">
+                            <div class="legend-dot-name">
+                                <span class="legend-dot dot-green"></span> Correct
+                            </div>
+                            <span id="legendCorrectVal" class="legend-val">{{ correct_c }} ({{ correct_p }}%)</span>
+                        </div>
+                        <div class="accuracy-legend-item">
+                            <div class="legend-dot-name">
+                                <span class="legend-dot dot-red"></span> Incorrect
+                            </div>
+                            <span id="legendIncorrectVal" class="legend-val">{{ incorrect_c }} ({{ incorrect_p }}%)</span>
+                        </div>
+                        <div class="accuracy-legend-item">
+                            <div class="legend-dot-name">
+                                <span class="legend-dot dot-gray"></span> Unattempted
+                            </div>
+                            <span id="legendUnattemptedVal" class="legend-val">{{ unattempted_c }} ({{ unattempted_p }}%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="totalQuestionsLabel" class="accuracy-total-label">
+                    Total: {{ user_stats.total_questions if user_stats else 805 }} Practice Questions
+                </div>
+            </div>
+
+            <!-- 3. RECENT TESTS WIDGET -->
+            <div class="dash-widget-card" id="recentTestsWidget">
+                <div class="widget-head-row">
+                    <h4 class="widget-title">Recent Tests</h4>
+                    <a href="{{ url_for('progress') }}" class="widget-link-sm">View All</a>
+                </div>
+
+                <div class="recent-tests-list" id="recentTestsListContainer">
+                    {% if recent_tests and recent_tests | length > 0 %}
+                        {% for t in recent_tests %}
+                        <div class="recent-test-row">
+                            <div class="recent-test-left">
+                                <span class="recent-test-icon">📄</span>
+                                <div>
+                                    <div class="recent-test-title">{{ t.title }}</div>
+                                    <div class="recent-test-sub">{{ t.meta }}</div>
+                                </div>
+                            </div>
+                            <span class="recent-test-score {{ 'score-green' if t.score >= 70 else 'score-amber' }}">{{ t.score }}%</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div id="noTestsPlaceholder" style="padding: 1.5rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+                            <div style="font-size: 1.75rem; margin-bottom: 0.35rem;">📋</div>
+                            <strong style="color: var(--text-main); display: block; margin-bottom: 0.2rem;">No Tests Taken Yet</strong>
+                            <span>Start practicing questions or take a quick test to track your attempts!</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="widget-bottom-action">
+                    <a href="{{ url_for('progress') }}" class="widget-bottom-link">
+                        View All Attempts →
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= IN-PAGE TOPIC STUDY & PRACTICE PANELS ================= -->
+    <div id="aptitudeTopicStudyReader" style="display: none;">
+        {% for mod in aptitude_modules %}
+        {% for top_obj in mod.topics %}
+        {% set file_slug = top_obj.name | replace(' ', '_') | replace('&', 'and') %}
+        
+        <div id="doc-panel-{{ file_slug }}" class="aptitude-doc-panel" style="display: none; max-width: 960px; margin: 0 auto;">
+            
+            <!-- STICKY TOP NAVIGATION BAR -->
+            <div class="aptitude-doc-sticky-bar">
+                <button type="button" onclick="closeTopicStudy()" class="btn btn-primary btn-sm" style="font-weight: 800; border-radius: 9999px; display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.2rem; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
+                    ⬅ Back to Aptitude Dashboard
+                </button>
+
+                <div class="aptitude-doc-breadcrumb">
+                    <span>📂 Aptitude</span>
+                    <span style="color: var(--text-dim);">/</span>
+                    <span style="color: var(--primary);">{{ mod.side_heading }}</span>
+                    <span style="color: var(--text-dim);">/</span>
+                    <span class="aptitude-breadcrumb-pill">📄 {{ top_obj.name }}.pdf</span>
+                </div>
+            </div>
+
+            <!-- DOCUMENT PAPER SHEET CONTAINER -->
+            <div class="aptitude-doc-paper">
+                
+                <!-- DOCUMENT HEADER BANNER -->
+                <div class="aptitude-doc-banner">
+                    <div>
+                        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); font-weight: 800; margin-bottom: 0.2rem;">
+                            {{ mod.side_heading }} — Official Study Sheet
+                        </div>
+                        <h2 class="aptitude-doc-banner-heading">📄 {{ top_obj.name }} ({{ top_obj.questions | length }} Solved Practice Questions)</h2>
+                    </div>
+                    <span class="badge" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; font-weight: 800; padding: 0.4rem 0.85rem; border-radius: 9999px; font-size: 0.82rem; border: 1px solid rgba(99, 102, 241, 0.3);">
+                        ✓ Verified Solutions
+                    </span>
+                </div>
+
+                <!-- QUESTIONS LIST -->
+                {% if top_obj.questions %}
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    {% for q in top_obj.questions %}
+                    <div class="aptitude-q-card" id="q-card-{{ q.id }}">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="background: var(--primary); color: #ffffff; font-weight: 800; font-size: 0.8rem; padding: 0.3rem 0.65rem; border-radius: 6px;">Q{{ loop.index }}</span>
+                                {% if q.title and (q.title | clean_title) != top_obj.name %}
+                                <h4 class="aptitude-q-title">{{ q.title | clean_title }}</h4>
+                                {% endif %}
+                            </div>
+                            {% if q.status == 'mastered' %}
+                            <span id="badge-status-{{ q.id }}" style="font-size: 0.75rem; font-weight: 800; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 0.2rem 0.6rem; border-radius: 9999px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                                ✓ Solved
+                            </span>
+                            {% elif q.status == 'needs_practice' %}
+                            <span id="badge-status-{{ q.id }}" style="font-size: 0.75rem; font-weight: 800; background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 9999px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                                ⚠️ Needs Practice
+                            </span>
+                            {% else %}
+                            <span id="badge-status-{{ q.id }}" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">
+                                ⚪ Unattempted
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="aptitude-q-text">
+                            {{ q.question_text | clean_qtext }}
+                        </div>
+
+                        <!-- MULTIPLE CHOICE PRACTICE OPTIONS -->
+                        <div style="margin-bottom: 1.25rem;">
+                            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                                <span>🎯 Select Your Practice Answer:</span>
+                                <span id="opt-feedback-{{ q.id }}" style="font-size: 0.82rem; font-weight: 800;"></span>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+                                {% if q.options %}
+                                    {% for opt in q.options %}
+                                    <div onclick="selectPracticeOption(this, {{ 'true' if opt.is_correct else 'false' }}, '{{ opt.label }}', 'opt-feedback-{{ q.id }}', {{ q.id }}, '{{ top_obj.name }}')" class="practice-opt-card" data-opt="{{ opt.label }}">
+                                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                            <span class="practice-opt-label">{{ opt.label }}</span>
+                                            <span class="practice-opt-text">{{ opt.text }}</span>
+                                        </div>
+                                        <span class="opt-status-icon" style="font-size: 0.85rem; font-weight: 800;"></span>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div onclick="selectPracticeOption(this, false, 'A', 'opt-feedback-{{ q.id }}', {{ q.id }}, '{{ top_obj.name }}')" class="practice-opt-card" data-opt="A">
+                                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                            <span class="practice-opt-label">A</span>
+                                            <span class="practice-opt-text">Option A</span>
+                                        </div>
+                                        <span class="opt-status-icon"></span>
+                                    </div>
+                                    <div onclick="selectPracticeOption(this, true, 'B', 'opt-feedback-{{ q.id }}', {{ q.id }}, '{{ top_obj.name }}')" class="practice-opt-card" data-opt="B">
+                                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                            <span class="practice-opt-label">B</span>
+                                            <span class="practice-opt-text">Option B</span>
+                                        </div>
+                                        <span class="opt-status-icon"></span>
+                                    </div>
+                                    <div onclick="selectPracticeOption(this, false, 'C', 'opt-feedback-{{ q.id }}', {{ q.id }}, '{{ top_obj.name }}')" class="practice-opt-card" data-opt="C">
+                                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                            <span class="practice-opt-label">C</span>
+                                            <span class="practice-opt-text">Option C</span>
+                                        </div>
+                                        <span class="opt-status-icon"></span>
+                                    </div>
+                                    <div onclick="selectPracticeOption(this, false, 'D', 'opt-feedback-{{ q.id }}', {{ q.id }}, '{{ top_obj.name }}')" class="practice-opt-card" data-opt="D">
+                                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                            <span class="practice-opt-label">D</span>
+                                            <span class="practice-opt-text">Option D</span>
+                                        </div>
+                                        <span class="opt-status-icon"></span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- TOGGLE SOLUTION BUTTON -->
+                        <div style="margin-top: 1rem; margin-bottom: 0.25rem;">
+                            <button type="button" onclick="toggleQuestionSolution('solution-box-{{ q.id }}', this)" class="aptitude-sol-btn">
+                                <span>👁️</span> View Solution & Step-by-Step Answer
+                            </button>
+                        </div>
+
+                        <!-- HIDDEN SOLUTION & EXPLANATION CONTAINER -->
+                        <div id="solution-box-{{ q.id }}" style="display: none; margin-top: 1rem; transition: all 0.3s ease;">
+                            {% if q.tips %}
+                            <div class="aptitude-tips-box">
+                                <strong>💡 Shortcut Formula / Exam Tip:</strong> {{ q.tips }}
+                            </div>
+                            {% endif %}
+
+                            <div class="aptitude-expl-box">
+                                <div class="aptitude-expl-title">
+                                    <span>📝</span> Solved Step-by-Step Answer & Explanation:
+                                </div>
+                                <pre style="background: #090d16; color: #38bdf8; padding: 1rem; border-radius: 8px; font-size: 0.9rem; overflow-x: auto; white-space: pre-wrap; font-family: inherit; margin: 0; border: 1px solid var(--border-glass);"><code>{{ q.sample_answer }}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- ================= QUICK TEST MODAL ================= -->
+<div id="quickTestModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 1rem;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-glass); width: 100%; max-width: 820px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
+        
+        <!-- Modal Top Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.75rem; border-bottom: 1px solid var(--border-glass); background: rgba(99, 102, 241, 0.05);">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 1.5rem;">⚡</span>
+                <div>
+                    <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">Quick Aptitude Assessment</h3>
+                    <span id="quickTestSubtitle" style="font-size: 0.78rem; color: var(--text-muted);">10 Adaptive Questions • Real-Time Scoring</span>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(239, 68, 68, 0.12); color: #ef4444; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 800; font-size: 0.88rem;">
+                    <span>⏱️</span>
+                    <span id="quickTestTimer">10:00</span>
+                </div>
+                <button type="button" onclick="closeQuickTestModal()" style="background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+        </div>
+
+        <!-- Modal Body (Question Stepper) -->
+        <div id="quickTestBody" style="padding: 1.75rem; overflow-y: auto; flex: 1;">
+            <div id="quickTestLoading" style="text-align: center; padding: 3rem 1rem;">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem; margin-bottom: 1rem;"></div>
+                <h4 style="font-weight: 700; color: var(--text-main);">Preparing Your 10-Question Test...</h4>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">Selecting balanced questions across Arithmetic, Logic and Reasoning.</p>
+            </div>
+
+            <div id="quickTestContent" style="display: none;">
+                <!-- Question Navigator Pills -->
+                <div id="quickTestNavDots" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;"></div>
+
+                <!-- Current Question Card -->
+                <div style="background: var(--bg-dark); border: 1.5px solid var(--border-glass); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+                        <span id="qTestCounterBadge" style="background: var(--primary); color: #ffffff; font-weight: 800; font-size: 0.82rem; padding: 0.3rem 0.75rem; border-radius: 6px;">Question 1 of 10</span>
+                        <span id="qTestTopicBadge" style="background: rgba(99, 102, 241, 0.12); color: #818cf8; font-weight: 700; font-size: 0.78rem; padding: 0.25rem 0.65rem; border-radius: 6px;">Quantitative</span>
+                    </div>
+
+                    <div id="qTestQuestionText" style="font-size: 1rem; font-weight: 600; color: var(--text-main); line-height: 1.5; margin-bottom: 1.5rem; white-space: pre-line;"></div>
+
+                    <!-- Radio Options -->
+                    <div id="qTestOptionsContainer" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                </div>
+            </div>
+
+            <!-- Results View -->
+            <div id="quickTestResults" style="display: none; text-align: center; padding: 1.5rem 0.5rem;">
+                <div style="font-size: 3.5rem; margin-bottom: 0.5rem;" id="resEmoji">🏆</div>
+                <h2 style="font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem;" id="resHeadline">Assessment Complete!</h2>
+                <div id="resScorePill" style="display: inline-block; background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 800; font-size: 1.2rem; padding: 0.4rem 1.25rem; border-radius: 9999px; margin-bottom: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.3);">
+                    Score: 8 / 10 (80%)
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.75rem; text-align: left;">
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 1rem; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 0.78rem; color: #10b981; font-weight: 700; text-transform: uppercase;">Correct</span>
+                        <div id="resCorrectCount" style="font-size: 1.4rem; font-weight: 800; color: #10b981;">8</div>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); padding: 1rem; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 0.78rem; color: #ef4444; font-weight: 700; text-transform: uppercase;">Incorrect</span>
+                        <div id="resIncorrectCount" style="font-size: 1.4rem; font-weight: 800; color: #ef4444;">2</div>
+                    </div>
+                    <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); padding: 1rem; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 0.78rem; color: #818cf8; font-weight: 700; text-transform: uppercase;">Accuracy</span>
+                        <div id="resAccuracyPct" style="font-size: 1.4rem; font-weight: 800; color: #818cf8;">80%</div>
+                    </div>
+                </div>
+
+                <!-- Detailed Question Review Accordion -->
+                <div style="text-align: left; margin-bottom: 1.5rem;">
+                    <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem;">Question-by-Question Review:</h4>
+                    <div id="qTestReviewList" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 250px; overflow-y: auto; padding-right: 0.5rem;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Footer Controls -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.75rem; border-top: 1px solid var(--border-glass); background: rgba(0, 0, 0, 0.15);">
+            <div id="qTestNavBtns" style="display: flex; gap: 0.75rem; width: 100%; justify-content: space-between;">
+                <button type="button" id="btnPrevQ" onclick="prevQuickQuestion()" class="btn btn-outline-secondary" style="border-radius: 10px; font-weight: 700; padding: 0.55rem 1.25rem; font-size: 0.88rem;" disabled>
+                    ⬅ Previous
+                </button>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button type="button" id="btnNextQ" onclick="nextQuickQuestion()" class="btn btn-primary" style="border-radius: 10px; font-weight: 700; padding: 0.55rem 1.25rem; font-size: 0.88rem;">
+                        Next ➡
+                    </button>
+                    <button type="button" id="btnSubmitTest" onclick="submitQuickTest()" class="btn btn-success" style="border-radius: 10px; font-weight: 800; padding: 0.55rem 1.5rem; font-size: 0.88rem; display: none;">
+                        ✓ Submit Assessment
+                    </button>
+                </div>
+            </div>
+
+            <div id="qTestFinishBtns" style="display: none; width: 100%; justify-content: flex-end;">
+                <button type="button" onclick="closeQuickTestModal()" class="btn btn-primary" style="border-radius: 10px; font-weight: 800; padding: 0.6rem 1.5rem; font-size: 0.9rem;">
+                    🎉 Back to Aptitude Dashboard
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+let lastScrollPos = 0;
+let quickTestQuestions = [];
+let quickTestAnswers = {};
+let currentQIndex = 0;
+let quickTestTimerInterval = null;
+let secondsRemaining = 600;
+
+function scrollToStudyTopics() {
+    const el = document.getElementById('studyTopicsSection');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function scrollToRecentTests() {
+    const el = document.getElementById('recentTestsWidget');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function openWeakArea() {
+    openTopicStudy('Profit_and_Loss');
+}
+
+function toggleAllTopicsView() {
+    const section = document.getElementById('expandedTopicsSection');
+    const btnText = document.getElementById('allTopicsBtnText');
+    if (section.style.display === 'none' || !section.style.display) {
+        section.style.display = 'block';
+        btnText.innerHTML = 'Hide Extended Topics ⌃';
+    } else {
+        section.style.display = 'none';
+        btnText.innerHTML = 'View All Topics ⌄';
+    }
+}
+
+function filterTopicCategory(cat) {
+    const cards = document.querySelectorAll('.topic-dash-card');
+    cards.forEach(c => {
+        if (cat === 'All' || c.getAttribute('data-category') === cat) {
+            c.style.display = 'flex';
+        } else {
+            c.style.display = 'none';
+        }
+    });
+}
+
+function openTopicStudy(fileSlug) {
+    lastScrollPos = window.scrollY || document.documentElement.scrollTop;
+    
+    const dash = document.getElementById('aptitudeDashboardMainView');
+    if (dash) dash.style.display = 'none';
+
+    const reader = document.getElementById('aptitudeTopicStudyReader');
+    if (reader) reader.style.display = 'block';
+
+    const panels = document.querySelectorAll('.aptitude-doc-panel');
+    panels.forEach(p => p.style.display = 'none');
+
+    const target = document.getElementById('doc-panel-' + fileSlug);
+    if (target) {
+        target.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function closeTopicStudy() {
+    const reader = document.getElementById('aptitudeTopicStudyReader');
+    if (reader) reader.style.display = 'none';
+
+    const panels = document.querySelectorAll('.aptitude-doc-panel');
+    panels.forEach(p => p.style.display = 'none');
+
+    const dash = document.getElementById('aptitudeDashboardMainView');
+    if (dash) dash.style.display = 'grid';
+
+    window.scrollTo({ top: lastScrollPos, behavior: 'smooth' });
+}
+
+async function selectPracticeOption(element, isCorrect, label, feedbackId, questionId, topicName) {
+    const parent = element.parentElement;
+    const cards = parent.querySelectorAll('.practice-opt-card');
+    
+    cards.forEach(c => {
+        c.classList.remove('opt-correct', 'opt-incorrect');
+        const icon = c.querySelector('.opt-status-icon');
+        if (icon) icon.innerHTML = '';
+    });
+
+    const feedbackSpan = document.getElementById(feedbackId);
+    const iconSpan = element.querySelector('.opt-status-icon');
+    const badgeStatus = document.getElementById('badge-status-' + questionId);
+
+    if (isCorrect) {
+        element.classList.add('opt-correct');
+        if (iconSpan) iconSpan.innerHTML = '<span style="color: #10b981; font-weight: 800; font-size: 0.82rem;">✓ Correct</span>';
+        if (feedbackSpan) {
+            feedbackSpan.innerHTML = '<span style="color: #10b981; background: rgba(16, 185, 129, 0.15); padding: 0.25rem 0.65rem; border-radius: 6px;">✓ Correct Answer! Saved to Progress.</span>';
+        }
+        if (badgeStatus) {
+            badgeStatus.outerHTML = `<span id="badge-status-${questionId}" style="font-size: 0.75rem; font-weight: 800; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 0.2rem 0.6rem; border-radius: 9999px; border: 1px solid rgba(16, 185, 129, 0.3);">✓ Solved</span>`;
+        }
+    } else {
+        element.classList.add('opt-incorrect');
+        if (iconSpan) iconSpan.innerHTML = '<span style="color: #ef4444; font-weight: 800; font-size: 0.82rem;">✗ Incorrect</span>';
+        if (feedbackSpan) {
+            feedbackSpan.innerHTML = '<span style="color: #ef4444; background: rgba(239, 68, 68, 0.15); padding: 0.25rem 0.65rem; border-radius: 6px;">✗ Incorrect — Saved to Progress. View solution below</span>';
+        }
+        if (badgeStatus) {
+            badgeStatus.outerHTML = `<span id="badge-status-${questionId}" style="font-size: 0.75rem; font-weight: 800; background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 9999px; border: 1px solid rgba(239, 68, 68, 0.3);">⚠️ Needs Practice</span>`;
+        }
+    }
+
+    // Persist attempt to backend & update live dashboard metrics
+    try {
+        const response = await fetch('/api/record-aptitude-attempt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                question_id: questionId,
+                is_correct: isCorrect,
+                selected_option: label,
+                topic: topicName
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            updateDashboardMetrics(data.stats, data.topic_progress, data.recent_tests);
+        }
+    } catch (e) {
+        console.error('Error saving practice answer:', e);
+    }
+}
+
+function updateDashboardMetrics(stats, topicProg, recentTests) {
+    if (!stats) return;
+
+    // 1. Overall Progress Ring & Score Text
+    const progText = document.getElementById('heroOverallProgText');
+    const progCircle = document.getElementById('heroOverallProgCircle');
+    const avgScoreText = document.getElementById('heroAvgScoreText');
+
+    if (progText) progText.innerText = `${stats.overall_progress}%`;
+    if (progCircle) {
+        const dashOffset = ((stats.overall_progress * 283) / 100).toFixed(1);
+        progCircle.style.strokeDasharray = `${dashOffset}, 283`;
+    }
+    if (avgScoreText) avgScoreText.innerText = `${stats.avg_score}%`;
+
+    // 2. Accuracy Donut & Legend
+    const donutCorrect = document.getElementById('donutCorrectPath');
+    const donutIncorrect = document.getElementById('donutIncorrectPath');
+    const legendCorrect = document.getElementById('legendCorrectVal');
+    const legendIncorrect = document.getElementById('legendIncorrectVal');
+    const legendUnattempted = document.getElementById('legendUnattemptedVal');
+
+    if (donutCorrect) {
+        donutCorrect.setAttribute('stroke-dasharray', `${stats.correct_pct}, 100`);
+        donutCorrect.style.display = stats.correct_pct > 0 ? 'block' : 'none';
+    }
+    if (donutIncorrect) {
+        donutIncorrect.setAttribute('stroke-dasharray', `${stats.incorrect_pct}, 100`);
+        donutIncorrect.setAttribute('stroke-dashoffset', `-${stats.correct_pct}`);
+        donutIncorrect.style.display = stats.incorrect_pct > 0 ? 'block' : 'none';
+    }
+
+    if (legendCorrect) legendCorrect.innerText = `${stats.correct_count} (${stats.correct_pct}%)`;
+    if (legendIncorrect) legendIncorrect.innerText = `${stats.incorrect_count} (${stats.incorrect_pct}%)`;
+    if (legendUnattempted) legendUnattempted.innerText = `${stats.unattempted_count} (${stats.unattempted_pct}%)`;
+
+    // 3. Performance Area Curve
+    const perfArea = document.getElementById('perfAreaPath');
+    const perfLine = document.getElementById('perfLinePath');
+    const perfBaseDashed = document.getElementById('perfBaseDashed');
+    const perfBaseSolid = document.getElementById('perfBaseSolid');
+    const perfDot = document.getElementById('perfDotCircle');
+    const perfScoreBadgeG = document.getElementById('perfScoreBadgeG');
+    const perfScoreBadgeText = document.getElementById('perfScoreBadgeText');
+
+    if (stats.has_activity && stats.area_path) {
+        if (perfArea) { perfArea.setAttribute('d', stats.area_path); perfArea.style.display = 'block'; }
+        if (perfLine) { perfLine.setAttribute('d', stats.curve_path); perfLine.style.display = 'block'; }
+        if (perfBaseDashed) perfBaseDashed.style.display = 'none';
+        if (perfBaseSolid) perfBaseSolid.style.display = 'none';
+
+        const yPos = Math.round(95 - (stats.avg_score * 0.8));
+        if (perfDot) { perfDot.setAttribute('cy', yPos); }
+        if (perfScoreBadgeG) { perfScoreBadgeG.setAttribute('transform', `translate(240, ${yPos - 22})`); }
+        if (perfScoreBadgeText) { perfScoreBadgeText.innerText = `${stats.avg_score}%`; }
+    }
+
+    // 4. Topic Progress Bars
+    if (topicProg) {
+        const catMapping = [
+            { id: 1, name: 'Number & Arithmetic' },
+            { id: 2, name: 'Commercial Mathematics' },
+            { id: 3, name: 'Time-Based Problems' },
+            { id: 4, name: 'Logical Reasoning' },
+            { id: 5, name: 'Verbal Ability' }
+        ];
+
+        catMapping.forEach(item => {
+            const pVal = topicProg[item.name] || 0;
+            const fill = document.getElementById(`topic-prog-fill-${item.id}`);
+            const lbl = document.getElementById(`topic-prog-lbl-${item.id}`);
+            if (fill) fill.style.width = `${pVal}%`;
+            if (lbl) lbl.innerText = `${pVal}%`;
+        });
+    }
+
+    // 5. Recent Tests
+    if (recentTests && recentTests.length > 0) {
+        const container = document.getElementById('recentTestsListContainer');
+        if (container) {
+            container.innerHTML = recentTests.map(t => `
+                <div class="recent-test-row">
+                    <div class="recent-test-left">
+                        <span class="recent-test-icon">📄</span>
+                        <div>
+                            <div class="recent-test-title">${t.title}</div>
+                            <div class="recent-test-sub">${t.meta}</div>
+                        </div>
+                    </div>
+                    <span class="recent-test-score ${t.score >= 70 ? 'score-green' : 'score-amber'}">${t.score}%</span>
+                </div>
+            `).join('');
+        }
+    }
+}
+
+function toggleQuestionSolution(boxId, btn) {
+    const box = document.getElementById(boxId);
+    if (box) {
+        if (box.style.display === 'none' || !box.style.display) {
+            box.style.display = 'block';
+            btn.classList.add('active');
+            btn.innerHTML = '<span>🙈</span> Hide Solution & Step-by-Step Answer';
+        } else {
+            box.style.display = 'none';
+            btn.classList.remove('active');
+            btn.innerHTML = '<span>👁️</span> View Solution & Step-by-Step Answer';
+        }
+    }
+}
+
+/* ================= QUICK TEST MODAL LOGIC ================= */
+async function openQuickTestModal() {
+    const modal = document.getElementById('quickTestModal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Reset state
+    document.getElementById('quickTestLoading').style.display = 'block';
+    document.getElementById('quickTestContent').style.display = 'none';
+    document.getElementById('quickTestResults').style.display = 'none';
+    document.getElementById('qTestNavBtns').style.display = 'flex';
+    document.getElementById('qTestFinishBtns').style.display = 'none';
+
+    quickTestAnswers = {};
+    currentQIndex = 0;
+    secondsRemaining = 600;
+
+    // Start countdown timer
+    clearInterval(quickTestTimerInterval);
+    updateTimerDisplay();
+    quickTestTimerInterval = setInterval(() => {
+        secondsRemaining--;
+        updateTimerDisplay();
+        if (secondsRemaining <= 0) {
+            clearInterval(quickTestTimerInterval);
+            submitQuickTest();
+        }
+    }, 1000);
+
+    try {
+        const res = await fetch('/api/get-quick-test-questions?count=10');
+        const data = await res.json();
+        quickTestQuestions = data.questions || [];
+
+        document.getElementById('quickTestLoading').style.display = 'none';
+        document.getElementById('quickTestContent').style.display = 'block';
+
+        renderQuestionNavDots();
+        renderCurrentQuestion();
+    } catch (e) {
+        console.error('Error loading quick test:', e);
+        document.getElementById('quickTestLoading').innerHTML = `
+            <div style="color: #ef4444; font-weight: 700;">Failed to load questions. Please check connection and try again.</div>
+        `;
+    }
+}
+
+function closeQuickTestModal() {
+    clearInterval(quickTestTimerInterval);
+    document.getElementById('quickTestModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function updateTimerDisplay() {
+    const min = Math.floor(secondsRemaining / 60);
+    const sec = secondsRemaining % 60;
+    const timerSpan = document.getElementById('quickTestTimer');
+    if (timerSpan) {
+        timerSpan.innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+    }
+}
+
+function renderQuestionNavDots() {
+    const dotsContainer = document.getElementById('quickTestNavDots');
+    dotsContainer.innerHTML = quickTestQuestions.map((q, idx) => `
+        <button type="button" onclick="jumpToQuestion(${idx})" id="qDot-${idx}" style="width: 34px; height: 34px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; border: 1.5px solid var(--border-glass); background: ${idx === currentQIndex ? 'var(--primary)' : 'var(--bg-card)'}; color: ${idx === currentQIndex ? '#ffffff' : 'var(--text-main)'}; cursor: pointer; transition: all 0.2s ease;">
+            ${idx + 1}
+        </button>
+    `).join('');
+}
+
+function renderCurrentQuestion() {
+    if (!quickTestQuestions || quickTestQuestions.length === 0) return;
+
+    const q = quickTestQuestions[currentQIndex];
+    document.getElementById('qTestCounterBadge').innerText = `Question ${currentQIndex + 1} of ${quickTestQuestions.length}`;
+    document.getElementById('qTestTopicBadge').innerText = q.topic || 'Quantitative Aptitude';
+    document.getElementById('qTestQuestionText').innerText = q.question_text || q.title;
+
+    // Render options
+    const optContainer = document.getElementById('qTestOptionsContainer');
+    const opts = q.options && q.options.length > 0 ? q.options : [
+        { label: 'A', text: 'Option A', is_correct: false },
+        { label: 'B', text: 'Option B', is_correct: true },
+        { label: 'C', text: 'Option C', is_correct: false },
+        { label: 'D', text: 'Option D', is_correct: false }
+    ];
+
+    const currentPick = quickTestAnswers[q.id];
+
+    optContainer.innerHTML = opts.map(opt => `
+        <label style="display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem 1.15rem; border-radius: 12px; border: 1.5px solid ${currentPick && currentPick.selected_option === opt.label ? 'var(--primary)' : 'var(--border-glass)'}; background: ${currentPick && currentPick.selected_option === opt.label ? 'rgba(99, 102, 241, 0.12)' : 'var(--bg-card)'}; cursor: pointer; transition: all 0.2s ease;">
+            <input type="radio" name="quick_test_opt" value="${opt.label}" ${currentPick && currentPick.selected_option === opt.label ? 'checked' : ''} onchange="pickQuickOption(${q.id}, '${opt.label}', ${opt.is_correct ? 'true' : 'false'})" style="accent-color: var(--primary); width: 1.1rem; height: 1.1rem;">
+            <span style="font-weight: 800; color: var(--primary); min-width: 22px;">${opt.label})</span>
+            <span style="font-size: 0.92rem; color: var(--text-main);">${opt.text}</span>
+        </label>
+    `).join('');
+
+    // Update navigator buttons
+    document.getElementById('btnPrevQ').disabled = currentQIndex === 0;
+    if (currentQIndex === quickTestQuestions.length - 1) {
+        document.getElementById('btnNextQ').style.display = 'none';
+        document.getElementById('btnSubmitTest').style.display = 'block';
+    } else {
+        document.getElementById('btnNextQ').style.display = 'block';
+        document.getElementById('btnSubmitTest').style.display = 'none';
+    }
+
+    // Refresh dots
+    quickTestQuestions.forEach((_, idx) => {
+        const dot = document.getElementById(`qDot-${idx}`);
+        if (dot) {
+            const hasAns = quickTestAnswers[quickTestQuestions[idx].id];
+            if (idx === currentQIndex) {
+                dot.style.background = 'var(--primary)';
+                dot.style.color = '#ffffff';
+                dot.style.borderColor = 'var(--primary)';
+            } else if (hasAns) {
+                dot.style.background = '#10b981';
+                dot.style.color = '#ffffff';
+                dot.style.borderColor = '#10b981';
+            } else {
+                dot.style.background = 'var(--bg-card)';
+                dot.style.color = 'var(--text-main)';
+                dot.style.borderColor = 'var(--border-glass)';
+            }
+        }
+    });
+}
+
+function pickQuickOption(qId, label, isCorrect) {
+    quickTestAnswers[qId] = {
+        question_id: qId,
+        selected_option: label,
+        is_correct: isCorrect
+    };
+    renderQuestionNavDots();
+    renderCurrentQuestion();
+}
+
+function nextQuickQuestion() {
+    if (currentQIndex < quickTestQuestions.length - 1) {
+        currentQIndex++;
+        renderCurrentQuestion();
+    }
+}
+
+function prevQuickQuestion() {
+    if (currentQIndex > 0) {
+        currentQIndex--;
+        renderCurrentQuestion();
+    }
+}
+
+function jumpToQuestion(idx) {
+    currentQIndex = idx;
+    renderCurrentQuestion();
+}
+
+async function submitQuickTest() {
+    clearInterval(quickTestTimerInterval);
+
+    // Build payload
+    const answersList = quickTestQuestions.map(q => {
+        return quickTestAnswers[q.id] || {
+            question_id: q.id,
+            selected_option: '',
+            is_correct: false
+        };
+    });
+
+    try {
+        const res = await fetch('/api/submit-aptitude-test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                test_title: 'Quick Aptitude Test',
+                topic: 'General Aptitude',
+                answers: answersList
+            })
+        });
+        const data = await res.json();
+        if (data.success) {
+            // Update dashboard widgets live
+            updateDashboardMetrics(data.stats, data.topic_progress, data.recent_tests);
+
+            // Display results in modal
+            document.getElementById('quickTestContent').style.display = 'none';
+            document.getElementById('quickTestResults').style.display = 'block';
+            document.getElementById('qTestNavBtns').style.display = 'none';
+            document.getElementById('qTestFinishBtns').style.display = 'flex';
+
+            document.getElementById('resScorePill').innerText = `Score: ${data.score} / ${data.total} (${data.score_percentage}%)`;
+            document.getElementById('resCorrectCount').innerText = data.score;
+            document.getElementById('resIncorrectCount').innerText = data.total - data.score;
+            document.getElementById('resAccuracyPct').innerText = `${data.score_percentage}%`;
+
+            if (data.score_percentage >= 80) {
+                document.getElementById('resEmoji').innerText = '🏆';
+                document.getElementById('resHeadline').innerText = 'Outstanding Performance!';
+            } else if (data.score_percentage >= 50) {
+                document.getElementById('resEmoji').innerText = '👍';
+                document.getElementById('resHeadline').innerText = 'Great Job! Keep Practicing.';
+            } else {
+                document.getElementById('resEmoji').innerText = '🎯';
+                document.getElementById('resHeadline').innerText = 'Good Effort! Review Solutions Below.';
+            }
+
+            // Populate question review list
+            const reviewList = document.getElementById('qTestReviewList');
+            reviewList.innerHTML = quickTestQuestions.map((q, idx) => {
+                const ans = quickTestAnswers[q.id];
+                const isCorr = ans && ans.is_correct;
+                return `
+                    <div style="background: ${isCorr ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)'}; border: 1px solid ${isCorr ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)'}; padding: 0.85rem 1.15rem; border-radius: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                            <strong style="font-size: 0.88rem; color: var(--text-main);">Q${idx + 1}: ${q.title || q.topic}</strong>
+                            <span style="font-size: 0.78rem; font-weight: 800; color: ${isCorr ? '#10b981' : '#ef4444'};">
+                                ${isCorr ? '✓ Correct (' + (ans ? ans.selected_option : '') + ')' : (ans && ans.selected_option ? '✗ Picked ' + ans.selected_option : '⚠️ Skipped')}
+                            </span>
+                        </div>
+                        <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
+                            ${q.question_text ? q.question_text.substring(0, 120) + '...' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    } catch (e) {
+        console.error('Error submitting test:', e);
+    }
+}
+</script>
+{% endblock %}

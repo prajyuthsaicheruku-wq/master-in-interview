@@ -1,0 +1,883 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Builder | InterviewMaster{% endblock %}
+
+{% block content %}
+<style>
+    /* INTERVIEW MASTER RESUME BUILDER STYLING */
+    body, html {
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: #ffffff !important;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+
+    .livecareer-wrapper {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        background: #ffffff;
+    }
+
+    /* LEFT DEEP NAVY SIDEBAR */
+    .lc-sidebar {
+        width: 260px;
+        min-width: 260px;
+        background: #0f172a;
+        color: #ffffff;
+        padding: 1.75rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+    .lc-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: #ffffff;
+        margin-bottom: 2.25rem;
+        letter-spacing: -0.5px;
+    }
+
+    /* VERTICAL STEPPER WITH CONNECTING LINE */
+    .lc-stepper-container {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .lc-stepper-line {
+        position: absolute;
+        left: 17px;
+        top: 20px;
+        bottom: 20px;
+        width: 2px;
+        background: #1e2942;
+        z-index: 1;
+    }
+
+    .lc-step-item {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        margin-bottom: 1.6rem;
+        cursor: pointer;
+        color: #94a3b8;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .lc-step-item:hover {
+        color: #ffffff;
+    }
+
+    .lc-step-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #0f172a;
+        border: 2px solid #334155;
+        color: #cbd5e1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.88rem;
+        font-weight: 900;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+
+    .lc-step-item.active .lc-step-icon {
+        background: #6366f1;
+        border-color: #6366f1;
+        color: #ffffff;
+        box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+    }
+
+    .lc-step-item.active {
+        color: #ffffff;
+        font-weight: 800;
+    }
+
+    .lc-step-item.completed .lc-step-icon {
+        background: #10b981;
+        border-color: #10b981;
+        color: #ffffff;
+    }
+
+    /* RESUME COMPLETENESS */
+    .lc-completeness-box {
+        margin-top: auto;
+        padding-top: 1.5rem;
+        border-top: 1px solid #1e2942;
+    }
+
+    .lc-completeness-title {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: #ffffff;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .lc-progress-bar {
+        width: 100%;
+        height: 6px;
+        background: #1e2942;
+        border-radius: 9999px;
+        overflow: hidden;
+    }
+
+    .lc-progress-fill {
+        height: 100%;
+        width: 16%;
+        background: linear-gradient(90deg, #00e699, #38bdf8);
+        border-radius: 9999px;
+        transition: width 0.4s ease;
+    }
+
+    /* FOOTER LINKS */
+    .lc-sidebar-footer {
+        margin-top: 2rem;
+        font-size: 0.72rem;
+        color: #64748b;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .lc-sidebar-footer a {
+        color: #94a3b8;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .lc-sidebar-footer a:hover {
+        color: #ffffff;
+    }
+
+    /* CENTER MAIN WORKSPACE */
+    .lc-main-content {
+        flex: 1;
+        padding: 2.5rem 3.5rem 100px 3.5rem;
+        overflow-y: auto;
+        box-sizing: border-box;
+        max-width: 900px;
+    }
+
+    .lc-go-back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        color: #2563eb;
+        font-size: 0.9rem;
+        font-weight: 800;
+        text-decoration: none;
+        margin-bottom: 1.75rem;
+        transition: transform 0.2s ease;
+    }
+
+    .lc-go-back-btn:hover {
+        transform: translateX(-3px);
+        text-decoration: underline;
+    }
+
+    .lc-page-title {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+        line-height: 1.25;
+        letter-spacing: -0.6px;
+    }
+
+    .lc-page-subtitle {
+        font-size: 1.05rem;
+        color: #475569;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+    }
+
+    .lc-required-notice {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-bottom: 1.75rem;
+    }
+
+    /* INPUT STYLES */
+    .lc-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .lc-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .lc-field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .lc-field-group label {
+        font-size: 0.88rem;
+        font-weight: 800;
+        color: #1e293b;
+    }
+
+    .lc-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        border: 1.5px solid #cbd5e1;
+        font-size: 0.95rem;
+        color: #0f172a;
+        background: #ffffff;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .lc-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .lc-pill-btn {
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        color: #1e293b;
+        font-weight: 800;
+        font-size: 0.88rem;
+        padding: 0.65rem 1.35rem;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .lc-pill-btn:hover {
+        border-color: #2563eb;
+        color: #2563eb;
+        background: #f8fafc;
+    }
+
+    /* RIGHT LIVE RESUME PREVIEW PANEL */
+    .lc-preview-sidebar {
+        width: 480px;
+        min-width: 480px;
+        background: #f8fafc;
+        border-left: 1px solid #e2e8f0;
+        padding: 2.25rem 1.75rem;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .lc-preview-tagline {
+        font-size: 0.82rem;
+        font-weight: 800;
+        color: #475569;
+        margin-bottom: 0.75rem;
+        text-align: center;
+    }
+
+    .lc-response-badge {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1d4ed8;
+        font-size: 0.85rem;
+        font-weight: 800;
+        padding: 0.5rem 1.25rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+
+    /* PAPER RESUME CARD */
+    .lc-paper-sheet {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        min-height: 560px;
+        padding: 2rem;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', Times, serif;
+        color: #111827;
+        position: relative;
+    }
+
+    .lc-paper-name {
+        font-size: 1.85rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 0.35rem;
+        letter-spacing: 0.5px;
+        font-family: inherit;
+    }
+
+    .lc-paper-contact {
+        font-size: 0.78rem;
+        text-align: center;
+        color: #374151;
+        padding-bottom: 0.65rem;
+        border-bottom: 2px solid #2563eb;
+        margin-bottom: 1.25rem;
+    }
+
+    .lc-paper-section-title {
+        font-size: 0.85rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+        margin: 1.25rem 0 0.5rem 0;
+        border-bottom: 1px solid #d1d5db;
+        padding-bottom: 0.2rem;
+    }
+
+    .lc-paper-text {
+        font-size: 0.82rem;
+        line-height: 1.5;
+        color: #374151;
+    }
+
+    /* FIXED BOTTOM ACTION BAR */
+    .lc-bottom-action-bar {
+        position: fixed;
+        bottom: 0;
+        left: 260px;
+        right: 0;
+        background: #ffffff;
+        border-top: 1.5px solid #e2e8f0;
+        padding: 0.85rem 3.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+        z-index: 999;
+        box-sizing: border-box;
+    }
+
+    .lc-optional-tag {
+        background: #fce7f3;
+        color: #be185d;
+        font-size: 0.85rem;
+        font-weight: 800;
+        padding: 0.5rem 1.25rem;
+        border-radius: 9999px;
+    }
+
+    .lc-btn-preview {
+        background: #ffffff;
+        border: 2px solid #0f172a;
+        color: #0f172a;
+        font-weight: 800;
+        font-size: 0.95rem;
+        padding: 0.65rem 2rem;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .lc-btn-preview:hover {
+        background: #f1f5f9;
+    }
+
+    .lc-btn-next-teal {
+        background: #00e699;
+        border: none;
+        color: #0f172a;
+        font-weight: 900;
+        font-size: 1rem;
+        padding: 0.75rem 2.5rem;
+        border-radius: 9999px;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(0, 230, 153, 0.4);
+        transition: all 0.2s ease;
+    }
+
+    .lc-btn-next-teal:hover {
+        background: #00cc88;
+        transform: translateY(-1px);
+    }
+
+    .lc-btn-print {
+        background: #0f172a;
+        border: none;
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 0.92rem;
+        padding: 0.65rem 1.4rem;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .lc-btn-print:hover {
+        background: #1e293b;
+        transform: translateY(-1px);
+    }
+
+    .lc-btn-download {
+        background: linear-gradient(135deg, #00e699 0%, #059669 100%);
+        border: none;
+        color: #0f172a;
+        font-weight: 900;
+        font-size: 0.92rem;
+        padding: 0.65rem 1.4rem;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        box-shadow: 0 4px 12px rgba(0, 230, 153, 0.3);
+    }
+
+    .lc-btn-download:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(0, 230, 153, 0.45);
+    }
+
+    /* PRINT SPECIFIC STYLES FOR CLEAN PDF GENERATION */
+    @media print {
+        body, html, .livecareer-wrapper {
+            background: #ffffff !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+        .lc-sidebar, .lc-main-content, .lc-preview-tagline, .lc-response-badge, .lc-bottom-action-bar, .lc-go-back-btn, button, .no-print {
+            display: none !important;
+        }
+        .lc-preview-sidebar {
+            width: 100% !important;
+            min-width: 100% !important;
+            background: #ffffff !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .lc-paper-sheet {
+            border: none !important;
+            box-shadow: none !important;
+            width: 100% !important;
+            padding: 10mm 15mm !important;
+        }
+    }
+</style>
+
+<div class="livecareer-wrapper">
+
+    <!-- LEFT NAVY SIDEBAR WITH STEPPER -->
+    <div class="lc-sidebar">
+        <div>
+            <div class="lc-brand">
+                <span style="font-size: 1.4rem;">⚡</span>
+                <span>Interview<span style="color: #6366f1;">Master</span></span>
+            </div>
+
+            <div class="lc-stepper-container">
+                <div class="lc-stepper-line"></div>
+
+                <div class="lc-step-item active" id="step-nav-1" onclick="jumpToStep(1)">
+                    <div class="lc-step-icon">1</div>
+                    <span>Heading</span>
+                </div>
+                <div class="lc-step-item" id="step-nav-2" onclick="jumpToStep(2)">
+                    <div class="lc-step-icon">2</div>
+                    <span>Education</span>
+                </div>
+                <div class="lc-step-item" id="step-nav-3" onclick="jumpToStep(3)">
+                    <div class="lc-step-icon">3</div>
+                    <span>Experience</span>
+                </div>
+                <div class="lc-step-item" id="step-nav-4" onclick="jumpToStep(4)">
+                    <div class="lc-step-icon">4</div>
+                    <span>Skills</span>
+                </div>
+                <div class="lc-step-item" id="step-nav-5" onclick="jumpToStep(5)">
+                    <div class="lc-step-icon">5</div>
+                    <span>Summary</span>
+                </div>
+                <div class="lc-step-item" id="step-nav-6" onclick="jumpToStep(6)">
+                    <div class="lc-step-icon">6</div>
+                    <span>Finalize</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="lc-completeness-box">
+                <div class="lc-completeness-title">
+                    <span>RESUME COMPLETENESS:</span>
+                    <span id="completenessText">0%</span>
+                </div>
+                <div class="lc-progress-bar">
+                    <div class="lc-progress-fill" id="completenessBar"></div>
+                </div>
+            </div>
+
+            <div class="lc-sidebar-footer">
+                <a href="{{ url_for('dashboard') }}">Home</a>
+                <a href="{{ url_for('practice') }}">Practice</a>
+                <a href="{{ url_for('mock_interview') }}">Mock Interview</a>
+                <a href="{{ url_for('profile') }}">Profile</a>
+                <a href="{{ url_for('about_us') }}">About Us</a>
+                <span style="margin-top:0.3rem;">© 2026, InterviewMaster. All rights reserved.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN FORM WORKSPACE -->
+    <div class="lc-main-content">
+        <a href="{{ url_for('dashboard') }}" class="lc-go-back-btn">
+            ← Back to Dashboard
+        </a>
+
+        <!-- STEP 1: HEADING -->
+        <div id="step-form-1" class="lc-step-section">
+            <h1 class="lc-page-title">What’s the best way for employers to contact you?</h1>
+            <p class="lc-page-subtitle">We suggest including an email and phone number.</p>
+            <div class="lc-required-notice">* indicates a required field</div>
+
+            <div class="lc-grid-2">
+                <div class="lc-field-group">
+                    <label>First Name *</label>
+                    <input type="text" id="inputFirstName" class="lc-input" placeholder="Saanvi" value="Saanvi" oninput="updateResumePreview()">
+                </div>
+                <div class="lc-field-group">
+                    <label>Surname *</label>
+                    <input type="text" id="inputLastName" class="lc-input" placeholder="Patel" value="Patel" oninput="updateResumePreview()">
+                </div>
+            </div>
+
+            <div class="lc-grid-3">
+                <div class="lc-field-group">
+                    <label>City</label>
+                    <input type="text" id="inputCity" class="lc-input" placeholder="New Delhi" value="New Delhi" oninput="updateResumePreview()">
+                </div>
+                <div class="lc-field-group">
+                    <label>Country</label>
+                    <input type="text" id="inputCountry" class="lc-input" placeholder="India" value="India" oninput="updateResumePreview()">
+                </div>
+                <div class="lc-field-group">
+                    <label>Pin Code</label>
+                    <input type="text" id="inputPinCode" class="lc-input" placeholder="110034" value="110034" oninput="updateResumePreview()">
+                </div>
+            </div>
+
+            <div class="lc-grid-2">
+                <div class="lc-field-group">
+                    <label>Phone *</label>
+                    <input type="text" id="inputPhone" class="lc-input" placeholder="+91 22 1234 5677" value="+91 22 1234 5677" oninput="updateResumePreview()">
+                </div>
+                <div class="lc-field-group">
+                    <label>Email *</label>
+                    <input type="email" id="inputEmail" class="lc-input" placeholder="spatel@sample.in" value="spatel@sample.in" oninput="updateResumePreview()">
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <label style="font-size: 0.88rem; font-weight: 800; color: #1e293b; display: block; margin-bottom: 0.75rem;">Add additional information to your resume (optional)</label>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <button type="button" class="lc-pill-btn" onclick="toggleExtraField('fieldLinkedIn')">LinkedIn +</button>
+                    <button type="button" class="lc-pill-btn" onclick="toggleExtraField('fieldWebsite')">Website +</button>
+                    <button type="button" class="lc-pill-btn" onclick="toggleExtraField('fieldGithub')">GitHub +</button>
+                </div>
+
+                <div id="fieldLinkedIn" class="lc-field-group" style="display: none; margin-top: 1.25rem;">
+                    <label>LinkedIn Profile URL</label>
+                    <input type="text" id="inputLinkedIn" class="lc-input" placeholder="https://linkedin.com/in/saanvi" oninput="updateResumePreview()">
+                </div>
+                <div id="fieldWebsite" class="lc-field-group" style="display: none; margin-top: 1.25rem;">
+                    <label>Website / Portfolio URL</label>
+                    <input type="text" id="inputWebsite" class="lc-input" placeholder="https://saanvipatel.dev" oninput="updateResumePreview()">
+                </div>
+                <div id="fieldGithub" class="lc-field-group" style="display: none; margin-top: 1.25rem;">
+                    <label>GitHub Profile URL</label>
+                    <input type="text" id="inputGithub" class="lc-input" placeholder="https://github.com/saanvipatel" oninput="updateResumePreview()">
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: EDUCATION -->
+        <div id="step-form-2" class="lc-step-section" style="display: none;">
+            <h1 class="lc-page-title">Tell us about your education</h1>
+            <p class="lc-page-subtitle">Include your degree, school/college name, and year of completion.</p>
+
+            <div class="lc-grid-2">
+                <div class="lc-field-group">
+                    <label>Degree / Qualification *</label>
+                    <input type="text" id="inputDegree" class="lc-input" placeholder="Diploma Financial Accounting" value="B.Tech Computer Science" oninput="updateResumePreview()">
+                </div>
+                <div class="lc-field-group">
+                    <label>School / University Name *</label>
+                    <input type="text" id="inputSchool" class="lc-input" placeholder="Oxford Entrance Institute" value="Oxford Entrance Institute & School of English" oninput="updateResumePreview()">
+                </div>
+            </div>
+
+            <div class="lc-grid-2">
+                <div class="lc-field-group">
+                    <label>Location (City, Country)</label>
+                    <input type="text" id="inputEduLoc" class="lc-input" placeholder="New Delhi, India" value="New Delhi, India" oninput="updateResumePreview()">
+                </div>
+                <div class="lc-field-group">
+                    <label>Graduation Year</label>
+                    <input type="text" id="inputEduYear" class="lc-input" placeholder="09/2015 - 07/2017" value="09/2015 - 07/2017" oninput="updateResumePreview()">
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: EXPERIENCE -->
+        <div id="step-form-3" class="lc-step-section" style="display: none;">
+            <h1 class="lc-page-title">Tell us about your work experience</h1>
+            <p class="lc-page-subtitle">List your recent job roles, responsibilities, and achievements.</p>
+
+            <div class="lc-grid-2">
+                <div class="lc-field-group">
+                    <label>Job Title / Role</label>
+                    <input type="text" id="inputExpTitle" class="lc-input" placeholder="Motivational Sales Associate" value="Motivational Sales Associate" oninput="updateResumePreview()">
+                </div>
+                <div class="lc-field-group">
+                    <label>Company / Employer</label>
+                    <input type="text" id="inputExpCompany" class="lc-input" placeholder="Retail Enterprise Ltd" value="Retail Enterprise Ltd" oninput="updateResumePreview()">
+                </div>
+            </div>
+
+            <div class="lc-field-group">
+                <label>Job Description & Responsibilities</label>
+                <textarea id="inputExpDesc" class="lc-input" rows="4" oninput="updateResumePreview()">Motivational Sales Associate with 3 years of experience boosting sales and customer loyalty through individualized service. Resourceful expert at listening to customer needs, deciding parameters, and upsells to exceed targets.</textarea>
+            </div>
+        </div>
+
+        <!-- STEP 4: SKILLS -->
+        <div id="step-form-4" class="lc-step-section" style="display: none;">
+            <h1 class="lc-page-title">What skills do you want to highlight?</h1>
+            <p class="lc-page-subtitle">List your core technical and professional skills.</p>
+
+            <div class="lc-field-group">
+                <label>Skills List (comma separated)</label>
+                <textarea id="inputSkills" class="lc-input" rows="4" oninput="updateResumePreview()">Customer Service, Sales Strategy, Upselling, Communication, Negotiation, Inventory Control</textarea>
+            </div>
+        </div>
+
+        <!-- STEP 5: SUMMARY -->
+        <div id="step-form-5" class="lc-step-section" style="display: none;">
+            <h1 class="lc-page-title">Write your professional summary</h1>
+            <p class="lc-page-subtitle">Summarize your background and key strengths in 2–3 sentences.</p>
+
+            <div class="lc-field-group">
+                <label>Professional Summary</label>
+                <textarea id="inputSummary" class="lc-input" rows="5" oninput="updateResumePreview()">Motivational Sales Associate with 3 years of experience boosting sales and customer loyalty through individualized service. Resourceful expert at meeting targets and building rapport.</textarea>
+            </div>
+        </div>
+
+        <!-- STEP 6: FINALIZE -->
+        <div id="step-form-6" class="lc-step-section" style="display: none;">
+            <h1 class="lc-page-title">Finalize & Download</h1>
+            <p class="lc-page-subtitle">Your resume is ready! Click below to preview or print your PDF paper.</p>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="button" class="lc-btn-next-teal" onclick="window.print()">
+                    📥 Download PDF Resume
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT LIVE PREVIEW PANEL -->
+    <div class="lc-preview-sidebar">
+        <div class="lc-preview-tagline">InterviewMaster AI Resume Builder</div>
+        <div class="lc-response-badge">
+            <span>⚡ 100%</span> Recruiter-Approved Technical Resume Format
+        </div>
+
+        <!-- QUICK DOWNLOAD & PRINT TOOLBAR ABOVE PAPER SHEET -->
+        <div class="no-print" style="display: flex; gap: 0.65rem; width: 100%; margin-bottom: 1rem; justify-content: center;">
+            <button type="button" class="lc-btn-download" onclick="window.print()">
+                📥 Download PDF
+            </button>
+            <button type="button" class="lc-btn-print" onclick="window.print()">
+                🖨️ Print
+            </button>
+        </div>
+
+        <!-- PAPER RESUME MOCKUP -->
+        <div class="lc-paper-sheet" id="printableArea">
+            <div class="lc-paper-name" id="resViewName">Your Name</div>
+            <div class="lc-paper-contact" id="resViewContact">
+                New Delhi, India 110034 • +91 22 1234 5677 • spatel@sample.in
+            </div>
+
+            <div class="lc-paper-section-title">Education</div>
+            <div class="lc-paper-text" id="resViewEdu">
+                <strong>Diploma: Financial Accounting</strong>, 09/2015 - 07/2017<br>
+                Oxford Entrance Institute & School of English - New Delhi
+            </div>
+
+            <div class="lc-paper-section-title">Professional Summary</div>
+            <div class="lc-paper-text" id="resViewSummary">
+                Motivational Sales Associate with 3 years of experience boosting sales and customer loyalty through individualized service. Resourceful expert at meeting targets and customer satisfaction.
+            </div>
+
+            <div class="lc-paper-section-title">Skills</div>
+            <div class="lc-paper-text" id="resViewSkills">
+                • Skill 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • Skill 2<br>
+                • Skill 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • Skill 4
+            </div>
+
+            <div class="lc-paper-section-title">Professional Reference</div>
+            <div class="lc-paper-text">
+                Summarize your work experience by listing each job and your accomplishments in 2-3 lines.
+            </div>
+        </div>
+
+        <div style="font-size: 0.72rem; color: #64748b; margin-top: 1.25rem; text-align: center; line-height: 1.4;">
+            † The results are based on a study with over 1000 participants, among whom 287 used resume tools provided on our family sites.
+        </div>
+    </div>
+
+    <!-- FIXED BOTTOM ACTION BAR -->
+    <div class="lc-bottom-action-bar">
+        <div class="lc-optional-tag" id="bottomTagText">Optional: Personal details</div>
+        
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <button type="button" class="lc-btn-preview" onclick="window.print()">Preview</button>
+            <button type="button" class="lc-btn-next-teal" id="btnNextStep" onclick="nextStep()">Next: Education</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 6;
+    const stepTitles = [
+        "Next: Education",
+        "Next: Experience",
+        "Next: Skills",
+        "Next: Summary",
+        "Next: Finalize",
+        "Download PDF"
+    ];
+    const tagTexts = [
+        "Optional: Personal details",
+        "Education Qualifications",
+        "Work Experience",
+        "Key Competencies",
+        "Professional Summary",
+        "Final Resume Check"
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateResumePreview();
+    });
+
+    function jumpToStep(num) {
+        currentStep = num;
+        updateStepUI();
+    }
+
+    function nextStep() {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            updateStepUI();
+        } else {
+            window.print();
+        }
+    }
+
+    function updateStepUI() {
+        for (let i = 1; i <= totalSteps; i++) {
+            const formSec = document.getElementById(`step-form-${i}`);
+            const navItem = document.getElementById(`step-nav-${i}`);
+            if (formSec) formSec.style.display = (i === currentStep) ? 'block' : 'none';
+            if (navItem) {
+                if (i === currentStep) {
+                    navItem.classList.add('active');
+                } else {
+                    navItem.classList.remove('active');
+                }
+                if (i < currentStep) {
+                    navItem.classList.add('completed');
+                }
+            }
+        }
+
+        document.getElementById('btnNextStep').innerText = stepTitles[currentStep - 1];
+        document.getElementById('bottomTagText').innerText = tagTexts[currentStep - 1];
+
+        const pct = Math.round(((currentStep - 1) / (totalSteps - 1)) * 100);
+        document.getElementById('completenessText').innerText = `${pct}%`;
+        document.getElementById('completenessBar').style.width = `${pct}%`;
+    }
+
+    function toggleExtraField(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.style.display = (field.style.display === 'none') ? 'block' : 'none';
+        }
+    }
+
+    function updateResumePreview() {
+        const fname = document.getElementById('inputFirstName').value.trim() || 'Saanvi';
+        const lname = document.getElementById('inputLastName').value.trim() || 'Patel';
+        document.getElementById('resViewName').innerText = `${fname} ${lname}`;
+
+        const city = document.getElementById('inputCity').value.trim();
+        const country = document.getElementById('inputCountry').value.trim();
+        const pin = document.getElementById('inputPinCode').value.trim();
+        const phone = document.getElementById('inputPhone').value.trim();
+        const email = document.getElementById('inputEmail').value.trim();
+
+        document.getElementById('resViewContact').innerText = `${city}, ${country} ${pin} • ${phone} • ${email}`;
+
+        const deg = document.getElementById('inputDegree') ? document.getElementById('inputDegree').value.trim() : '';
+        const school = document.getElementById('inputSchool') ? document.getElementById('inputSchool').value.trim() : '';
+        const edate = document.getElementById('inputEduYear') ? document.getElementById('inputEduYear').value.trim() : '';
+        const eloc = document.getElementById('inputEduLoc') ? document.getElementById('inputEduLoc').value.trim() : '';
+
+        document.getElementById('resViewEdu').innerHTML = `<strong>${deg}</strong>, ${edate}<br>${school} - ${eloc}`;
+
+        const summary = document.getElementById('inputSummary') ? document.getElementById('inputSummary').value.trim() : '';
+        document.getElementById('resViewSummary').innerText = summary || 'Professional summary will appear here...';
+
+        const skills = document.getElementById('inputSkills') ? document.getElementById('inputSkills').value.trim() : '';
+        const skList = skills.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        let skHTML = '';
+        skList.forEach((sk, i) => {
+            skHTML += `• ${sk} &nbsp;&nbsp;&nbsp;&nbsp; `;
+            if ((i + 1) % 2 === 0) skHTML += '<br>';
+        });
+        document.getElementById('resViewSkills').innerHTML = skHTML || '• Skill 1 &nbsp;&nbsp;&nbsp;&nbsp; • Skill 2';
+    }
+</script>
+{% endblock %}

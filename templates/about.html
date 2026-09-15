@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}About Us | InterviewMaster - The Ultimate Placement Prep Ecosystem{% endblock %}
+
+{% block content %}
+<div class="about-page-container" style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 5rem 1.25rem; display: flex; flex-direction: column; gap: 2.5rem;">
+
+    <!-- 1. HERO SECTION (CLEAN WHITE THEME) -->
+    <div class="about-hero" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; padding: 3.75rem 3rem; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); text-align: center; color: #0f172a;">
+        <!-- Soft Ambient Background Glows -->
+        <div style="position: absolute; top: -80px; right: -80px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+        <div style="position: absolute; bottom: -80px; left: -80px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+
+        <div style="position: relative; z-index: 2;">
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; font-size: 0.85rem; font-weight: 800; padding: 0.4rem 1.15rem; border-radius: 9999px; margin-bottom: 1.5rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                ⚡ All-In-One Placement Readiness Platform
+            </div>
+
+            <h1 style="font-size: clamp(2rem, 4vw, 2.85rem); font-weight: 900; color: #0f172a; line-height: 1.25; margin: 0 auto 1.5rem auto; max-width: 850px; letter-spacing: -0.5px;">
+                Empowering Future Engineers to Crack Their <span style="background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Dream Tech Careers</span>
+            </h1>
+
+            <p style="font-size: 1.125rem; color: #475569; line-height: 1.8; max-width: 780px; margin: 0 auto 2.5rem auto;">
+                InterviewMaster is a unified interview preparation ecosystem created to bridge the gap between classroom learning and top-tier industry placements. We bring aptitude mastery, technical questions, mock interviews, and analytics into a single cohesive workspace.
+            </p>
+
+            <!-- Quick Stats Row (Light Theme) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.25rem; max-width: 800px; margin: 0 auto;">
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);">
+                    <div style="font-size: 1.85rem; font-weight: 900; color: #0284c7;">880+</div>
+                    <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-top: 0.25rem;">Curated Questions</div>
+                </div>
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);">
+                    <div style="font-size: 1.85rem; font-weight: 900; color: #7c3aed;">50+</div>
+                    <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-top: 0.25rem;">Core Placement Topics</div>
+                </div>
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);">
+                    <div style="font-size: 1.85rem; font-weight: 900; color: #059669;">100%</div>
+                    <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-top: 0.25rem;">Free & Student Focused</div>
+                </div>
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);">
+                    <div style="font-size: 1.85rem; font-weight: 900; color: #db2777;">Real-Time</div>
+                    <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-top: 0.25rem;">Progress Analytics</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. FOUNDER SECTION (HIGHLIGHTED SHOWCASE) -->
+    <div class="founder-section-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; padding: 3.5rem 3rem; position: relative; overflow: hidden; box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.05);">
+        <!-- Ambient accents -->
+        <div style="position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+        <div style="position: absolute; bottom: -60px; left: -60px; width: 220px; height: 220px; background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+
+        <!-- Section Top Label -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9;">
+            <div>
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; font-size: 0.8rem; font-weight: 800; padding: 0.35rem 0.9rem; border-radius: 9999px; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                    👑 Creator & Architecture
+                </div>
+                <h2 style="font-size: 2.25rem; font-weight: 900; color: #0f172a; margin: 0; letter-spacing: -0.5px;">
+                    Founder
+                </h2>
+            </div>
+
+            <div style="display: inline-flex; align-items: center; gap: 0.6rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 0.6rem 1.2rem; border-radius: 14px; font-size: 0.95rem; color: #334155; font-weight: 700;">
+                <span style="font-size: 1.15rem;">🎓</span> 4th Year B.Tech • Computer Science & Engineering
+            </div>
+        </div>
+
+        <!-- Founder Showcase Layout -->
+        <div style="display: grid; grid-template-columns: 240px 1fr; gap: 3rem; align-items: start;">
+            
+            <!-- Left: Profile Widget -->
+            <div style="background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #e2e8f0; border-radius: 20px; padding: 2rem 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);">
+                <div style="position: relative;">
+                    <div style="width: 110px; height: 110px; border-radius: 28px; background: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 2.5rem; font-weight: 900; box-shadow: 0 12px 24px rgba(79, 70, 229, 0.3);">
+                        PS
+                    </div>
+                    <span style="position: absolute; bottom: 4px; right: 4px; width: 18px; height: 18px; background: #10b981; border: 3px solid #ffffff; border-radius: 50%;" title="Active Developer"></span>
+                </div>
+
+                <div>
+                    <h3 style="font-size: 1.35rem; font-weight: 900; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Prajyuth Sai
+                    </h3>
+                    <div style="font-size: 0.85rem; color: #4f46e5; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Founder & Lead Developer
+                    </div>
+                </div>
+
+                <div style="width: 100%; border-top: 1px solid #e2e8f0; padding-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem; color: #64748b; text-align: left;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>💼</span> <strong style="color: #334155;">Software Developer</strong>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>💡</span> <strong style="color: #334155;">Problem Solver</strong>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🚀</span> <strong style="color: #334155;">Tech Innovator</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Founder Story & Description -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Quote Box 1 -->
+                <div style="background: #faf5ff; border-left: 4px solid #a855f7; border-radius: 0 16px 16px 0; padding: 1.25rem 1.5rem;">
+                    <p style="margin: 0; font-size: 1.1rem; color: #3b0764; line-height: 1.8; font-weight: 500;">
+                        "I am <strong>Prajyuth Sai</strong>, a fourth-year B.Tech Computer Science and Engineering student with a strong interest in software development, problem-solving, and building innovative technology solutions that empower students to enhance their skills and career opportunities."
+                    </p>
+                </div>
+
+                <!-- Paragraph 2 -->
+                <div style="font-size: 1.05rem; color: #334155; line-height: 1.85;">
+                    <p style="margin: 0 0 1.25rem 0;">
+                        As the developer of this project, I designed and implemented the complete platform, including <strong>aptitude practice modules</strong>, <strong>technical interview preparation resources</strong>, <strong>mock interviews</strong>, <strong>progress tracking</strong>, and <strong>performance analytics</strong>.
+                    </p>
+                    <p style="margin: 0;">
+                        I contributed to the frontend development, backend integration, database design, and overall user experience to create a comprehensive and user-friendly interview preparation portal.
+                    </p>
+                </div>
+
+                <!-- Core Engineering Contributions Cards -->
+                <div style="margin-top: 0.5rem;">
+                    <div style="font-size: 0.85rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.75px; margin-bottom: 0.85rem;">
+                        🛠️ Key Platform Contributions
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem;">
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.6rem;">
+                            <span style="font-size: 1.25rem;">⚡</span>
+                            <div>
+                                <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Frontend & UI/UX</div>
+                                <div style="font-size: 0.75rem; color: #64748b;">Responsive & Intuitive Interface</div>
+                            </div>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.6rem;">
+                            <span style="font-size: 1.25rem;">⚙️</span>
+                            <div>
+                                <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Backend & APIs</div>
+                                <div style="font-size: 0.75rem; color: #64748b;">Flask Architecture & Logic</div>
+                            </div>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.6rem;">
+                            <span style="font-size: 1.25rem;">💾</span>
+                            <div>
+                                <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Database Design</div>
+                                <div style="font-size: 0.75rem; color: #64748b;">Schema & Curated Question Banks</div>
+                            </div>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.6rem;">
+                            <span style="font-size: 1.25rem;">📊</span>
+                            <div>
+                                <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Analytics Engine</div>
+                                <div style="font-size: 0.75rem; color: #64748b;">Readiness & Progress Tracking</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. PLATFORM CAPABILITIES & MODULES (3 PILLARS) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        <!-- Card 1 -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 2.25rem 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                🎯
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;">
+                Comprehensive Aptitude
+            </h3>
+            <p style="font-size: 0.95rem; color: #64748b; line-height: 1.7; margin: 0;">
+                Master Quantitative Aptitude, Logical Reasoning, and Verbal Ability with step-by-step formulas, shortcuts, and instant verification across 27+ placement topics.
+            </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 2.25rem 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: #fdf2f8; color: #db2777; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                💻
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;">
+                Technical & HR Mastery
+            </h3>
+            <p style="font-size: 0.95rem; color: #64748b; line-height: 1.7; margin: 0;">
+                Extensive question banks covering Data Structures, Web Development, Databases, and STAR-framework behavioral interview strategies.
+            </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 2.25rem 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                📈
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;">
+                Mock Exams & Analytics
+            </h3>
+            <p style="font-size: 0.95rem; color: #64748b; line-height: 1.7; margin: 0;">
+                Timed exam simulations, accuracy breakdown, topic-wise strengths and weakness detection to get you 100% placement ready.
+            </p>
+        </div>
+    </div>
+
+
+
+</div>
+
+<style>
+/* Responsive layout adjustments */
+@media (max-width: 768px) {
+    .about-page-container {
+        padding: 1.25rem 0.75rem 3rem 0.75rem !important;
+        gap: 1.5rem !important;
+    }
+    .about-hero {
+        padding: 2.5rem 1.5rem !important;
+    }
+    .founder-section-card {
+        padding: 2rem 1.25rem !important;
+    }
+    .founder-section-card > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 1.75rem !important;
+    }
+}
+</style>
+{% endblock %}

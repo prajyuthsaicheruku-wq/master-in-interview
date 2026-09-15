@@ -1,0 +1,848 @@
+{% extends "base.html" %}
+
+{% block title %}Mock Interview Assessment | InterviewMaster{% endblock %}
+
+{% block content %}
+<div class="mock-page-container">
+
+    <!-- =========================================================================
+         TOP HERO BANNER (MATCHING SCREENSHOT)
+         ========================================================================= -->
+    <div class="mock-hero-banner">
+        <div class="mock-hero-left">
+            <!-- Title Header -->
+            <div class="mock-hero-header">
+                <div class="mock-hero-icon-badge">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div class="mock-hero-text">
+                    <h1 class="mock-hero-title">Mock Interview Assessment</h1>
+                    <p class="mock-hero-sub">Realistic mock interviews to help you practice, improve and ace your placement interviews.</p>
+                </div>
+            </div>
+
+            <!-- 4 Stat Badges Grid (DYNAMIC USER STATS) -->
+            <div class="mock-stats-grid">
+                <!-- Stat 1: Total Rounds -->
+                <div class="mock-stat-card">
+                    <div class="mock-stat-icon-wrap stat-purple">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                        </svg>
+                    </div>
+                    <div class="mock-stat-info">
+                        <div class="mock-stat-num">{{ mock_stats.total_rounds if mock_stats else 8 }}</div>
+                        <div class="mock-stat-label">Total Rounds</div>
+                        <div class="mock-stat-desc">Across all domains</div>
+                    </div>
+                </div>
+
+                <!-- Stat 2: Tests Completed -->
+                <div class="mock-stat-card">
+                    <div class="mock-stat-icon-wrap stat-blue">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="mock-stat-info">
+                        <div class="mock-stat-num">{{ mock_stats.tests_completed if mock_stats else 0 }}</div>
+                        <div class="mock-stat-label">Tests Completed</div>
+                        <div class="mock-stat-desc">
+                            {% if mock_stats and mock_stats.tests_completed > 0 %}
+                                Keep going!
+                            {% else %}
+                                Start 1st test
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stat 3: Avg Performance -->
+                <div class="mock-stat-card">
+                    <div class="mock-stat-icon-wrap stat-green">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                            <path d="M4 22h16"></path>
+                            <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                            <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                        </svg>
+                    </div>
+                    <div class="mock-stat-info">
+                        <div class="mock-stat-num">{{ mock_stats.avg_performance if mock_stats else 0 }}%</div>
+                        <div class="mock-stat-label">Avg. Performance</div>
+                        <div class="mock-stat-desc">
+                            {% if mock_stats and mock_stats.avg_performance >= 75 %}
+                                Excellent!
+                            {% elif mock_stats and mock_stats.avg_performance >= 50 %}
+                                Good Progress!
+                            {% elif mock_stats and mock_stats.tests_completed > 0 %}
+                                Keep Practicing
+                            {% else %}
+                                Not Started
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stat 4: Day Streak -->
+                <div class="mock-stat-card">
+                    <div class="mock-stat-icon-wrap stat-orange">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="mock-stat-info">
+                        <div class="mock-stat-num">{{ current_user.streak_count if current_user and current_user.streak_count else 0 }}</div>
+                        <div class="mock-stat-label">Day Streak</div>
+                        <div class="mock-stat-desc">
+                            {% if current_user and current_user.streak_count %}
+                                Keep it up! 🔥
+                            {% else %}
+                                Start streak
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Right 3D Illustration -->
+        <div class="mock-hero-right">
+            <div class="mock-hero-art-wrapper">
+                <svg viewBox="0 0 320 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="mock-hero-svg">
+                    <!-- Background ambient glow -->
+                    <circle cx="160" cy="110" r="100" fill="url(#heroGlow)" fill-opacity="0.6"/>
+                    
+                    <!-- Floating Sparkles -->
+                    <path d="M40 70L43 60L46 70L56 73L46 76L43 86L40 76L30 73L40 70Z" fill="#c084fc" opacity="0.8"/>
+                    <path d="M280 45L282 38L284 45L291 47L284 49L282 56L280 49L273 47L280 45Z" fill="#818cf8" opacity="0.9"/>
+                    <circle cx="50" cy="140" r="4" fill="#a78bfa" opacity="0.5"/>
+                    <circle cx="295" cy="120" r="3" fill="#60a5fa" opacity="0.6"/>
+
+                    <!-- Floating Chat Bubble Left -->
+                    <g filter="url(#dropShadowSoft)">
+                        <rect x="25" y="32" width="55" height="38" rx="10" fill="#ffffff" stroke="#e0e7ff" stroke-width="1.5"/>
+                        <circle cx="38" cy="51" r="3" fill="#818cf8"/>
+                        <circle cx="48" cy="51" r="3" fill="#a78bfa"/>
+                        <circle cx="58" cy="51" r="3" fill="#c084fc"/>
+                        <path d="M35 70L42 70L38 76Z" fill="#ffffff"/>
+                    </g>
+
+                    <!-- Floating Analytics Card Right -->
+                    <g filter="url(#dropShadowSoft)">
+                        <rect x="235" y="30" width="60" height="42" rx="10" fill="#ffffff" stroke="#e0e7ff" stroke-width="1.5"/>
+                        <!-- Bars -->
+                        <rect x="245" y="52" width="6" height="12" rx="2" fill="#c7d2fe"/>
+                        <rect x="255" y="44" width="6" height="20" rx="2" fill="#818cf8"/>
+                        <rect x="265" y="38" width="6" height="26" rx="2" fill="#6366f1"/>
+                        <rect x="275" y="48" width="6" height="16" rx="2" fill="#a5b4fc"/>
+                    </g>
+
+                    <!-- Desk Base Shadow -->
+                    <ellipse cx="160" cy="195" rx="130" ry="12" fill="#1e1b4b" fill-opacity="0.08"/>
+
+                    <!-- Potted Plant on Desk (Right) -->
+                    <g transform="translate(230, 140)">
+                        <path d="M12 25 L16 48 L32 48 L36 25 Z" fill="#c4b5fd"/>
+                        <!-- Plant Leaves -->
+                        <path d="M24 25 C15 15, 8 18, 5 22 C12 28, 20 26, 24 25 Z" fill="#34d399"/>
+                        <path d="M24 25 C20 10, 28 5, 32 8 C34 16, 28 22, 24 25 Z" fill="#10b981"/>
+                        <path d="M24 25 C32 15, 42 16, 45 22 C38 27, 28 26, 24 25 Z" fill="#059669"/>
+                    </g>
+
+                    <!-- Coffee Mug (Left) -->
+                    <g transform="translate(48, 155)">
+                        <rect x="6" y="10" width="22" height="28" rx="4" fill="#a78bfa"/>
+                        <path d="M28 16 C34 16, 34 26, 28 26" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" fill="none"/>
+                        <!-- Steam -->
+                        <path d="M12 5 C14 2, 10 0, 13 -3" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+                        <path d="M18 6 C20 3, 16 1, 19 -2" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+                    </g>
+
+                    <!-- Laptop Base & Stand -->
+                    <g>
+                        <!-- Screen Frame -->
+                        <rect x="80" y="55" width="160" height="105" rx="12" fill="#4338ca"/>
+                        <rect x="84" y="59" width="152" height="97" rx="8" fill="#e0e7ff"/>
+                        <rect x="86" y="61" width="148" height="93" rx="6" fill="#f8fafc"/>
+
+                        <!-- Candidate Inside Screen (Video Call UI) -->
+                        <rect x="86" y="61" width="148" height="93" rx="6" fill="url(#screenGrad)"/>
+
+                        <!-- Video Call Candidate Illustration -->
+                        <g transform="translate(160, 115)">
+                            <!-- Body / Blazer -->
+                            <path d="M-28 39 C-28 22, -18 15, 0 15 C18 15, 28 22, 28 39 Z" fill="#6366f1"/>
+                            <!-- Shirt collar -->
+                            <path d="M-10 15 L0 25 L10 15 Z" fill="#ffffff"/>
+                            <path d="M-3 20 L0 38 L3 20 Z" fill="#f43f5e"/>
+                            <!-- Neck -->
+                            <rect x="-6" y="5" width="12" height="12" fill="#fbcfe8" rx="2"/>
+                            <!-- Head -->
+                            <ellipse cx="0" cy="-2" rx="14" ry="16" fill="#fde047"/>
+                            <!-- Hair -->
+                            <path d="M-14 -4 C-15 -18, 15 -18, 14 -4 C11 -12, -11 -12, -14 -4 Z" fill="#312e81"/>
+                            <!-- Eyes & Smile -->
+                            <circle cx="-5" cy="-2" r="2" fill="#1e1b4b"/>
+                            <circle cx="5" cy="-2" r="2" fill="#1e1b4b"/>
+                            <path d="M-4 5 Q0 9 4 5" stroke="#1e1b4b" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                            <!-- Headset -->
+                            <path d="M-14 -2 C-16 -12, 16 -12, 14 -2" stroke="#475569" stroke-width="2.5" fill="none"/>
+                            <rect x="-16" y="-5" width="4" height="8" rx="2" fill="#334155"/>
+                            <rect x="12" y="-5" width="4" height="8" rx="2" fill="#334155"/>
+                            <path d="M14 0 C14 8, 8 10, 3 9" stroke="#334155" stroke-width="1.8" fill="none"/>
+                            <circle cx="2" cy="9" r="2" fill="#ef4444"/>
+
+                            <!-- Waving Hand -->
+                            <g transform="translate(22, 0)">
+                                <path d="M2 12 C8 8, 14 0, 12 -4 C10 -6, 6 -2, 4 3 L-2 14 Z" fill="#fde047"/>
+                                <circle cx="10" cy="-3" r="3" fill="#fde047"/>
+                            </g>
+                        </g>
+
+                        <!-- Top Screen Camera & Status -->
+                        <circle cx="160" cy="65" r="2" fill="#22c55e"/>
+
+                        <!-- Laptop Keyboard Base -->
+                        <path d="M60 160 L260 160 L275 174 L45 174 Z" fill="#312e81" rx="4"/>
+                        <path d="M70 160 L250 160 L262 172 L58 172 Z" fill="#4338ca"/>
+                        <!-- Touchpad notch -->
+                        <rect x="140" y="163" width="40" height="7" rx="3" fill="#6366f1"/>
+                    </g>
+
+                    <defs>
+                        <linearGradient id="heroGlow" x1="60" y1="30" x2="260" y2="190" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#c084fc"/>
+                            <stop offset="1" stop-color="#818cf8"/>
+                        </linearGradient>
+                        <linearGradient id="screenGrad" x1="86" y1="61" x2="234" y2="154" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#eef2ff"/>
+                            <stop offset="1" stop-color="#e0e7ff"/>
+                        </linearGradient>
+                        <filter id="dropShadowSoft" x="15" y="20" width="290" height="70" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#4f46e5" flood-opacity="0.12"/>
+                        </filter>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================================================================
+         SECTION 1: TECHNICAL ROUND (8 ASSESSMENT CARDS)
+         ========================================================================= -->
+    <div class="mock-section-block">
+        <!-- Section Header -->
+        <div class="mock-section-header">
+            <div class="mock-section-header-left">
+                <div class="mock-section-badge-icon purple">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="mock-section-title">Section 1: Technical Round</h2>
+                    <p class="mock-section-subtitle">Practice core technical concepts and problem solving skills.</p>
+                </div>
+            </div>
+            
+            <a href="#technical-grid" class="btn-view-rounds">
+                View All Rounds →
+            </a>
+        </div>
+
+        <!-- 8 Technical Cards Grid -->
+        <div class="mock-tech-grid" id="technical-grid">
+
+            <!-- Card 1: Python -->
+            {% set py_att = mock_stats.topic_attempts.get('python') if mock_stats and mock_stats.topic_attempts else none %}
+            <div class="mock-tech-card">
+                <div class="mock-tech-card-top">
+                    <div class="mock-tech-icon-circle python-bg">
+                        <!-- Python Logo SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M11.9 1.5C6.8 1.5 7.1 3.7 7.1 3.7V6H12v.8H5.2S1.5 6.4 1.5 11.8s3.2 5.5 3.2 5.5h1.9v-2.7s-.1-3.2 3.2-3.2h5.1s3.1.1 3.1-3V4.7s.5-3.2-6.1-3.2zm-1.8 1.7a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2z" fill="#3b82f6"/>
+                            <path d="M12.1 22.5c5.1 0 4.8-2.2 4.8-2.2v-2.3H12v-.8h6.8s3.7.4 3.7-5-3.2-5.5-3.2-5.5h-1.9v2.7s.1 3.2-3.2 3.2H9.2s-3.1-.1-3.1 3v3.8s-.5 3.2 6 3.2zm1.8-1.7a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2z" fill="#eab308"/>
+                        </svg>
+                    </div>
+                    <div class="mock-tech-header-info">
+                        <div class="mock-tech-name-row">
+                            <h3 class="mock-tech-title">Python</h3>
+                            {% if py_att %}
+                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ py_att.score_percentage }}%</span>
+                            {% else %}
+                                <span class="difficulty-pill pill-easy">Easy</span>
+                            {% endif %}
+                        </div>
+                        <div class="mock-tech-meta">
+                            <span class="meta-users">👥 20 Questions</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-time">30 Mins</span>
+                            {% if py_att %}
+                                <span class="meta-dot">•</span>
+                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('mock_test_session', topic_key='python') }}" class="btn-start-test" {% if py_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
+                    {{ 'Retake Test 🔄' if py_att else 'Start Test →' }}
+                </a>
+            </div>
+
+            <!-- Card 2: Java -->
+            {% set java_att = mock_stats.topic_attempts.get('java') if mock_stats and mock_stats.topic_attempts else none %}
+            <div class="mock-tech-card">
+                <div class="mock-tech-card-top">
+                    <div class="mock-tech-icon-circle java-bg">
+                        <!-- Java Coffee Cup SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 19c4.5 1 11.5 1 16 0M3 15.5c4.5 1.2 13.5 1.2 18 0M7 8c1-2 4-2 4-4s-3-2-2-4" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 8c1-2 4-2 4-4s-3-2-2-4M17 8c1-2 4-2 4-4" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M6 10h12v4a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4v-4z" fill="#fee2e2" stroke="#ea580c" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <div class="mock-tech-header-info">
+                        <div class="mock-tech-name-row">
+                            <h3 class="mock-tech-title">Java</h3>
+                            {% if java_att %}
+                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ java_att.score_percentage }}%</span>
+                            {% else %}
+                                <span class="difficulty-pill pill-medium-blue">Medium</span>
+                            {% endif %}
+                        </div>
+                        <div class="mock-tech-meta">
+                            <span class="meta-users">👥 20 Questions</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-time">30 Mins</span>
+                            {% if java_att %}
+                                <span class="meta-dot">•</span>
+                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('mock_test_session', topic_key='java') }}" class="btn-start-test" {% if java_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
+                    {{ 'Retake Test 🔄' if java_att else 'Start Test →' }}
+                </a>
+            </div>
+
+            <!-- Card 3: SQL & Databases -->
+            {% set sql_att = mock_stats.topic_attempts.get('sql') if mock_stats and mock_stats.topic_attempts else none %}
+            <div class="mock-tech-card">
+                <div class="mock-tech-card-top">
+                    <div class="mock-tech-icon-circle sql-bg">
+                        <!-- Database Cylinders SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                        </svg>
+                    </div>
+                    <div class="mock-tech-header-info">
+                        <div class="mock-tech-name-row">
+                            <h3 class="mock-tech-title">SQL & Databases</h3>
+                            {% if sql_att %}
+                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ sql_att.score_percentage }}%</span>
+                            {% else %}
+                                <span class="difficulty-pill pill-medium-amber">Medium</span>
+                            {% endif %}
+                        </div>
+                        <div class="mock-tech-meta">
+                            <span class="meta-users">👥 20 Questions</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-time">30 Mins</span>
+                            {% if sql_att %}
+                                <span class="meta-dot">•</span>
+                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('mock_test_session', topic_key='sql') }}" class="btn-start-test" {% if sql_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
+                    {{ 'Retake Test 🔄' if sql_att else 'Start Test →' }}
+                </a>
+            </div>
+
+            <!-- Card 4: OOPs Concepts -->
+            {% set oops_att = mock_stats.topic_attempts.get('oops') if mock_stats and mock_stats.topic_attempts else none %}
+            <div class="mock-tech-card">
+                <div class="mock-tech-card-top">
+                    <div class="mock-tech-icon-circle oops-bg">
+                        <!-- 3D Cube / Object SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <div class="mock-tech-header-info">
+                        <div class="mock-tech-name-row">
+                            <h3 class="mock-tech-title">OOPs Concepts</h3>
+                            {% if oops_att %}
+                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ oops_att.score_percentage }}%</span>
+                            {% else %}
+                                <span class="difficulty-pill pill-easy">Easy</span>
+                            {% endif %}
+                        </div>
+                        <div class="mock-tech-meta">
+                            <span class="meta-users">👥 20 Questions</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-time">30 Mins</span>
+                            {% if oops_att %}
+                                <span class="meta-dot">•</span>
+                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('mock_test_session', topic_key='oops') }}" class="btn-start-test" {% if oops_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
+                    {{ 'Retake Test 🔄' if oops_att else 'Start Test →' }}
+                </a>
+            </div>
+
+            <!-- Card 5: AWS Cloud -->
+            {% set aws_att = mock_stats.topic_attempts.get('aws') if mock_stats and mock_stats.topic_attempts else none %}
+            <div class="mock-tech-card">
+                <div class="mock-tech-card-top">
+                    <div class="mock-tech-icon-circle aws-bg">
+                        <!-- AWS Logo / Cloud SVG -->
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" fill="#fff7ed" stroke="#ea580c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            <text x="12" y="15" font-size="7" font-weight="900" fill="#ea580c" text-anchor="middle" font-family="sans-serif">aws</text>
+                        </svg>
+                    </div>
+                    <div class="mock-tech-header-info">
+                        <div class="mock-tech-name-row">
+                            <h3 class="mock-tech-title">AWS Cloud</h3>
+                            {% if aws_att %}
+                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ aws_att.score_percentage }}%</span>
+                            {% else %}
+                                <span class="difficulty-pill pill-medium-amber">Medium</span>
+                            {% endif %}
+                        </div>
+                        <div class="mock-tech-meta">
+                            <span class="meta-users">👥 15 Questions</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-time">20 Mins</span>
+                            {% if aws_att %}
+                                <span class="meta-dot">•</span>
+                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('mock_test_session', topic_key='aws') }}" class="btn-start-test" {% if aws_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
+                    {{ 'Retake Test 🔄' if aws_att else 'Start Test →' }}
+                </a>
+            </div>
+
+            <!-- Card 6: Problem Solving & DSA -->
+            {% set dsa_att = mock_stats.topic_attempts.get('problem_solving') if mock_stats and mock_stats.topic_attempts else none %}
+            <div class="mock-tech-card">
+                <div class="mock-tech-card-top">
+                    <div class="mock-tech-icon-circle dsa-bg">
+                        <!-- Code Brackets </> SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                            <line x1="14" y1="4" x2="10" y2="20"></line>
+                        </svg>
+                    </div>
+                    <div class="mock-tech-header-info">
+                        <div class="mock-tech-name-row">
+                            <h3 class="mock-tech-title">Problem Solving & DSA</h3>
+                            {% if dsa_att %}
+                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ dsa_att.score_percentage }}%</span>
+                            {% else %}
+                                <span class="difficulty-pill pill-hard">Hard</span>
+                            {% endif %}
+                        </div>
+                        <div class="mock-tech-meta">
+                            <span class="meta-users">👥 25 Questions</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-time">35 Mins</span>
+                            {% if dsa_att %}
+                                <span class="meta-dot">•</span>
+                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('mock_test_session', topic_key='problem_solving') }}" class="btn-start-test" {% if dsa_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
+                    {{ 'Retake Test 🔄' if dsa_att else 'Start Test →' }}
+                </a>
+            </div>
+
+            <!-- Card 7: C Programming -->
+            {% set c_att = mock_stats.topic_attempts.get('c') if mock_stats and mock_stats.topic_attempts else none %}
+            <div class="mock-tech-card">
+                <div class="mock-tech-card-top">
+                    <div class="mock-tech-icon-circle c-bg">
+                        <!-- Hexagon C Logo SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" fill="#1e3a8a"/>
+                            <text x="12" y="16" font-size="12" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="sans-serif">C</text>
+                        </svg>
+                    </div>
+                    <div class="mock-tech-header-info">
+                        <div class="mock-tech-name-row">
+                            <h3 class="mock-tech-title">C Programming</h3>
+                            {% if c_att %}
+                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ c_att.score_percentage }}%</span>
+                            {% else %}
+                                <span class="difficulty-pill pill-easy">Easy</span>
+                            {% endif %}
+                        </div>
+                        <div class="mock-tech-meta">
+                            <span class="meta-users">👥 20 Questions</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-time">30 Mins</span>
+                            {% if c_att %}
+                                <span class="meta-dot">•</span>
+                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('mock_test_session', topic_key='c') }}" class="btn-start-test" {% if c_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
+                    {{ 'Retake Test 🔄' if c_att else 'Start Test →' }}
+                </a>
+            </div>
+
+            <!-- Card 8: C++ & STL -->
+            {% set cpp_att = mock_stats.topic_attempts.get('cpp') if mock_stats and mock_stats.topic_attempts else none %}
+            <div class="mock-tech-card">
+                <div class="mock-tech-card-top">
+                    <div class="mock-tech-icon-circle cpp-bg">
+                        <!-- Hexagon C++ Logo SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" fill="#0284c7"/>
+                            <text x="12" y="15.5" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="sans-serif">C++</text>
+                        </svg>
+                    </div>
+                    <div class="mock-tech-header-info">
+                        <div class="mock-tech-name-row">
+                            <h3 class="mock-tech-title">C++ & STL</h3>
+                            {% if cpp_att %}
+                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ cpp_att.score_percentage }}%</span>
+                            {% else %}
+                                <span class="difficulty-pill pill-medium-amber">Medium</span>
+                            {% endif %}
+                        </div>
+                        <div class="mock-tech-meta">
+                            <span class="meta-users">👥 20 Questions</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-time">30 Mins</span>
+                            {% if cpp_att %}
+                                <span class="meta-dot">•</span>
+                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('mock_test_session', topic_key='cpp') }}" class="btn-start-test" {% if cpp_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
+                    {{ 'Retake Test 🔄' if cpp_att else 'Start Test →' }}
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         PERFORMANCE & RECENT TESTS OVERVIEW (MATCHING APTITUDE SECTION)
+         ========================================================================= -->
+    <div class="mock-perf-section" style="margin-bottom: 2rem;">
+        <div class="mock-perf-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            
+            <!-- Widget 1: Previous Mock Attempts -->
+            <div class="mock-perf-card" style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.35rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <span style="font-size: 1.25rem;">🕒</span>
+                        <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-main);">Previous Mock Attempts</h3>
+                    </div>
+                    <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700;">
+                        {{ mock_stats.recent_tests | length }} Recent
+                    </span>
+                </div>
+
+                {% if mock_stats and mock_stats.recent_tests %}
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        {% for test in mock_stats.recent_tests %}
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0.95rem; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 12px; transition: transform 0.2s ease;">
+                            <div>
+                                <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-main);">{{ test.topic_name }}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">{{ test.meta }}</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                <span style="font-weight: 800; font-size: 0.88rem; padding: 0.25rem 0.65rem; border-radius: 8px; {% if test.score >= 75 %}background: #d1fae5; color: #047857; border: 1px solid #6ee7b7;{% elif test.score >= 50 %}background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe;{% else %}background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5;{% endif %}">
+                                    {{ test.score }}%
+                                </span>
+                                <a href="{{ url_for('mock_test_session', topic_key=test.topic_key) }}" style="font-size: 0.78rem; font-weight: 700; color: #6366f1; text-decoration: none;">
+                                    Retake 🔄
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="text-align: center; padding: 1.75rem 1rem; color: var(--text-muted);">
+                        <div style="font-size: 2.2rem; margin-bottom: 0.5rem; opacity: 0.7;">📝</div>
+                        <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">No Mock Tests Completed Yet</div>
+                        <p style="font-size: 0.82rem; margin: 0; max-width: 320px; margin: 0 auto;">Select any of the 8 technical domains above and complete your first mock interview assessment!</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Widget 2: Accuracy & Readiness Overview -->
+            <div class="mock-perf-card" style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.35rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <span style="font-size: 1.25rem;">🎯</span>
+                        <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-main);">Accuracy & Domain Readiness</h3>
+                    </div>
+                    <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700;">Live Analytics</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.9rem; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 900; color: #10b981; font-family: var(--font-heading);">
+                            {{ mock_stats.accuracy_pct if mock_stats else 0 }}%
+                        </div>
+                        <div style="font-size: 0.76rem; color: var(--text-muted); font-weight: 700; margin-top: 0.2rem;">Overall Accuracy</div>
+                    </div>
+
+                    <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.9rem; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 900; color: #6366f1; font-family: var(--font-heading);">
+                            {{ mock_stats.overall_progress if mock_stats else 0 }}%
+                        </div>
+                        <div style="font-size: 0.76rem; color: var(--text-muted); font-weight: 700; margin-top: 0.2rem;">Domain Coverage</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div style="margin-top: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-main);">
+                        <span>Mock Readiness Progress</span>
+                        <span>{{ mock_stats.tests_completed if mock_stats else 0 }} / 8 Topics Covered</span>
+                    </div>
+                    <div style="height: 8px; background: rgba(0,0,0,0.06); border-radius: 9999px; overflow: hidden;">
+                        <div style="height: 100%; width: {{ mock_stats.overall_progress if mock_stats else 0 }}%; background: linear-gradient(90deg, #6366f1 0%, #10b981 100%); border-radius: 9999px; transition: width 0.6s ease;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- =========================================================================
+         SECTION 2: HR ROUND & "WHY MOCK INTERVIEWS?" (MATCHING SCREENSHOT)
+         ========================================================================= -->
+    <div class="mock-bottom-grid">
+
+        <!-- Left: HR Round Section -->
+        <div class="mock-hr-container">
+            <div class="mock-section-header">
+                <div class="mock-section-header-left">
+                    <div class="mock-section-badge-icon pink">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="mock-section-title">Section 2: HR Round</h2>
+                        <p class="mock-section-subtitle">Improve your communication and HR interview skills.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HR Cards Grid -->
+            <div class="mock-hr-grid">
+
+                <!-- HR Card 1: Self Introduction -->
+                <div class="mock-hr-card">
+                    <div class="mock-hr-card-content">
+                        <div class="mock-hr-icon-badge">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e11d48" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div class="mock-hr-text-area">
+                            <h3 class="mock-hr-title">Self Introduction</h3>
+                            <p class="mock-hr-desc">Practice your self introduction and get AI feedback.</p>
+                            <div class="mock-hr-action-row">
+                                <span class="mock-hr-time-meta">10 Questions • 15 Mins</span>
+                                <a href="{{ url_for('hr_question_bank') }}#basic-hr" class="btn-hr-action">
+                                    View Question Bank →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HR Card 2: General HR Questions -->
+                <div class="mock-hr-card">
+                    <div class="mock-hr-card-content">
+                        <div class="mock-hr-icon-badge">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e11d48" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="10" r="1" fill="#e11d48"></circle>
+                            </svg>
+                        </div>
+                        <div class="mock-hr-text-area">
+                            <h3 class="mock-hr-title">General HR Questions</h3>
+                            <p class="mock-hr-desc">Common HR questions with sample answers.</p>
+                            <div class="mock-hr-action-row">
+                                <span class="mock-hr-time-meta">20 Questions • 25 Mins</span>
+                                <a href="{{ url_for('hr_question_bank') }}" class="btn-hr-action">
+                                    View Question Bank →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right: Why Mock Interviews? Card -->
+        <div class="why-mock-card">
+            <div class="why-mock-content">
+                <h3 class="why-mock-title">Why Mock Interviews?</h3>
+                <ul class="why-mock-list">
+                    <li>
+                        <span class="why-mock-check">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span>Real interview experience</span>
+                    </li>
+                    <li>
+                        <span class="why-mock-check">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span>AI-powered performance analysis</span>
+                    </li>
+                    <li>
+                        <span class="why-mock-check">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span>Identify your strengths &amp; weaknesses</span>
+                    </li>
+                    <li>
+                        <span class="why-mock-check">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span>Improve confidence &amp; communication</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 3D Target Bullseye Graphic (Matching Screenshot) -->
+            <div class="why-mock-art">
+                <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" class="why-target-svg">
+                    <defs>
+                        <radialGradient id="targetGrad1" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="100%" stop-color="#e9d5ff"/>
+                        </radialGradient>
+                        <radialGradient id="targetGrad2" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#c084fc"/>
+                            <stop offset="100%" stop-color="#9333ea"/>
+                        </radialGradient>
+                        <filter id="targetShadow" x="0" y="0" width="160" height="160" filterUnits="userSpaceOnUse">
+                            <feDropShadow dx="2" dy="8" stdDeviation="10" flood-color="#7c3aed" flood-opacity="0.25"/>
+                        </filter>
+                    </defs>
+
+                    <!-- Shadow Base -->
+                    <ellipse cx="80" cy="140" rx="55" ry="12" fill="#581c87" fill-opacity="0.12"/>
+
+                    <!-- Angled 3D Dartboard Disk -->
+                    <g filter="url(#targetShadow)" transform="translate(10, 10)">
+                        <!-- Outer Rim -->
+                        <ellipse cx="70" cy="65" rx="58" ry="46" fill="#f3e8ff" stroke="#c084fc" stroke-width="4"/>
+                        <!-- Ring 2 -->
+                        <ellipse cx="70" cy="65" rx="46" ry="36" fill="#ffffff" stroke="#a855f7" stroke-width="4"/>
+                        <!-- Ring 3 -->
+                        <ellipse cx="70" cy="65" rx="34" ry="26" fill="#f3e8ff" stroke="#c084fc" stroke-width="3"/>
+                        <!-- Ring 4 -->
+                        <ellipse cx="70" cy="65" rx="22" ry="16" fill="#ffffff" stroke="#9333ea" stroke-width="3"/>
+                        <!-- Bullseye Center -->
+                        <ellipse cx="70" cy="65" rx="10" ry="8" fill="url(#targetGrad2)"/>
+
+                        <!-- Arrow hitting Bullseye -->
+                        <g transform="translate(70, 65) rotate(-35)">
+                            <!-- Arrow shaft -->
+                            <line x1="0" y1="0" x2="-45" y2="-45" stroke="#f43f5e" stroke-width="3.5" stroke-linecap="round"/>
+                            <!-- Arrow fletching/feathers -->
+                            <path d="M-45 -45 L-55 -40 L-48 -48 L-52 -55 Z" fill="#fb7185"/>
+                            <!-- Arrowhead at center -->
+                            <circle cx="0" cy="0" r="3" fill="#be123c"/>
+                        </g>
+
+                        <!-- Sparkle at hit point -->
+                        <path d="M82 52 L84 46 L86 52 L92 54 L86 56 L84 62 L82 56 L76 54 Z" fill="#fbbf24"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================================
+         BOTTOM CALLOUT BANNER: "CONSISTENT PRACTICE LEADS TO CONFIDENCE"
+         ========================================================================= -->
+    <div class="mock-footer-banner">
+        <div class="mock-footer-left">
+            <div class="mock-footer-icon-badge">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+            </div>
+            <div class="mock-footer-text">
+                <strong class="mock-footer-headline">Consistent practice leads to confidence.</strong>
+                <span class="mock-footer-desc">Take mock interviews regularly to track your progress and improve continuously.</span>
+            </div>
+        </div>
+
+        <a href="{{ url_for('progress') }}" class="btn-mock-progress">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span>My Progress →</span>
+        </a>
+    </div>
+
+</div>
+{% endblock %}

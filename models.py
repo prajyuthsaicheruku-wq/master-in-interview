@@ -65,10 +65,32 @@ class Question(db.Model):
         import json
         if self.options:
             try:
-                return json.loads(self.options)
+                opts = json.loads(self.options)
+                if opts:
+                    return opts
             except Exception:
-                return []
+                pass
+        if self.star_guide:
+            try:
+                sg = json.loads(self.star_guide)
+                if isinstance(sg, dict) and 'options' in sg:
+                    return sg['options']
+            except Exception:
+                pass
         return []
+
+    def get_correct_option(self):
+        if self.correct_option:
+            return self.correct_option
+        if self.star_guide:
+            try:
+                import json
+                sg = json.loads(self.star_guide)
+                if isinstance(sg, dict) and 'correct_option' in sg:
+                    return sg['correct_option']
+            except Exception:
+                pass
+        return 'A'
 
     def to_dict(self, user_id=None):
         data = {
@@ -83,7 +105,7 @@ class Question(db.Model):
             'tips': self.tips,
             'star_guide': self.star_guide,
             'options': self.get_options_list(),
-            'correct_option': self.correct_option
+            'correct_option': self.get_correct_option()
         }
         if user_id:
             progress = UserProgress.query.filter_by(user_id=user_id, question_id=self.id).first()
@@ -112,3 +134,31 @@ class Bookmark(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     __table_args__ = (db.UniqueConstraint('user_id', 'question_id', name='_user_question_uc'),)
+
+class AptitudeTestAttempt(db.Model):
+    __tablename__ = 'aptitude_test_attempts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    test_title = db.Column(db.String(100), nullable=False)
+    topic = db.Column(db.String(100), nullable=True)
+    total_questions = db.Column(db.Integer, default=10)
+    correct_count = db.Column(db.Integer, default=0)
+    incorrect_count = db.Column(db.Integer, default=0)
+    score_percentage = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class MockInterviewAttempt(db.Model):
+    __tablename__ = 'mock_interview_attempts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    topic_key = db.Column(db.String(100), nullable=False)
+    topic_name = db.Column(db.String(100), nullable=False)
+    total_questions = db.Column(db.Integer, default=20)
+    correct_count = db.Column(db.Integer, default=0)
+    incorrect_count = db.Column(db.Integer, default=0)
+    score_percentage = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+

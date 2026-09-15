@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}Placement Leaderboard & Candidate Rankings | InterviewMaster{% endblock %}
+
+{% block content %}
+<div class="leaderboard-page-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem 4rem 1rem;">
+
+    <!-- 1. PAGE HEADER & TOP PERFORMER SPOTLIGHT -->
+    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+        
+        <!-- HEADER TITLE & INTRO -->
+        <div style="background: #ffffff; border-radius: 1.25rem; padding: 2rem; color: #0f172a; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0;">
+            <div>
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; font-size: 0.8rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; margin-bottom: 1rem;">
+                    👑 Live Placement Rankings
+                </div>
+                <h1 style="font-size: 2.2rem; font-weight: 900; color: #0f172a; margin: 0 0 0.5rem 0; letter-spacing: -0.5px;">
+                    Global Placement Leaderboard
+                </h1>
+                <p style="color: #64748b; font-size: 1rem; margin: 0; line-height: 1.5; max-width: 600px;">
+                    Compete with top candidates across colleges. Solve questions, take mock interviews, and maintain your streak to climb the ranks!
+                </p>
+            </div>
+
+            <!-- TIME FILTERS -->
+            <div style="margin-top: 1.75rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span style="font-size: 0.82rem; font-weight: 700; color: #64748b; margin-right: 0.5rem;">Time Filter:</span>
+                <a href="{{ url_for('leaderboard', filter='daily') }}" class="btn btn-sm" style="font-weight: 700; border-radius: 9999px; padding: 0.45rem 1.1rem; font-size: 0.85rem; text-decoration: none; {{ 'background: #2563eb; color: #ffffff;' if filter_type == 'daily' else 'background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;' }}">
+                    Daily
+                </a>
+                <a href="{{ url_for('leaderboard', filter='weekly') }}" class="btn btn-sm" style="font-weight: 700; border-radius: 9999px; padding: 0.45rem 1.1rem; font-size: 0.85rem; text-decoration: none; {{ 'background: #2563eb; color: #ffffff;' if filter_type == 'weekly' else 'background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;' }}">
+                    Weekly
+                </a>
+                <a href="{{ url_for('leaderboard', filter='monthly') }}" class="btn btn-sm" style="font-weight: 700; border-radius: 9999px; padding: 0.45rem 1.1rem; font-size: 0.85rem; text-decoration: none; {{ 'background: #2563eb; color: #ffffff;' if filter_type == 'monthly' else 'background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;' }}">
+                    Monthly
+                </a>
+                <a href="{{ url_for('leaderboard', filter='all_time') }}" class="btn btn-sm" style="font-weight: 700; border-radius: 9999px; padding: 0.45rem 1.1rem; font-size: 0.85rem; text-decoration: none; {{ 'background: #2563eb; color: #ffffff;' if filter_type == 'all_time' or not filter_type else 'background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;' }}">
+                    All Time
+                </a>
+            </div>
+        </div>
+
+        <!-- TOP PERFORMER SPOTLIGHT CARD -->
+        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 1.25rem; padding: 1.75rem; box-shadow: 0 10px 25px rgba(245, 158, 11, 0.15); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
+            <div style="position: absolute; right: -15px; top: -15px; font-size: 5rem; opacity: 0.15; pointer-events: none;">👑</div>
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span style="font-size: 0.75rem; font-weight: 900; background: #b45309; color: #ffffff; padding: 0.25rem 0.65rem; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        ⭐ Top Performer Spotlight
+                    </span>
+                    <span style="font-size: 1.8rem;">🥇</span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.85rem;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #2563eb; color: #ffffff; font-weight: 900; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); border: 2px solid #ffffff;">
+                        {{ spotlight.avatar }}
+                    </div>
+                    <div>
+                        <h3 style="font-size: 1.25rem; font-weight: 900; color: #78350f; margin: 0; line-height: 1.2;">{{ spotlight.name }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(4px); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 0.75rem; padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                <div>
+                    <span style="font-size: 0.72rem; font-weight: 800; color: #92400e; text-transform: uppercase; display: block;">Highest Score</span>
+                    <span style="font-size: 1.4rem; font-weight: 900; color: #78350f;">{{ spotlight.score }} Pts</span>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.72rem; font-weight: 800; color: #92400e; text-transform: uppercase; display: block;">Achievement Badge</span>
+                    <span style="font-size: 0.82rem; font-weight: 800; color: #b45309; background: #fffbeb; padding: 0.2rem 0.55rem; border-radius: 0.4rem; border: 1px solid #fde68a; display: inline-block; margin-top: 0.1rem;">
+                        {{ spotlight.badge }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 2. LEADERBOARD METRICS SUMMARY & YOUR RANK CARD -->
+    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-bottom: 2rem;">
+        
+        <!-- METRICS CHIPS GRID -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;">
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <span style="font-size: 1.4rem; display: block; margin-bottom: 0.35rem;">💻</span>
+                <span style="font-size: 0.74rem; font-weight: 800; color: #64748b; text-transform: uppercase; display: block;">Questions Solved</span>
+                <span style="font-size: 1.4rem; font-weight: 900; color: #0f172a;">{{ metrics_summary.total_questions_solved }}</span>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <span style="font-size: 1.4rem; display: block; margin-bottom: 0.35rem;">🎙️</span>
+                <span style="font-size: 0.74rem; font-weight: 800; color: #64748b; text-transform: uppercase; display: block;">Mock Interview Score</span>
+                <span style="font-size: 1.4rem; font-weight: 900; color: #4f46e5;">{{ metrics_summary.avg_mock_score }}%</span>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <span style="font-size: 1.4rem; display: block; margin-bottom: 0.35rem;">🧠</span>
+                <span style="font-size: 0.74rem; font-weight: 800; color: #64748b; text-transform: uppercase; display: block;">Aptitude Score</span>
+                <span style="font-size: 1.4rem; font-weight: 900; color: #d97706;">{{ metrics_summary.avg_aptitude_score }}%</span>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <span style="font-size: 1.4rem; display: block; margin-bottom: 0.35rem;">🎯</span>
+                <span style="font-size: 0.74rem; font-weight: 800; color: #64748b; text-transform: uppercase; display: block;">Readiness Score</span>
+                <span style="font-size: 1.4rem; font-weight: 900; color: #2563eb;">{{ metrics_summary.avg_readiness_score }}%</span>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <span style="font-size: 1.4rem; display: block; margin-bottom: 0.35rem;">🔥</span>
+                <span style="font-size: 0.74rem; font-weight: 800; color: #64748b; text-transform: uppercase; display: block;">Streak Points</span>
+                <span style="font-size: 1.4rem; font-weight: 900; color: #ea580c;">{{ metrics_summary.total_streak_points }}</span>
+            </div>
+        </div>
+
+        <!-- YOUR RANK CARD -->
+        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1.5px solid #bfdbfe; border-radius: 1rem; padding: 1.25rem; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                    <span style="font-size: 0.78rem; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.5px;">Your Ranking</span>
+                    <span style="font-size: 0.76rem; font-weight: 800; background: #ffffff; color: #2563eb; padding: 0.2rem 0.55rem; border-radius: 9999px; border: 1px solid #bfdbfe;">
+                        Personal Stats
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.4rem;">
+                    <span style="font-size: 2.2rem; font-weight: 900; color: #1e3a8a; line-height: 1;">#{{ user_rank }}</span>
+                    <span style="font-size: 0.9rem; font-weight: 700; color: #3b82f6;">(Top 15%)</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 700; color: #1e40af; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed #bfdbfe;">
+                    <span>Points: <strong>{{ user_score }}</strong></span>
+                    <span style="color: #d97706;">Top 10 Needed: <strong>{{ top10_needed }} More Pts</strong></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 3. MAIN LEADERBOARD TABLE -->
+    <div class="glass-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1.25rem; padding: 1.75rem; box-shadow: 0 6px 20px rgba(0,0,0,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.6rem;">
+                📊 Candidate Standings & Scoreboard
+            </h2>
+            <span style="font-size: 0.82rem; font-weight: 700; color: #64748b;">Showing Top Candidates</span>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; font-size: 0.95rem;">
+                <thead>
+                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                        <th style="padding: 1rem 1.25rem; font-weight: 800; color: #475569; border-radius: 0.6rem 0 0 0.6rem; width: 100px;">Rank</th>
+                        <th style="padding: 1rem 1.25rem; font-weight: 800; color: #475569;">Name</th>
+                        <th style="padding: 1rem 1.25rem; font-weight: 800; color: #475569; width: 140px;">Score</th>
+                        <th style="padding: 1rem 1.25rem; font-weight: 800; color: #475569; border-radius: 0 0.6rem 0.6rem 0; width: 140px;">Streak</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in candidates %}
+                    <tr style="border-bottom: 1px solid #f1f5f9; {{ 'background: #eff6ff; font-weight: 800;' if c.is_current else '' }}">
+                        <!-- RANK -->
+                        <td style="padding: 1rem 1.25rem; font-weight: 900; color: #0f172a; vertical-align: middle;">
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <span style="font-size: 1.2rem;">{{ c.badge_icon }}</span>
+                                <span style="font-size: 1.05rem;">{{ c.rank }}</span>
+                            </div>
+                        </td>
+
+                        <!-- NAME & COLLEGE -->
+                        <td style="padding: 1rem 1.25rem; vertical-align: middle;">
+                            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                                <div style="width: 38px; height: 38px; border-radius: 50%; background: {{ '#2563eb' if c.rank <= 3 else '#64748b' }}; color: #ffffff; font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    {{ c.avatar }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 800; color: #0f172a; font-size: 1rem; display: flex; align-items: center; gap: 0.4rem;">
+                                        {{ c.name }}
+                                        {% if c.is_current %}
+                                        <span style="font-size: 0.7rem; font-weight: 800; background: #2563eb; color: #ffffff; padding: 0.1rem 0.45rem; border-radius: 0.3rem;">
+                                            YOU
+                                        </span>
+                                        {% endif %}
+                                        {% if c.rank <= 3 %}
+                                        <span style="font-size: 0.72rem; font-weight: 800; background: #fef3c7; color: #d97706; padding: 0.1rem 0.45rem; border-radius: 0.3rem; margin-left: 0.35rem;">
+                                            {{ c.badge }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- SCORE -->
+                        <td style="padding: 1rem 1.25rem; font-weight: 900; color: #2563eb; font-size: 1.1rem; vertical-align: middle;">
+                            {{ c.score }} Pts
+                        </td>
+
+                        <!-- STREAK -->
+                        <td style="padding: 1rem 1.25rem; vertical-align: middle;">
+                            <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 800; color: #ea580c; background: #fff7ed; border: 1px solid #fed7aa; padding: 0.3rem 0.75rem; border-radius: 9999px; font-size: 0.85rem;">
+                                🔥 {{ c.streak }} Days
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    {% set user_in_list = candidates | selectattr('is_current') | list | length %}
+                    {% if not user_in_list %}
+                    <!-- CURRENT USER ROW IF NOT IN TOP LIST -->
+                    <tr style="background: #eff6ff; border-top: 2px solid #bfdbfe; border-bottom: 2px solid #bfdbfe;">
+                        <td style="padding: 1rem 1.25rem; font-weight: 900; color: #1e3a8a; vertical-align: middle;">
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <span style="font-size: 1rem; font-weight: 900; color: #2563eb;">#</span>
+                                <span style="font-size: 1.05rem;">{{ user_rank }}</span>
+                            </div>
+                        </td>
+                        <td style="padding: 1rem 1.25rem; vertical-align: middle;">
+                            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                                <div style="width: 38px; height: 38px; border-radius: 50%; background: #4f46e5; color: #ffffff; font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    {{ user.username[0] | upper }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 900; color: #1e3a8a; font-size: 1rem; display: flex; align-items: center; gap: 0.4rem;">
+                                        {{ user.full_name or user.username }}
+                                        <span style="font-size: 0.7rem; font-weight: 800; background: #2563eb; color: #ffffff; padding: 0.1rem 0.45rem; border-radius: 0.3rem;">
+                                            YOU
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 1rem 1.25rem; font-weight: 900; color: #1e3a8a; font-size: 1.1rem; vertical-align: middle;">
+                            {{ user_score }} Pts
+                        </td>
+                        <td style="padding: 1rem 1.25rem; vertical-align: middle;">
+                            <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 800; color: #ea580c; background: #ffffff; border: 1px solid #fed7aa; padding: 0.3rem 0.75rem; border-radius: 9999px; font-size: 0.85rem;">
+                                🔥 {{ user.streak_count or 1 }} Days
+                            </span>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<style>
+@media (max-width: 900px) {
+    div[style*="grid-template-columns: 1fr 340px"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
+{% endblock %}

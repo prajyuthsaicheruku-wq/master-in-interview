@@ -1,166 +1,1030 @@
 {% extends "base.html" %}
 
-{% block title %}{{ company_name }} Placement Papers, Exam Pattern & Round Details | InterviewMaster{% endblock %}
+{% block title %}{{ company_name }} Placement Papers, Exam Pattern & Round Details (2026) | InterviewMaster{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 1200px; padding-top: 1.5rem; padding-bottom: 3.5rem;">
+<div class="container company-detail-page" style="max-width: 1240px; padding-top: 1.25rem; padding-bottom: 4rem;">
 
-    <!-- BACK TO PRACTICE NAVIGATION BAR -->
-    <div style="margin-bottom: 1.25rem;">
-        <a href="{{ url_for('questions') }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; border-radius: var(--radius-full); background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.4); color: var(--accent-cyan); padding: 0.5rem 1.25rem; font-size: 0.92rem;">
-            💻 ← Back to Practice
+    <!-- TOP BREADCRUMB & COMPANY SWITCHER STRIP -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;">
+        <a href="{{ url_for('practice') }}" class="btn btn-outline btn-sm company-back-btn">
+            <span>🏢</span> ← Back to Companies
         </a>
+
+        <!-- QUICK COMPANY SWITCHER PILLS -->
+        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-right: 0.2rem;">Quick Switch:</span>
+            {% for comp in ['Accenture', 'TCS', 'Infosys', 'Amazon', 'Wipro', 'Google', 'Deloitte', 'Capgemini'] %}
+                <a href="{{ url_for('company_detail', company_name=comp) }}" 
+                   class="quick-comp-pill {{ 'active' if comp.lower() in company_name.lower() }}">
+                   {{ comp }}
+                </a>
+            {% endfor %}
+        </div>
     </div>
 
-
-
-    <!-- MAIN CONTENT AREA -->
-    <div>
-
-            <!-- 1. COMPANY HEADER OVERVIEW -->
-            <div class="glass-card" id="overview-section" style="padding: 2.25rem; margin-bottom: 2rem; border-top: 4px solid #10b981;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
-                    <div>
-                        <span class="badge badge-category" style="margin-bottom: 0.5rem;">Placement Pattern & Model</span>
-                        <h1 style="font-size: 2.4rem; font-weight: 800; line-height: 1.2;">{{ company_name }} Placement Papers & Pattern</h1>
-                    </div>
-                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                        <a href="{{ url_for('practice', company=company_name, paper_type='model') }}" class="btn btn-primary btn-md" style="font-weight: 800; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">📝 Solve Model Paper ⏱️</a>
-                        <a href="{{ url_for('practice', company=company_name, paper_type='practice') }}" class="btn btn-outline btn-md" style="font-weight: 800; border-color: #6366f1; color: #4338ca;">💡 Interactive Practice Test 🎯</a>
-                    </div>
+    <!-- 1. HERO COMPANY HEADER OVERVIEW -->
+    <div class="glass-card hero-company-card" id="overview-section" style="border-top: 4px solid {{ company_meta.brand_color }};">
+        <div class="hero-top-row">
+            <div class="hero-identity">
+                <div class="company-logo-avatar" style="background: {{ company_meta.accent_bg }};">
+                    <span>{{ company_meta.logo_icon }}</span>
                 </div>
-                <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin: 0;">
-                    Complete information about {{ company_name }} placement test structure, sectional time limits, question counts, and past memory-based question papers.
-                </p>
-            </div>
-
-            <!-- 2. SELECTION PROCESS PIPELINE (5 STAGES) -->
-            <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-                <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">
-                    🔄 Selection Process Pipeline
-                </h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; text-align: center;">
-                    {% for stage in selection_stages %}
-                    <div style="background: #f8fafc; padding: 1.25rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-glass);">
-                        <div style="font-size: 1.85rem; margin-bottom: 0.35rem;">{{ stage.icon }}</div>
-                        <div style="font-size: 0.72rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase;">Stage 0{{ stage.step }}</div>
-                        <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-main); margin-top: 0.2rem;">{{ stage.title }}</div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.35rem;">
+                        <span class="badge badge-verified">✓ Official 2026 Recruitment Drive</span>
+                        <span class="badge {{ company_meta.difficulty_class }}">Difficulty: {{ company_meta.difficulty }}</span>
                     </div>
-                    {% endfor %}
+                    <h1 class="company-page-title">{{ company_name }} Placement Pattern & Exam Details</h1>
+                    <p class="company-tagline">{{ company_meta.tagline }}</p>
                 </div>
             </div>
-
-            <!-- 3. EXACT PREPINSTA-STYLE EXAM PATTERN TABLE -->
-            <div class="glass-card" id="table-section" style="padding: 2rem; margin-bottom: 2rem;">
-                <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--text-main);">
-                    Details Related to Selection Rounds & Exam Pattern:
-                </h2>
-
-                <!-- STYLED HIGH-CONTRAST DATA TABLE -->
-                <div style="overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); margin-bottom: 1.5rem;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
-                        <thead>
-                            <tr style="background: #f1f5f9; border-bottom: 2px solid var(--border-glass);">
-                                {% if table_headers and table_headers|length == 2 %}
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 35%;">{{ table_headers[0] }}</th>
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 65%;">{{ table_headers[1] }}</th>
-                                {% elif table_headers and table_headers|length == 3 %}
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 30%;">{{ table_headers[0] }}</th>
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 35%;">{{ table_headers[1] }}</th>
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 35%;">{{ table_headers[2] }}</th>
-                                {% else %}
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 25%;">{% if table_headers %}{{ table_headers[0] }}{% else %}Round{% endif %}</th>
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 35%;">{% if table_headers %}{{ table_headers[1] }}{% else %}Section{% endif %}</th>
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 20%;">{% if table_headers %}{{ table_headers[2] }}{% else %}No. of Questions{% endif %}</th>
-                                    <th style="padding: 1rem 1.25rem; font-weight: 800; color: var(--text-main); width: 20%;">{% if table_headers %}{{ table_headers[3] }}{% else %}Time Allotted{% endif %}</th>
-                                {% endif %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for round in table_rounds %}
-                                {% for sec in round.sections %}
-                                <tr style="border-bottom: 1px solid var(--border-glass); background: {% if loop.index % 2 == 0 %}#f8fafc{% else %}#ffffff{% endif %};">
-                                    {% if table_headers and table_headers|length == 2 %}
-                                        <td style="padding: 1rem 1.25rem; font-weight: 700; color: var(--text-main); border-right: 1px solid var(--border-glass); background: rgba(99, 102, 241, 0.04);">
-                                            {{ round.round_name }}
-                                        </td>
-                                        <td style="padding: 1rem 1.25rem; font-weight: 500; color: var(--text-main);">
-                                            {{ sec.name }}
-                                        </td>
-                                    {% else %}
-                                        {% if loop.first %}
-                                        <td rowspan="{{ round.sections | length }}" style="padding: 1.25rem; font-weight: 700; color: var(--accent-cyan); vertical-align: top; border-right: 1px solid var(--border-glass); background: rgba(99, 102, 241, 0.04);">
-                                            {{ round.round_name }}
-                                        </td>
-                                        {% endif %}
-                                        <td style="padding: 1rem 1.25rem; font-weight: 600; color: var(--text-main);">
-                                            {{ sec.name }}
-                                        </td>
-                                        <td style="padding: 1rem 1.25rem; font-weight: 600; color: var(--text-main);">
-                                            {{ sec.qs }}
-                                        </td>
-                                        {% if (not table_headers or table_headers|length > 3) and sec.time is defined and sec.time %}
-                                        <td style="padding: 1rem 1.25rem; color: var(--text-muted); font-weight: 500;">
-                                            {{ sec.time }}
-                                        </td>
-                                        {% endif %}
-                                    {% endif %}
-                                </tr>
-                                {% endfor %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- NOTE CALLOUT BOX MATCHING SCREENSHOT -->
-                <div style="background: rgba(239, 68, 68, 0.06); border-left: 4px solid #ef4444; border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin-top: 1.5rem;">
-                    <div style="color: #ef4444; font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem;">
-                        Note:
-                    </div>
-                    <ol style="margin: 0; padding-left: 1.25rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
-                        <li>Sections are time-bound in most drives. Candidates cannot switch back to previous sections after time expires.</li>
-                        <li>Coding round requires solving 2 questions in 45 minutes using C, C++, Java, Python, or JavaScript.</li>
-                    </ol>
-                </div>
-            </div>
-
-            <!-- 4. PAST YEAR QUESTION PAPERS -->
-            <div class="glass-card" id="papers-section" style="padding: 2rem;">
-                <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--text-main);">
-                    📜 {{ company_name }} Last Year Solved Question Papers
-                </h2>
-
-                <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-                    {% for paper in past_papers %}
-                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-glass);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
-                            <span class="badge badge-category">{{ paper.year }}</span>
-                            <span style="font-size: 0.85rem; color: var(--accent-cyan); font-weight: 600;">{{ paper.duration }}</span>
-                        </div>
-
-                        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.75rem;">{{ paper.title }}</h3>
-
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; font-size: 0.88rem; color: var(--text-muted);">
-                            <div style="background: #ffffff; border: 1px solid var(--border-glass); padding: 0.75rem; border-radius: 6px;">
-                                <strong style="color: #059669;">Coding:</strong> {{ paper.sample_coding }}
-                            </div>
-                            <div style="background: #ffffff; border: 1px solid var(--border-glass); padding: 0.75rem; border-radius: 6px;">
-                                <strong style="color: #d97706;">Quants/Logical:</strong> {{ paper.sample_quant }}
-                            </div>
-                            <div style="background: #ffffff; border: 1px solid var(--border-glass); padding: 0.75rem; border-radius: 6px;">
-                                <strong style="color: #0284c7;">Technical:</strong> {{ paper.sample_tech }}
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 1rem; text-align: right;">
-                            <a href="{{ url_for('practice', company=company_name, paper_title=paper.title, year=paper.year, paper_type='practice') }}" class="btn btn-primary btn-sm" style="font-weight: 700; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">▶️ Solve Paper in Practice Test</a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
         </div>
 
+        <!-- KEY STATS METRICS GRID -->
+        <div class="company-stats-grid">
+            <div class="stat-chip">
+                <div class="stat-chip-icon">⏱️</div>
+                <div>
+                    <div class="stat-chip-label">Test Duration</div>
+                    <div class="stat-chip-val">{{ total_mins }} Mins</div>
+                </div>
+            </div>
+            <div class="stat-chip">
+                <div class="stat-chip-icon">📝</div>
+                <div>
+                    <div class="stat-chip-label">Total Questions</div>
+                    <div class="stat-chip-val">{{ total_qs }} Questions</div>
+                </div>
+            </div>
+            <div class="stat-chip">
+                <div class="stat-chip-icon">💰</div>
+                <div>
+                    <div class="stat-chip-label">Salary CTC</div>
+                    <div class="stat-chip-val">{{ company_meta.ctc }}</div>
+                </div>
+            </div>
+            <div class="stat-chip">
+                <div class="stat-chip-icon">💼</div>
+                <div>
+                    <div class="stat-chip-label">Target Role</div>
+                    <div class="stat-chip-val" style="font-size: 0.88rem;">{{ company_meta.roles }}</div>
+                </div>
+            </div>
+            <div class="stat-chip" style="grid-column: span 1;">
+                <div class="stat-chip-icon">🎓</div>
+                <div>
+                    <div class="stat-chip-label">Eligibility</div>
+                    <div class="stat-chip-val" style="font-size: 0.84rem;">{{ company_meta.eligibility }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IN-PAGE NAVIGATION STICKY BAR -->
+    <nav class="company-nav-tabs">
+        <a href="#overview-section" class="tab-link active">Overview</a>
+        <a href="#pipeline-section" class="tab-link">Selection Pipeline</a>
+        <a href="#table-section" class="tab-link">Exam Pattern</a>
+        <a href="#syllabus-section" class="tab-link">Syllabus Breakdown</a>
+        <a href="#faq-section" class="tab-link">Preparation & FAQs</a>
+    </nav>
+
+    <!-- 2. SELECTION PROCESS PIPELINE (5 STAGES) -->
+    <div class="glass-card section-card" id="pipeline-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="header-icon">🔄</span> Selection Process Pipeline
+            </h2>
+            <span class="section-subtitle">Comprehensive step-by-step recruitment flowchart for {{ company_name }}</span>
+        </div>
+
+        <div class="pipeline-grid">
+            {% for stage in selection_stages %}
+            <div class="pipeline-stage-card">
+                <div class="stage-badge-header">
+                    <span class="stage-step-num">STAGE 0{{ stage.step }}</span>
+                    <span class="stage-type-tag">{% if stage.step <= 3 %}Elimination Round{% else %}Interview Round{% endif %}</span>
+                </div>
+                <div class="stage-icon-wrap">{{ stage.icon }}</div>
+                <h3 class="stage-title">{{ stage.title }}</h3>
+                <p class="stage-desc">{{ stage.desc }}</p>
+                <div class="stage-footer">
+                    <span class="stage-status-dot"></span> Active Assessment Round
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 3. EXACT PREPINSTA-STYLE EXAM PATTERN TABLE -->
+    <div class="glass-card section-card" id="table-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="header-icon">📋</span> Details Related to Selection Rounds & Exam Pattern
+            </h2>
+            <span class="section-subtitle">Sectional breakdown, question count, and time allocations</span>
+        </div>
+
+        <!-- STYLED HIGH-CONTRAST DATA TABLE -->
+        <div class="table-responsive-wrap">
+            <table class="exam-pattern-table">
+                <thead>
+                    <tr>
+                        {% if table_headers and table_headers|length == 2 %}
+                            <th style="width: 35%;">{{ table_headers[0] }}</th>
+                            <th style="width: 65%;">{{ table_headers[1] }}</th>
+                        {% elif table_headers and table_headers|length == 3 %}
+                            <th style="width: 30%;">{{ table_headers[0] }}</th>
+                            <th style="width: 35%;">{{ table_headers[1] }}</th>
+                            <th style="width: 35%;">{{ table_headers[2] }}</th>
+                        {% else %}
+                            <th style="width: 25%;">{% if table_headers %}{{ table_headers[0] }}{% else %}Round{% endif %}</th>
+                            <th style="width: 35%;">{% if table_headers %}{{ table_headers[1] }}{% else %}Section Details{% endif %}</th>
+                            <th style="width: 20%;">{% if table_headers %}{{ table_headers[2] }}{% else %}No. of Questions{% endif %}</th>
+                            <th style="width: 20%;">{% if table_headers %}{{ table_headers[3] }}{% else %}Time Allotted{% endif %}</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for round in table_rounds %}
+                        {% for sec in round.sections %}
+                        <tr>
+                            {% if table_headers and table_headers|length == 2 %}
+                                <td class="round-col-cell">
+                                    {{ round.round_name }}
+                                </td>
+                                <td class="section-detail-cell">
+                                    {{ sec.name }}
+                                </td>
+                            {% else %}
+                                {% if loop.first %}
+                                <td rowspan="{{ round.sections | length }}" class="round-col-cell">
+                                    {{ round.round_name }}
+                                </td>
+                                {% endif %}
+                                <td class="section-detail-cell">
+                                    {{ sec.name }}
+                                </td>
+                                <td class="qs-col-cell">
+                                    <span class="qs-badge">{{ sec.qs }}</span>
+                                </td>
+                                {% if (not table_headers or table_headers|length > 3) and sec.time is defined and sec.time %}
+                                <td class="time-col-cell">
+                                    ⏱️ {{ sec.time }}
+                                </td>
+                                {% endif %}
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- IMPORTANT RULES & GUIDELINES CALLOUT BOX -->
+        <div class="guidelines-box">
+            <div class="guidelines-title">
+                <span>⚠️</span> Important Drive Guidelines & Exam Rules:
+            </div>
+            <ol class="guidelines-list">
+                <li><strong>Sectional Time Lock:</strong> Sections are time-bound in most drives. Candidates cannot switch back to previous sections after time expires.</li>
+                <li><strong>Coding Assessment:</strong> Requires solving 2 questions in 45 minutes using C, C++, Java, Python, or JavaScript. Code correctness, edge cases, and time/space complexity are evaluated.</li>
+                <li><strong>No Negative Marking:</strong> Most assessment modules do not deduct marks for incorrect answers. Attempting all questions is recommended.</li>
+                <li><strong>Communication Round:</strong> Non-elimination but mandatory module evaluated via AI speech processing for fluency, grammar, listening comprehension, and vocabulary.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 4. COMPREHENSIVE SYLLABUS BREAKDOWN SECTION -->
+    <div class="glass-card section-card" id="syllabus-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="header-icon">📚</span> Sectional Syllabus & Topic Breakdown
+            </h2>
+            <span class="section-subtitle">Core concepts tested across test modules</span>
+        </div>
+
+        <div class="syllabus-grid">
+            {% for item in company_meta.syllabus %}
+            <div class="syllabus-card">
+                <div class="syllabus-header">
+                    <div class="syllabus-icon">{{ item.icon }}</div>
+                    <div>
+                        <h3 class="syllabus-cat-title">{{ item.category }}</h3>
+                        <div class="syllabus-meta-row">
+                            <span>📝 {{ item.qs }}</span>
+                            <span>⏱️ {{ item.time }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="syllabus-topics-wrap">
+                    <div class="topics-label">Key Topics Covered:</div>
+                    <div class="topic-tags-list">
+                        {% for topic in item.topics %}
+                            <span class="topic-chip">{{ topic }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 5. PREPARATION GUIDE & FAQs SECTION -->
+    <div class="glass-card section-card" id="faq-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="header-icon">💡</span> Frequently Asked Questions & Preparation Guide
+            </h2>
+            <span class="section-subtitle">Everything you need to know before attending the {{ company_name }} placement test</span>
+        </div>
+
+        <div class="faq-accordion-list">
+            {% for faq in company_meta.faqs %}
+            <div class="faq-item">
+                <button type="button" class="faq-question-btn">
+                    <span class="faq-q-text">❓ {{ faq.q }}</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer-body" style="display: none;">
+                    <p>{{ faq.a }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 7-DAY STRATEGY CARD -->
+        <div class="prep-strategy-card" style="margin-top: 2rem;">
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
+                🎯 7-Day Last-Minute Preparation Strategy for {{ company_name }}
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; font-size: 0.9rem;">
+                <div class="strat-step">
+                    <strong>Days 1-2: Quant & Logic</strong>
+                    <p style="margin: 0.2rem 0 0; color: #475569;">Focus on Speed Maths, Percentages, Ratios, Series & Syllogisms.</p>
+                </div>
+                <div class="strat-step">
+                    <strong>Days 3-4: Pseudocode & Tech</strong>
+                    <p style="margin: 0.2rem 0 0; color: #475569;">Practice Bitwise operators, pointer arithmetic, OOPs & output prediction.</p>
+                </div>
+                <div class="strat-step">
+                    <strong>Days 5-6: Coding & Arrays</strong>
+                    <p style="margin: 0.2rem 0 0; color: #475569;">Solve array subsegments, string parsing & matrix problem patterns.</p>
+                </div>
+                <div class="strat-step">
+                    <strong>Day 7: Full Mock Paper</strong>
+                    <p style="margin: 0.2rem 0 0; color: #475569;">Take timed full-length practice tests to perfect sectional time management.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<!-- COMPONENT STYLES & RESPONSIVE DESIGN -->
+<style>
+/* COMPANY DETAIL PAGE SPECIFIC STYLING */
+.company-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: #4338ca;
+    padding: 0.45rem 1.15rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.company-back-btn:hover {
+    background: rgba(99, 102, 241, 0.22);
+    transform: translateX(-2px);
+}
+
+.quick-comp-pill {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+.quick-comp-pill:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+.quick-comp-pill.active {
+    background: #4f46e5;
+    color: #ffffff;
+    border-color: #4338ca;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+}
+
+/* HERO CARD */
+.hero-company-card {
+    padding: 2.25rem;
+    margin-bottom: 1.75rem;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+.hero-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+.hero-identity {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    max-width: 750px;
+}
+.company-logo-avatar {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+.badge-verified {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.78rem;
+}
+.badge-warning { background: #fef3c7; color: #d97706; border: 1px solid #fcd34d; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 9999px; font-size: 0.78rem; }
+.badge-danger { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 9999px; font-size: 0.78rem; }
+.badge-info { background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 9999px; font-size: 0.78rem; }
+
+.company-page-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.25;
+    margin: 0 0 0.4rem 0;
+}
+.company-tagline {
+    color: #64748b;
+    font-size: 1.02rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    min-width: 260px;
+}
+.hero-cta-btn {
+    font-weight: 800;
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.3);
+    padding: 0.8rem 1.4rem;
+    border-radius: 0.6rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.hero-secondary-btn {
+    font-weight: 700;
+    border-radius: 0.6rem;
+    padding: 0.65rem 1.2rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: 1.5px solid #cbd5e1;
+    color: #334155;
+    background: #ffffff;
+}
+
+/* STATS GRID */
+.company-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+}
+.stat-chip {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+.stat-chip-icon {
+    font-size: 1.6rem;
+    background: #ffffff;
+    width: 44px;
+    height: 44px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border: 1px solid #cbd5e1;
+}
+.stat-chip-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.stat-chip-val {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 0.1rem;
+}
+
+/* IN-PAGE NAV TABS */
+.company-nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: #ffffff;
+    padding: 0.6rem 0.8rem;
+    border-radius: 9999px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    position: sticky;
+    top: 0.5rem;
+    z-index: 100;
+}
+.tab-link {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #64748b;
+    text-decoration: none;
+    border-radius: 9999px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-link:hover {
+    color: #4f46e5;
+    background: #f1f5f9;
+}
+.tab-link.active {
+    background: #4f46e5;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+}
+
+/* SECTION CARDS */
+.section-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+}
+.section-header {
+    margin-bottom: 1.75rem;
+}
+.section-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.35rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.section-subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+/* PIPELINE GRID */
+.pipeline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.1rem;
+}
+.pipeline-stage-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.35rem 1.1rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.pipeline-stage-card:hover {
+    transform: translateY(-3px);
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+}
+.stage-badge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+.stage-step-num {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #4f46e5;
+    letter-spacing: 0.5px;
+}
+.stage-type-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    background: #e2e8f0;
+    color: #475569;
+    padding: 0.15rem 0.45rem;
+    border-radius: 0.3rem;
+}
+.stage-icon-wrap {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+.stage-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.4rem 0;
+}
+.stage-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.45;
+    margin: 0 0 0.85rem 0;
+}
+.stage-footer {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #10b981;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed #e2e8f0;
+}
+.stage-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+}
+
+/* EXAM PATTERN TABLE */
+.table-responsive-wrap {
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 1.5rem;
+}
+.exam-pattern-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.92rem;
+}
+.exam-pattern-table th {
+    background: #f1f5f9;
+    padding: 1rem 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 2px solid #cbd5e1;
+}
+.exam-pattern-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+}
+.round-col-cell {
+    font-weight: 800;
+    color: #4f46e5;
+    vertical-align: top;
+    background: rgba(99, 102, 241, 0.03);
+    border-right: 1px solid #e2e8f0;
+}
+.section-detail-cell {
+    font-weight: 600;
+    color: #0f172a;
+}
+.qs-col-cell {
+    font-weight: 700;
+}
+.qs-badge {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.4rem;
+    font-weight: 700;
+}
+.time-col-cell {
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* GUIDELINES CALLOUT BOX */
+.guidelines-box {
+    background: rgba(239, 68, 68, 0.05);
+    border-left: 4px solid #ef4444;
+    border-radius: 0.6rem;
+    padding: 1.25rem 1.5rem;
+}
+.guidelines-title {
+    color: #dc2626;
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.guidelines-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #475569;
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+
+/* SYLLABUS GRID */
+.syllabus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+}
+.syllabus-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+.syllabus-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+.syllabus-icon {
+    font-size: 1.8rem;
+}
+.syllabus-cat-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.2rem 0;
+}
+.syllabus-meta-row {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #4f46e5;
+    display: flex;
+    gap: 0.75rem;
+}
+.topics-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+.topic-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+.topic-chip {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+}
+
+/* PAST PAPERS */
+.past-papers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+.paper-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    padding: 1.35rem;
+}
+.paper-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+.paper-year-badge {
+    background: rgba(99, 102, 241, 0.12);
+    color: #4f46e5;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.3rem;
+    display: inline-block;
+    margin-bottom: 0.35rem;
+}
+.paper-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+.paper-meta-pills {
+    display: flex;
+    gap: 0.5rem;
+}
+.paper-meta-pill {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #334155;
+}
+.sample-qs-box {
+    margin-bottom: 1rem;
+}
+.sample-toggle-btn {
+    font-weight: 700;
+    color: #4f46e5;
+    border-color: rgba(79, 70, 229, 0.3);
+    background: #ffffff;
+    width: 100%;
+    text-align: left;
+    padding: 0.55rem 0.9rem;
+    border-radius: 0.5rem;
+}
+.sample-qs-content {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.6rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.sample-q-item {
+    padding-bottom: 0.6rem;
+    border-bottom: 1px dashed #e2e8f0;
+}
+.sample-q-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.sample-q-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    margin-bottom: 0.2rem;
+}
+.tag-coding { color: #0284c7; }
+.tag-quant { color: #d97706; }
+.tag-tech { color: #dc2626; }
+.sample-q-text {
+    font-size: 0.88rem;
+    color: #334155;
+    line-height: 1.45;
+}
+.paper-card-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+.solve-paper-btn {
+    font-weight: 800;
+    background: #4f46e5;
+    color: #ffffff !important;
+    padding: 0.55rem 1.25rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+}
+
+/* FAQS */
+.faq-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.faq-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.6rem;
+    overflow: hidden;
+}
+.faq-question-btn {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    border: none;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+.faq-question-btn:hover {
+    background: #f1f5f9;
+}
+.faq-icon {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #4f46e5;
+}
+.faq-answer-body {
+    padding: 1rem 1.25rem;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+.prep-strategy-card {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.75rem;
+    padding: 1.35rem;
+}
+.strat-step {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 0.85rem;
+}
+
+/* BOTTOM CTA BANNER */
+.bottom-cta-banner {
+    background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);
+    border-radius: 1.25rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 12px 30px rgba(79, 70, 229, 0.25);
+}
+
+@media (max-width: 768px) {
+    .company-detail-page {
+        padding-top: 0.75rem !important;
+        padding-bottom: 2rem !important;
+    }
+    .hero-company-card {
+        padding: 1.25rem 1rem !important;
+    }
+    .hero-top-row {
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+    .hero-identity {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+    .company-page-title {
+        font-size: 1.45rem !important;
+    }
+    .company-stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.65rem !important;
+    }
+    .stat-chip {
+        padding: 0.75rem 0.65rem !important;
+        gap: 0.6rem !important;
+    }
+    .stat-chip-icon {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1.2rem !important;
+    }
+    .stat-chip-val {
+        font-size: 0.82rem !important;
+    }
+    .company-nav-tabs {
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        display: flex !important;
+        gap: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+    }
+    .company-nav-tabs::-webkit-scrollbar {
+        display: none !important;
+    }
+    .tab-link {
+        flex-shrink: 0 !important;
+    }
+    .section-card {
+        padding: 1.25rem 1rem !important;
+    }
+    .pipeline-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .paper-card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    .bottom-cta-banner {
+        padding: 1.75rem 1.1rem !important;
+    }
+}
+</style>
+
+<!-- INTERACTIVE JS FOR SAMPLE TOGGLE & FAQS -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // SAMPLE QUESTION TOGGLES
+    const sampleBtns = document.querySelectorAll('.sample-toggle-btn');
+    sampleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const content = document.getElementById(targetId);
+            if (content) {
+                if (content.style.display === 'none' || !content.style.display) {
+                    content.style.display = 'block';
+                    btn.textContent = '❌ Hide Sample Questions Preview';
+                } else {
+                    content.style.display = 'none';
+                    btn.textContent = '🔍 View Sample Questions Preview (Quant, Tech & Coding)';
+                }
+            }
+        });
+    });
+
+    // FAQ ACCORDION TOGGLES
+    const faqBtns = document.querySelectorAll('.faq-question-btn');
+    faqBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.parentElement;
+            const body = item.querySelector('.faq-answer-body');
+            const icon = btn.querySelector('.faq-icon');
+            if (body) {
+                if (body.style.display === 'none' || !body.style.display) {
+                    body.style.display = 'block';
+                    icon.textContent = '−';
+                } else {
+                    body.style.display = 'none';
+                    icon.textContent = '+';
+                }
+            }
+        });
+    });
+
+    // STICKY NAV HIGHLIGHT ON SCROLL
+    const sections = document.querySelectorAll('.section-card, #overview-section');
+    const navLinks = document.querySelectorAll('.tab-link');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 120) {
+                current = section.getAttribute('id');
+            }
+        });
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

@@ -666,6 +666,318 @@ SEED_QUESTIONS = [
         "sample_answer": "Speed in m/s = 54 * (5/18) = 15 m/s.\nTotal distance covered in 20s = Speed * Time = 15 * 20 = 300 meters.\nTotal Distance = Train Length + Platform Length.\nPlatform Length = 300 - 180 = 120 meters.",
         "tips": "Convert km/h to m/s by multiplying by 5/18.",
         "star_guide": None
+    },
+
+    # ==========================================
+    # 7. GENERAL HR & BEHAVIORAL QUESTIONS
+    # ==========================================
+    {
+        "category": "Behavioral",
+        "sub_category": "Basic HR Questions",
+        "topic": "Self Introduction",
+        "title": "Basic HR: Tell me about yourself",
+        "difficulty": "Easy",
+        "question_text": "Tell me about yourself.",
+        "sample_answer": "Deliver a concise 60-90 second pitch covering Present (Current Studies/Role), Past (Projects & Achievements), and Future (Career Goal). Focus on Academic background (B.Tech Computer Science), core technical skills, major projects built, and passion for software engineering.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Basic HR Questions",
+        "topic": "Strengths",
+        "title": "Basic HR: What are your strengths?",
+        "difficulty": "Easy",
+        "question_text": "What are your strengths?",
+        "sample_answer": "Mention 2-3 key strengths with real examples: Analytical Problem Solving, Adaptability & Fast Learning, Teamwork & Reliability. Back up each strength with a brief 1-sentence real example from your academic or project experience.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Basic HR Questions",
+        "topic": "Weaknesses",
+        "title": "Basic HR: What are your weaknesses?",
+        "difficulty": "Easy",
+        "question_text": "What are your weaknesses?",
+        "sample_answer": "Choose a genuine non-fatal weakness & steps taken to improve. Example: Getting overly focused on minor perfection details in initial code drafts, now managed via timeboxing. Always state a real weakness paired with active self-improvement steps.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Basic HR Questions",
+        "topic": "Why Hire You",
+        "title": "Basic HR: Why should we hire you?",
+        "difficulty": "Medium",
+        "question_text": "Why should we hire you?",
+        "sample_answer": "Highlight solid CS & Coding Fundamentals, hands-on project & practical execution, high enthusiasm, and cultural fit. Align your skills directly with what the company looks for in a software engineer.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Basic HR Questions",
+        "topic": "Company Interest",
+        "title": "Basic HR: Why do you want to work for our company?",
+        "difficulty": "Medium",
+        "question_text": "Why do you want to work for our company?",
+        "sample_answer": "Mention company's technical engineering reputation, product scale/innovation impact, and great learning & mentorship culture for freshers. Show company research by mentioning specific products, technologies, or engineering principles.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Basic HR Questions",
+        "topic": "Motivation",
+        "title": "Basic HR: What motivates you?",
+        "difficulty": "Easy",
+        "question_text": "What motivates you?",
+        "sample_answer": "Solving challenging technical problems, writing software used by real people, and continuous learning and growth. Demonstrate internal motivation driven by problem-solving and craftsmanship.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Basic HR Questions",
+        "topic": "Career Goals",
+        "title": "Basic HR: What are your career goals?",
+        "difficulty": "Medium",
+        "question_text": "What are your career goals?",
+        "sample_answer": "Short-Term: Master tech stack & deliver high quality code. Long-Term: Grow into Senior Architect / Tech Lead driving engineering vision.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Basic HR Questions",
+        "topic": "5 Year Plan",
+        "title": "Basic HR: Where do you see yourself in 5 years?",
+        "difficulty": "Medium",
+        "question_text": "Where do you see yourself in 5 years?",
+        "sample_answer": "Key Milestones: Deep domain expertise in full-stack/backend development, taking end-to-end ownership of core system modules, and mentoring junior developers.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Education & Background",
+        "topic": "CS Choice",
+        "title": "Education: Why did you choose Computer Science?",
+        "difficulty": "Easy",
+        "question_text": "Why did you choose Computer Science?",
+        "sample_answer": "Passion for logic & building software out of ideas, plus the transformative impact of computing in every industry. Highlight genuine curiosity and enthusiasm for technology.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Education & Background",
+        "topic": "Academic Journey",
+        "title": "Education: Tell me about your academic journey.",
+        "difficulty": "Easy",
+        "question_text": "Tell me about your academic journey.",
+        "sample_answer": "Academic consistency in B.Tech, favorite subjects & core CS milestones, extracurriculars & coding competitions. Show how academic years prepared you specifically for software development.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Education & Background",
+        "topic": "Favorite Subject",
+        "title": "Education: What was your favorite subject and why?",
+        "difficulty": "Easy",
+        "question_text": "What was your favorite subject and why?",
+        "sample_answer": "Data Structures & Algorithms / DBMS / OS. Developed logical thinking, memory management, and structured problem solving. Connect subject principles to software engineering.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Education & Background",
+        "topic": "B.Tech Skills",
+        "title": "Education: What skills have you learned during your B.Tech?",
+        "difficulty": "Easy",
+        "question_text": "What skills have you learned during your B.Tech?",
+        "sample_answer": "Programming (Python, Java, C++), Web & DB (HTML/CSS, React, SQL/PostgreSQL), Tools (Git, VS Code, Linux). List technical skills clearly with confidence.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Project-Based Questions",
+        "topic": "Major Project",
+        "title": "Project: Explain your major project.",
+        "difficulty": "Medium",
+        "question_text": "Explain your major project.",
+        "sample_answer": "Use STAR Method: Situation (Problem statement), Task (Your individual responsibility), Action (Tech stack, DB design, APIs built), Result (Live app performance & feedback).",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Project-Based Questions",
+        "topic": "Project Challenges",
+        "title": "Project: What challenges did you face in your project?",
+        "difficulty": "Medium",
+        "question_text": "What challenges did you face in your project?",
+        "sample_answer": "Explain technical challenge (e.g. Query latency / State synchronization / API integration) and how you debugged & resolved it. Focus on the technical problem-solving process.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Project-Based Questions",
+        "topic": "Tech Stack Choice",
+        "title": "Project: What technologies did you use and why?",
+        "difficulty": "Medium",
+        "question_text": "What technologies did you use and why?",
+        "sample_answer": "Justify stack choices: Tech A for performance, Tech B for scalability & community support, Tech C for seamless API integration. Demonstrate intentional choices.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Project-Based Questions",
+        "topic": "Project Improvements",
+        "title": "Project: Improvements if given more time?",
+        "difficulty": "Medium",
+        "question_text": "If given more time, what improvements would you make to your project?",
+        "sample_answer": "Proposed Enhancements: Redis Caching & DB Indexing, Microservices / Dockerization, Automated Unit & End-to-End Tests. Shows engineering maturity.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Teamwork & Behavioral",
+        "topic": "Teamwork Experience",
+        "title": "Teamwork: Describe a time when you worked in a team.",
+        "difficulty": "Medium",
+        "question_text": "Describe a time when you worked in a team.",
+        "sample_answer": "Describe team goal & module allocation, Git collaboration workflow, and final successful delivery. Emphasize collaboration and collective accountability.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Teamwork & Behavioral",
+        "topic": "Overcoming Challenge",
+        "title": "Behavioral: Challenge faced and how you solved it.",
+        "difficulty": "Medium",
+        "question_text": "Tell me about a challenge you faced and how you solved it.",
+        "sample_answer": "STAR Story: Situation (High-pressure situation / bug), Action (Systematic debugging & root cause analysis), Result (Resolution & lesson learned). Demonstrate resilience.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Teamwork & Behavioral",
+        "topic": "Conflict Resolution",
+        "title": "Behavioral: Handling a conflict with a teammate.",
+        "difficulty": "Hard",
+        "question_text": "Have you ever handled a conflict with a teammate?",
+        "sample_answer": "Listened to teammate's perspective open-mindedly, evaluated options using objective data/benchmarks, reached win-win agreement for project success.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Teamwork & Behavioral",
+        "topic": "Leadership Example",
+        "title": "Behavioral: Situation showing leadership.",
+        "difficulty": "Hard",
+        "question_text": "Describe a situation where you showed leadership.",
+        "sample_answer": "Took initiative when direction was missing, organized sprint tasks & helped peers overcome blockers, delivered project on schedule.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Situational Questions",
+        "topic": "Missed Deadline",
+        "title": "Situational: What if you missed a project deadline?",
+        "difficulty": "Hard",
+        "question_text": "What would you do if you missed a project deadline?",
+        "sample_answer": "Proactive early communication with lead, explain bottleneck & revised timeline, prioritize MVP features & put extra effort. Shows transparency and accountability.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Situational Questions",
+        "topic": "Pressure Management",
+        "title": "Situational: How would you handle pressure at work?",
+        "difficulty": "Medium",
+        "question_text": "How would you handle pressure at work?",
+        "sample_answer": "Break complex tasks into smaller prioritized steps, maintain clear communication with stakeholders, focus on steady execution.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Situational Questions",
+        "topic": "Negative Feedback",
+        "title": "Situational: How would you deal with negative feedback?",
+        "difficulty": "Medium",
+        "question_text": "How would you deal with negative feedback?",
+        "sample_answer": "Welcome constructive criticism as growth input, ask clarifying questions to understand root cause, create action plan and follow up.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Situational Questions",
+        "topic": "Manager Disagreement",
+        "title": "Situational: What if you disagreed with your manager?",
+        "difficulty": "Hard",
+        "question_text": "What would you do if you disagreed with your manager?",
+        "sample_answer": "Private 1-on-1 discussion backed by data & research, listen carefully to manager's broader perspective, fully commit to final decision once made.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Company & Career",
+        "topic": "Why Select You",
+        "title": "Company: Why select you over other candidates?",
+        "difficulty": "Hard",
+        "question_text": "Why should we select you over other candidates?",
+        "sample_answer": "Unique blend of solid CS fundamentals & hands-on build experience, fast learning speed & adaptability, alignment with company culture & vision.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Company & Career",
+        "topic": "Relocation",
+        "title": "Company: Are you willing to relocate?",
+        "difficulty": "Easy",
+        "question_text": "Are you willing to relocate?",
+        "sample_answer": "Yes, I am fully open and flexible to relocate. I look forward to working in a new environment and collaborating with the team in person.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Company & Career",
+        "topic": "Salary Expectation",
+        "title": "Company: What salary do you expect?",
+        "difficulty": "Medium",
+        "question_text": "What salary do you expect?",
+        "sample_answer": "As a fresher, my primary priority is joining a company with strong learning opportunities. I expect compensation as per company standards and industry norms.",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
+    },
+    {
+        "category": "Behavioral",
+        "sub_category": "Company & Career",
+        "topic": "Questions for Interviewer",
+        "title": "Company: Do you have any questions for us?",
+        "difficulty": "Easy",
+        "question_text": "Do you have any questions for us?",
+        "sample_answer": "1. What does success look like for a fresher in this role over the first 6 months?\n2. What key engineering challenges is the team currently solving?",
+        "tips": "Evaluated on: Confidence (20%), Communication (20%), Clarity (20%), Relevance (20%), Professionalism (20%).",
+        "star_guide": None
     }
 ]
 

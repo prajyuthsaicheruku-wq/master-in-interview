@@ -211,11 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateThemeUI(isLight) {
             if (darkIcon && lightIcon) {
-                darkIcon.style.display = isLight ? 'none' : 'inline-block';
-                lightIcon.style.display = isLight ? 'inline-block' : 'none';
+                darkIcon.style.display = isLight ? 'inline-block' : 'none';
+                lightIcon.style.display = isLight ? 'none' : 'inline-block';
             }
             if (themeLabel) {
-                themeLabel.textContent = isLight ? 'Light Mode' : 'Dark Mode';
+                themeLabel.textContent = isLight ? 'Dark Mode' : 'White Mode';
             }
         }
 
@@ -382,3 +382,67 @@ function switchPracticeSection(idx) {
         }
     });
 }
+
+// --- PWA / APP INSTALLATION HANDLER ---
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+});
+
+function handleInstallAppClick() {
+    if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('App install accepted by user.');
+            }
+            deferredInstallPrompt = null;
+        });
+    } else {
+        showAppInstallModal();
+    }
+}
+
+function showAppInstallModal() {
+    let modal = document.getElementById('appInstallModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'appInstallModal';
+        modal.className = 'app-install-modal-overlay';
+        modal.innerHTML = `
+            <div class="app-install-modal-content">
+                <div class="install-modal-header">
+                    <div style="display:flex; align-items:center; gap:0.6rem;">
+                        <span style="font-size:1.6rem;">⚡</span>
+                        <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-main);">Install InterviewMaster</h3>
+                    </div>
+                    <button type="button" class="install-modal-close" onclick="closeAppInstallModal()">&times;</button>
+                </div>
+                <div class="install-modal-body" style="padding:1rem 0; font-size:0.88rem; color:var(--text-muted); line-height:1.6;">
+                    <p style="margin-bottom:0.75rem; color:var(--text-main); font-weight:600;">
+                        Install InterviewMaster for instant 1-click desktop & mobile access without typing URLs!
+                    </p>
+                    <div style="display:flex; flex-direction:column; gap:0.65rem; background:rgba(99,102,241,0.08); padding:0.9rem; border-radius:12px; border:1px solid rgba(99,102,241,0.2);">
+                        <div><strong>💻 Chrome / Edge (Laptop):</strong> Look for the <strong>Install icon (⊕ or ⬇️)</strong> on the right side of the address bar, or click <strong>Menu (⋮) &gt; Install InterviewMaster</strong>.</div>
+                        <div><strong>📱 Mobile Safari / Chrome:</strong> Tap <strong>Share (⎋)</strong> or <strong>Menu (⋮)</strong> &gt; Select <strong>"Add to Home Screen"</strong>.</div>
+                    </div>
+                </div>
+                <div class="install-modal-footer" style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:0.5rem;">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="closeAppInstallModal()" style="border-radius:8px; padding:0.45rem 1.25rem; font-weight:700;">Got It!</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    modal.classList.add('active');
+}
+
+function closeAppInstallModal() {
+    const modal = document.getElementById('appInstallModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
