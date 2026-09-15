@@ -161,4 +161,18 @@ class MockInterviewAttempt(db.Model):
     score_percentage = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+class EmailVerificationOTP(db.Model):
+    __tablename__ = 'email_verification_otps'
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), nullable=False, index=True)
+    otp_code = db.Column(db.String(10), nullable=False)
+    purpose = db.Column(db.String(32), default='register')  # 'register', 'reset_password'
+    is_used = db.Column(db.Boolean, default=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def is_valid(self):
+        return (not self.is_used) and (datetime.utcnow() <= self.expires_at)
+
 

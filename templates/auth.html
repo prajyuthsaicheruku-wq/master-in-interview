@@ -82,40 +82,94 @@
             <button type="button" id="backToLoginBtn" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.75rem;">← Back to Login</button>
         </form>
 
-        <!-- REGISTER FORM -->
-        <form id="registerForm" action="{{ url_for('register') }}" method="POST" style="{% if initial_mode == 'register' %}display: block;{% else %}display: none;{% endif %}">
-            <div class="form-group">
-                <label class="form-label" for="regUsername">Username</label>
-                <input type="text" id="regUsername" name="username" class="form-input" placeholder="Choose a unique username" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="regEmail">Email Address</label>
-                <input type="email" id="regEmail" name="email" class="form-input" placeholder="alex@example.com" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="regPassword">Password</label>
-                <div style="position: relative;">
-                    <input type="password" id="regPassword" name="password" class="form-input" placeholder="Minimum 6 characters" minlength="6" required>
-                    <button type="button" class="toggle-password" data-target="regPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+        <!-- REGISTER & OTP VERIFICATION FORM -->
+        <div id="registerContainer" style="{% if initial_mode == 'register' %}display: block;{% else %}display: none;{% endif %}">
+            
+            <!-- STEP 1: ACCOUNT DETAILS -->
+            <form id="registerFormStep1" onsubmit="handleSendOtp(event)">
+                <div class="form-group">
+                    <label class="form-label" for="regUsername">Username</label>
+                    <input type="text" id="regUsername" name="username" class="form-input" placeholder="e.g. alex_coder" required minlength="3">
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="form-label" for="targetRole">Target Role</label>
-                <select id="targetRole" name="target_role" class="form-select">
-                    <option value="Software Engineer">Software Engineer (Full Stack)</option>
-                    <option value="Frontend Engineer">Frontend Engineer</option>
-                    <option value="Backend Engineer">Backend Engineer</option>
-                    <option value="System Design Architect">System Design Architect</option>
-                    <option value="Data Engineer">Data Engineer / AI Engineer</option>
-                    <option value="Engineering Manager">Engineering Manager</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label class="form-label" for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" name="email" class="form-input" placeholder="alex@example.com" required>
+                    <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem; display: block;">
+                        🔒 An OTP verification code will be sent to this email via Brevo.
+                    </small>
+                </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account & Begin →</button>
-        </form>
+                <div class="form-group">
+                    <label class="form-label" for="regPassword">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="regPassword" name="password" class="form-input" placeholder="Minimum 6 characters" minlength="6" required>
+                        <button type="button" class="toggle-password" data-target="regPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="targetRole">Target Role</label>
+                    <select id="targetRole" name="target_role" class="form-select">
+                        <option value="Software Engineer">Software Engineer (Full Stack)</option>
+                        <option value="Frontend Engineer">Frontend Engineer</option>
+                        <option value="Backend Engineer">Backend Engineer</option>
+                        <option value="System Design Architect">System Design Architect</option>
+                        <option value="Data Engineer">Data Engineer / AI Engineer</option>
+                        <option value="Engineering Manager">Engineering Manager</option>
+                    </select>
+                </div>
+
+                <div id="step1Alert" class="alert-box" style="display: none; margin-top: 0.75rem;"></div>
+
+                <button type="submit" id="sendOtpBtn" class="btn btn-primary" style="width: 100%; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span>Send Verification Code (OTP)</span>
+                    <span id="sendOtpSpinner" class="spinner-small" style="display: none;">⏳</span>
+                    <span>→</span>
+                </button>
+            </form>
+
+            <!-- STEP 2: OTP VERIFICATION BOX -->
+            <form id="registerFormStep2" onsubmit="handleVerifyOtp(event)" style="display: none;">
+                <div style="text-align: center; margin-bottom: 1.25rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">📩</div>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.35rem 0;">Enter Verification Code</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                        We sent a 6-digit OTP to <strong id="displayTargetEmail" style="color: var(--accent-cyan);"></strong>
+                    </p>
+                </div>
+
+                <div class="form-group" style="text-align: center;">
+                    <label class="form-label" for="regOtpCode" style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-indigo);">6-Digit OTP Code</label>
+                    <input type="text" id="regOtpCode" name="otp_code" class="form-input" 
+                           placeholder="• • • • • •" 
+                           maxlength="6" 
+                           pattern="[0-9]{6}" 
+                           inputmode="numeric" 
+                           autocomplete="one-time-code"
+                           style="text-align: center; font-size: 1.75rem; letter-spacing: 12px; font-weight: 800; color: var(--accent-cyan); background: rgba(15, 23, 42, 0.6); padding: 0.75rem;" 
+                           required>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.6rem; font-size: 0.8rem;">
+                        <span id="otpTimerText" style="color: var(--text-muted);">⏱️ Code valid for 10m</span>
+                        <button type="button" id="resendOtpBtn" onclick="resendOtpCode()" style="background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 0.82rem; text-decoration: underline; padding: 0;" disabled>
+                            Resend OTP (<span id="resendCountdown">45</span>s)
+                        </button>
+                    </div>
+                </div>
+
+                <div id="step2Alert" class="alert-box" style="display: none; margin-top: 0.75rem;"></div>
+
+                <button type="submit" id="verifyOtpBtn" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span>Verify & Create Account</span>
+                    <span id="verifySpinner" class="spinner-small" style="display: none;">⏳</span>
+                    <span>🚀</span>
+                </button>
+
+                <button type="button" onclick="goBackToStep1()" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.75rem;">
+                    ← Change Email / Details
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

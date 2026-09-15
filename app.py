@@ -4,7 +4,8 @@ from datetime import datetime, date, timedelta
 from functools import wraps
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response
-from models import db, User, Question, UserProgress, Bookmark, AptitudeTestAttempt, MockInterviewAttempt
+from models import db, User, Question, UserProgress, Bookmark, AptitudeTestAttempt, MockInterviewAttempt, EmailVerificationOTP
+from email_service import send_brevo_otp_email
 
 # Load environment variables from .env file
 load_dotenv()
@@ -138,29 +139,147 @@ def login():
     flash('Invalid credentials. Please check your username/email and password.', 'danger')
     return redirect(url_for('auth_page', mode='login'))
 
+@app.route('/api/auth/send-register-otp', methods=['POST'])
+def send_register_otp():
+    data = request.get_json(silent=True) or request.form
+    username = (data.get('username') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    password = data.get('password') or ''
+
+    if not username or not email or not password:
+        return jsonify({'success': False, 'message': 'Username, Email, and Password are all required.'}), 400
+
+    if len(username) < 3:
+        return jsonify({'success': False, 'message': 'Username must be at least 3 characters long.'}), 400
+
+    if len(password) < 6:
+        return jsonify({'success': False, 'message': 'Password must be at least 6 characters long.'}), 400
+
+    if '@' not in email or '.' not in email:
+        return jsonify({'success': False, 'message': 'Please enter a valid email address.'}), 400
+
+    if User.query.filter_by(username=username).first():
+        return jsonify({'success': False, 'message': 'This username is already taken. Please choose another.'}), 400
+
+    if User.query.filter_by(email=email).first():
+        return jsonify({'success': False, 'message': 'This email address is already registered. Please log in.'}), 400
+
+    # Invalidate existing unused OTPs for this email and purpose
+    EmailVerificationOTP.query.filter_by(email=email, purpose='register', is_used=False).update({'is_used': True})
+    
+    # Generate 6-digit OTP
+    otp_code = f"{random.randint(100000, 999999)}"
+    expires_at = datetime.utcnow() + timedelta(minutes=10)
+
+    otp_entry = EmailVerificationOTP(
+        email=email,
+        otp_code=otp_code,
+        purpose='register',
+        expires_at=expires_at,
+        is_used=False
+    )
+    db.session.add(otp_entry)
+    db.session.commit()
+
+    # Send verification email via Brevo
+    success, send_msg = send_brevo_otp_email(email, otp_code, username)
+
+    return jsonify({
+        'success': True,
+        'message': f'Verification code sent to {email}. Please check your inbox (and spam folder).'
+    })
+
+@app.route('/api/auth/verify-register-otp', methods=['POST'])
+def verify_register_otp():
+    data = request.get_json(silent=True) or request.form
+    username = (data.get('username') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    password = data.get('password') or ''
+    target_role = data.get('target_role') or 'Software Engineer'
+    otp_code = (data.get('otp_code') or '').strip()
+
+    if not username or not email or not password or not otp_code:
+        return jsonify({'success': False, 'message': 'Missing required fields or OTP code.'}), 400
+
+    if User.query.filter_by(username=username).first():
+        return jsonify({'success': False, 'message': 'Username already taken.'}), 400
+
+    if User.query.filter_by(email=email).first():
+        return jsonify({'success': False, 'message': 'Email address already registered.'}), 400
+
+    # Verify OTP
+    otp_entry = EmailVerificationOTP.query.filter_by(
+        email=email,
+        otp_code=otp_code,
+        purpose='register',
+        is_used=False
+    ).order_by(EmailVerificationOTP.created_at.desc()).first()
+
+    if not otp_entry:
+        return jsonify({'success': False, 'message': 'Invalid OTP code. Please check and try again.'}), 400
+
+    if datetime.utcnow() > otp_entry.expires_at:
+        return jsonify({'success': False, 'message': 'This OTP has expired. Please request a new code.'}), 400
+
+    # Mark OTP as used
+    otp_entry.is_used = True
+
+    # Create new verified User
+    new_user = User(
+        username=username,
+        email=email,
+        target_role=target_role,
+        streak_count=1,
+        last_active_date=date.today()
+    )
+    new_user.set_password(password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    # Set authenticated session
+    session['user_id'] = new_user.id
+    session['username'] = new_user.username
+
+    flash(f'🎉 Welcome {new_user.username}! Your account has been verified and created successfully.', 'success')
+    return jsonify({
+        'success': True,
+        'message': 'Account verified and created successfully!',
+        'redirect_url': url_for('dashboard')
+    })
+
 @app.route('/register', methods=['POST'])
 def register():
+    # Direct fallback if form is submitted traditionally
     username = request.form.get('username', '').strip()
     email = request.form.get('email', '').strip().lower()
     password = request.form.get('password', '')
     target_role = request.form.get('target_role', 'Software Engineer')
+    otp_code = request.form.get('otp_code', '').strip()
 
-    if not username or not email or not password:
-        flash('All fields (Username, Email, Password) are required.', 'danger')
+    if not otp_code:
+        flash('Email OTP verification is required to create an account.', 'warning')
         return redirect(url_for('auth_page', mode='register'))
 
-    if len(username) < 3:
-        flash('Username must be at least 3 characters long.', 'danger')
+    otp_entry = EmailVerificationOTP.query.filter_by(
+        email=email,
+        otp_code=otp_code,
+        purpose='register',
+        is_used=False
+    ).order_by(EmailVerificationOTP.created_at.desc()).first()
+
+    if not otp_entry or datetime.utcnow() > otp_entry.expires_at:
+        flash('Invalid or expired OTP code. Please try again.', 'danger')
         return redirect(url_for('auth_page', mode='register'))
 
     if User.query.filter_by(username=username).first():
-        flash('Username already taken. Please choose another.', 'danger')
+        flash('Username already taken.', 'danger')
         return redirect(url_for('auth_page', mode='register'))
 
     if User.query.filter_by(email=email).first():
-        flash('Email address already registered. Please login instead.', 'danger')
+        flash('Email address already registered.', 'danger')
         return redirect(url_for('auth_page', mode='register'))
 
+    otp_entry.is_used = True
     new_user = User(username=username, email=email, target_role=target_role, streak_count=1, last_active_date=date.today())
     new_user.set_password(password)
     db.session.add(new_user)
@@ -168,7 +287,7 @@ def register():
 
     session['user_id'] = new_user.id
     session['username'] = new_user.username
-    flash('Account created successfully! Welcome to Interview Prep Portal.', 'success')
+    flash('Account verified and created successfully! Welcome to Interview Prep Portal.', 'success')
     return redirect(url_for('dashboard'))
 
 @app.route('/reset-password', methods=['POST'])
