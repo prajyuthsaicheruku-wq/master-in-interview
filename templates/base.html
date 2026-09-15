@@ -135,7 +135,8 @@
                         </div>
                     </a>
                 {% else %}
-                    <a href="{{ url_for('auth_page', mode='login') }}" class="btn btn-primary btn-sm">Login</a>
+                    <a href="{{ url_for('auth_page', mode='login') }}" class="btn btn-secondary btn-sm" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">Log In</a>
+                    <a href="{{ url_for('auth_page', mode='register') }}" class="btn btn-primary btn-sm" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">Sign Up</a>
                 {% endif %}
             </div>
         </header>

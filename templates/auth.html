@@ -33,8 +33,8 @@
         </div>
 
         <div class="auth-tabs">
-            <button type="button" class="auth-tab-btn {% if initial_mode != 'register' %}active{% endif %}" id="loginTabBtn">Log In</button>
-            <button type="button" class="auth-tab-btn {% if initial_mode == 'register' %}active{% endif %}" id="registerTabBtn">Create Account</button>
+            <button type="button" class="auth-tab-btn {% if initial_mode != 'register' and initial_mode != 'reset' %}active{% endif %}" id="loginTabBtn" onclick="switchAuthTab('login')">Log In</button>
+            <button type="button" class="auth-tab-btn {% if initial_mode == 'register' %}active{% endif %}" id="registerTabBtn" onclick="switchAuthTab('register')">Create Account</button>
         </div>
 
         <!-- LOGIN FORM -->
@@ -189,5 +189,39 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+<script>
+// Inline tab switch fallback to ensure instant responsiveness even before external JS finishes loading
+function switchAuthTab(mode) {
+    const loginTabBtn = document.getElementById('loginTabBtn');
+    const registerTabBtn = document.getElementById('registerTabBtn');
+    const loginForm = document.getElementById('loginForm');
+    const registerContainer = document.getElementById('registerContainer');
+    const resetForm = document.getElementById('resetForm');
+    const step1 = document.getElementById('registerFormStep1');
+    const step2 = document.getElementById('registerFormStep2');
+
+    if (mode === 'register') {
+        if (registerTabBtn) registerTabBtn.classList.add('active');
+        if (loginTabBtn) loginTabBtn.classList.remove('active');
+        if (loginForm) loginForm.style.display = 'none';
+        if (resetForm) resetForm.style.display = 'none';
+        if (registerContainer) registerContainer.style.display = 'block';
+        if (step1) step1.style.display = 'block';
+        if (step2) step2.style.display = 'none';
+    } else if (mode === 'reset') {
+        if (loginTabBtn) loginTabBtn.classList.remove('active');
+        if (registerTabBtn) registerTabBtn.classList.remove('active');
+        if (loginForm) loginForm.style.display = 'none';
+        if (registerContainer) registerContainer.style.display = 'none';
+        if (resetForm) resetForm.style.display = 'block';
+    } else {
+        if (loginTabBtn) loginTabBtn.classList.add('active');
+        if (registerTabBtn) registerTabBtn.classList.remove('active');
+        if (loginForm) loginForm.style.display = 'block';
+        if (registerContainer) registerContainer.style.display = 'none';
+        if (resetForm) resetForm.style.display = 'none';
+    }
+}
+</script>
+<script src="{{ url_for('static', filename='js/auth.js') }}?v=v2026_otp_full_v5"></script>
 {% endblock %}
