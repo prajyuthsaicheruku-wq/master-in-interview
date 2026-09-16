@@ -383,10 +383,20 @@ def dashboard():
     update_user_streak(user)
 
     # 1. Total & Mastered Counts
-    total_questions = Question.query.count()
-    mastered_count = UserProgress.query.filter_by(user_id=user.id, status='mastered').count()
-    attempted_count = UserProgress.query.filter_by(user_id=user.id).count()
+    user_progs = UserProgress.query.filter_by(user_id=user.id).all()
+    mastered_prog_ids = {p.question_id for p in user_progs if p.status == 'mastered'}
+    attempted_count = len(user_progs)
+    mastered_count = len(mastered_prog_ids)
     bookmarked_count = Bookmark.query.filter_by(user_id=user.id).count()
+
+    # Pre-fetch all question categories and IDs in ONE lightweight query
+    all_qs_cat = db.session.query(Question.id, Question.category).all()
+    total_questions = len(all_qs_cat)
+    cat_to_qids = {}
+    for qid, cat in all_qs_cat:
+        if cat not in cat_to_qids:
+            cat_to_qids[cat] = []
+        cat_to_qids[cat].append(qid)
 
     # 2. Dynamic Readiness Score
     if total_questions > 0:
@@ -405,12 +415,11 @@ def dashboard():
     }
     cat_scores = {}
     for round_name, cats in rounds_map.items():
-        r_total = Question.query.filter(Question.category.in_(cats)).count()
-        r_mastered = UserProgress.query.join(Question).filter(
-            UserProgress.user_id == user.id,
-            UserProgress.status == 'mastered',
-            Question.category.in_(cats)
-        ).count()
+        r_qids = []
+        for c in cats:
+            r_qids.extend(cat_to_qids.get(c, []))
+        r_total = len(r_qids)
+        r_mastered = sum(1 for qid in r_qids if qid in mastered_prog_ids)
         if r_total > 0 and r_mastered > 0:
             cat_scores[round_name] = round((r_mastered / r_total * 100))
         else:
@@ -428,11 +437,12 @@ def dashboard():
             weak_areas = (areas_extracted + ['OOP', 'SQL', 'Communication'])[:3]
 
     # 5. Question of the Day & Today's Practice Topic
-    all_questions = Question.query.all()
     question_of_the_day = None
-    if all_questions:
-        q_idx = today.toordinal() % len(all_questions)
-        question_of_the_day = all_questions[q_idx].to_dict(user_id=user.id)
+    if total_questions > 0:
+        q_idx = today.toordinal() % total_questions
+        q_obj = Question.query.offset(q_idx).first()
+        if q_obj:
+            question_of_the_day = q_obj.to_dict(user_id=user.id)
 
     todays_topic = {
         'title': question_of_the_day['title'] if question_of_the_day else 'Python OOP & Data Structures',
@@ -445,12 +455,9 @@ def dashboard():
     categories = ['Frontend', 'Backend', 'Data Structures', 'System Design', 'Behavioral']
     cat_stats = []
     for cat in categories:
-        cat_total = Question.query.filter_by(category=cat).count()
-        cat_mastered = UserProgress.query.join(Question).filter(
-            UserProgress.user_id == user.id,
-            UserProgress.status == 'mastered',
-            Question.category == cat
-        ).count()
+        c_qids = cat_to_qids.get(cat, [])
+        cat_total = len(c_qids)
+        cat_mastered = sum(1 for qid in c_qids if qid in mastered_prog_ids)
         cat_stats.append({
             'name': cat,
             'total': cat_total,
@@ -475,8 +482,10 @@ def dashboard():
                            question_of_the_day=question_of_the_day)
 
 def get_aptitude_user_metrics(user_id):
-    aptitude_q_ids = [q.id for q in Question.query.filter_by(category='Aptitude').all()]
-    total_aptitude_qs = len(aptitude_q_ids) if aptitude_q_ids else 805
+    apt_qs = db.session.query(Question.id, Question.topic).filter(Question.category.in_(['Aptitude', 'Behavioral'])).all()
+    total_aptitude_qs = len(apt_qs) if apt_qs else 805
+    aptitude_q_ids = [q[0] for q in apt_qs]
+    q_topic_map = {q[0]: q[1] for q in apt_qs}
 
     user_prog_records = UserProgress.query.filter(
         UserProgress.user_id == user_id,
@@ -484,7 +493,7 @@ def get_aptitude_user_metrics(user_id):
     ).all() if aptitude_q_ids else []
 
     attempted_count = len(user_prog_records)
-    mastered_count = len([p for p in user_prog_records if p.status == 'mastered'])
+    mastered_count = sum(1 for p in user_prog_records if p.status == 'mastered')
     correct_count = mastered_count
     incorrect_count = max(0, attempted_count - mastered_count)
     unattempted_count = max(0, total_aptitude_qs - attempted_count)
@@ -523,7 +532,7 @@ def get_aptitude_user_metrics(user_id):
         day_progs = [p for p in user_prog_records if p.updated_at and p.updated_at.date() == curr_day]
         if day_progs:
             has_activity = True
-            day_mastered = len([p for p in day_progs if p.status == 'mastered'])
+            day_mastered = sum(1 for p in day_progs if p.status == 'mastered')
             day_score = round((day_mastered / len(day_progs)) * 100)
             y_coord = round(95 - (day_score * 0.8))
             weekly_curve.append({'day': days_names[day_idx], 'score': day_score, 'count': len(day_progs), 'y': y_coord, 'active': True})
@@ -561,9 +570,8 @@ def get_aptitude_user_metrics(user_id):
     if not recent_tests and user_prog_records:
         topic_counts = {}
         for p in user_prog_records:
-            q = db.session.get(Question, p.question_id)
-            if q and q.topic:
-                t = q.topic
+            t = q_topic_map.get(p.question_id)
+            if t:
                 if t not in topic_counts:
                     topic_counts[t] = {'total': 0, 'mastered': 0, 'date': p.updated_at or datetime.utcnow()}
                 topic_counts[t]['total'] += 1
@@ -589,17 +597,25 @@ def get_aptitude_user_metrics(user_id):
         'Verbal Ability': ['Reading Comprehension', 'Grammar', 'Sentence Correction', 'Para Jumbles', 'Fill in the Blanks']
     }
 
+    user_solved_ids = {p.question_id for p in user_prog_records}
+    topic_to_qids = {}
+    for qid, topic in apt_qs:
+        if topic not in topic_to_qids:
+            topic_to_qids[topic] = []
+        topic_to_qids[topic].append(qid)
+
     for cat_name, top_list in categories_map.items():
-        cat_qs = Question.query.filter(Question.category == 'Aptitude', Question.topic.in_(top_list)).all()
-        cat_q_ids = [q.id for q in cat_qs]
-        cat_att = len([p for p in user_prog_records if p.question_id in cat_q_ids])
-        topic_progress[cat_name] = round((cat_att / len(cat_qs)) * 100) if cat_qs else 0
+        cat_q_ids = []
+        for t_name in top_list:
+            cat_q_ids.extend(topic_to_qids.get(t_name, []))
+
+        cat_att = sum(1 for qid in cat_q_ids if qid in user_solved_ids)
+        topic_progress[cat_name] = round((cat_att / len(cat_q_ids)) * 100) if cat_q_ids else 0
 
         for t_name in top_list:
-            t_qs = [q for q in cat_qs if q.topic == t_name]
-            t_q_ids = [q.id for q in t_qs]
-            t_att = len([p for p in user_prog_records if p.question_id in t_q_ids])
-            topic_progress[t_name] = round((t_att / len(t_qs)) * 100) if t_qs else 0
+            t_q_ids = topic_to_qids.get(t_name, [])
+            t_att = sum(1 for qid in t_q_ids if qid in user_solved_ids)
+            topic_progress[t_name] = round((t_att / len(t_q_ids)) * 100) if t_q_ids else 0
 
     user_stats = {
         'total_questions': total_aptitude_qs,
@@ -641,7 +657,7 @@ def aptitude():
                              (Question.topic.ilike(f'%{search_query}%')))
 
     all_questions = query.all()
-    all_q_dicts = [q.to_dict(user_id=user_id) for q in all_questions]
+    all_q_dicts = Question.to_dict_list(all_questions, user_id=user_id)
 
     # Map questions by topic
     questions_by_topic = {}
@@ -879,7 +895,7 @@ def questions():
                              (Question.topic.ilike(f'%{search_query}%')))
 
     all_questions = query.all()
-    question_data = [q.to_dict(user_id=user_id) for q in all_questions]
+    question_data = Question.to_dict_list(all_questions, user_id=user_id)
 
     # If DB has no questions for query, fallback to curated list
     if not question_data:
@@ -9143,7 +9159,7 @@ def practice():
         query = query.filter_by(category=category)
         
     questions_list = query.all()
-    q_data = [q.to_dict(user_id=user_id) for q in questions_list]
+    q_data = Question.to_dict_list(questions_list, user_id=user_id)
 
     available_papers = [
         {
@@ -9402,7 +9418,7 @@ def bookmarks():
     question_ids = [b.question_id for b in bookmarked_items]
 
     questions_list = Question.query.filter(Question.id.in_(question_ids)).all() if question_ids else []
-    q_data = [q.to_dict(user_id=user_id) for q in questions_list]
+    q_data = Question.to_dict_list(questions_list, user_id=user_id)
 
     return render_template('bookmarks.html', questions=q_data)
 
@@ -9413,8 +9429,9 @@ def progress():
     
     # 1. ACTUAL QUESTIONS SOLVED & MASTERED
     total_questions = Question.query.count()
-    attempted_count = UserProgress.query.filter_by(user_id=user.id).count()
-    mastered_count = UserProgress.query.filter_by(user_id=user.id, status='mastered').count()
+    user_progs = UserProgress.query.filter_by(user_id=user.id).all()
+    attempted_count = len(user_progs)
+    mastered_count = sum(1 for p in user_progs if p.status == 'mastered')
     questions_solved = attempted_count
 
     # 2. ACTUAL MOCK INTERVIEWS COMPLETED
@@ -9454,6 +9471,15 @@ def progress():
         readiness_score = 0
 
     # 7. DYNAMIC SKILL BREAKDOWN & ASCII BARS
+    all_qs = db.session.query(Question.id, Question.category).all()
+    cat_to_ids = {}
+    for qid, cat in all_qs:
+        if cat not in cat_to_ids:
+            cat_to_ids[cat] = []
+        cat_to_ids[cat].append(qid)
+
+    user_solved_ids = {p.question_id for p in user_progs}
+
     skill_categories = [
         ('Technical Skills', ['Frontend', 'Backend', 'Data Structures', 'System Design'], '#3b82f6'),
         ('Aptitude', ['Aptitude'], '#f59e0b'),
@@ -9463,12 +9489,11 @@ def progress():
     
     skills_breakdown = []
     for name, cats, color in skill_categories:
-        cat_q_ids = [q.id for q in Question.query.filter(Question.category.in_(cats)).all()]
+        cat_q_ids = []
+        for c in cats:
+            cat_q_ids.extend(cat_to_ids.get(c, []))
         cat_total = len(cat_q_ids)
-        cat_solved = UserProgress.query.filter(
-            UserProgress.user_id == user.id,
-            UserProgress.question_id.in_(cat_q_ids)
-        ).count() if cat_q_ids else 0
+        cat_solved = sum(1 for qid in cat_q_ids if qid in user_solved_ids)
         
         pct = round((cat_solved / cat_total * 100)) if cat_total > 0 and cat_solved > 0 else 0
         filled_blocks = int(round(pct / 10))
@@ -9489,14 +9514,17 @@ def progress():
     weekly_activity = []
     days_abbr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     
+    # Pre-aggregate solved per day from user_progs
+    date_to_count = {}
+    for p in user_progs:
+        if p.updated_at:
+            d = p.updated_at.date()
+            date_to_count[d] = date_to_count.get(d, 0) + 1
+
     for i in range(6, -1, -1):
         day_date = today - timedelta(days=i)
         day_name = days_abbr[day_date.weekday()]
-        
-        day_solved = UserProgress.query.filter(
-            UserProgress.user_id == user.id,
-            db.func.date(UserProgress.updated_at) == day_date
-        ).count()
+        day_solved = date_to_count.get(day_date, 0)
         
         weekly_activity.append({
             'day': day_name,
@@ -9543,10 +9571,12 @@ def progress():
 
     # 10. DYNAMIC RECENT ACTIVITIES
     recent_user_progress = UserProgress.query.filter_by(user_id=user.id).order_by(UserProgress.updated_at.desc()).limit(5).all()
+    recent_q_ids = [up.question_id for up in recent_user_progress]
+    recent_q_map = {q.id: q for q in Question.query.filter(Question.id.in_(recent_q_ids)).all()} if recent_q_ids else {}
     recent_activities = []
     
     for up in recent_user_progress:
-        q = Question.query.get(up.question_id)
+        q = recent_q_map.get(up.question_id)
         if q:
             time_ago = 'Recently'
             if up.updated_at:
@@ -9589,11 +9619,18 @@ def leaderboard():
 
     # Query all real registered portal users from database
     all_users = User.query.all()
-    user_list = []
+    
+    # Pre-aggregate stats for all users in one single query
+    prog_stats = db.session.query(
+        UserProgress.user_id,
+        db.func.count(UserProgress.id).label('attempted'),
+        db.func.sum(db.case((UserProgress.status == 'mastered', 1), else_=0)).label('mastered')
+    ).group_by(UserProgress.user_id).all()
+    stats_map = {row[0]: (row[1] or 0, row[2] or 0) for row in prog_stats}
 
+    user_list = []
     for u in all_users:
-        attempted = UserProgress.query.filter_by(user_id=u.id).count()
-        mastered = UserProgress.query.filter_by(user_id=u.id, status='mastered').count()
+        attempted, mastered = stats_map.get(u.id, (0, 0))
         streak = getattr(u, 'streak_count', None) or 1
         
         # Real calculated user score (0 if no questions solved yet)
@@ -9697,10 +9734,19 @@ def leaderboard():
 def profile():
     user = db.session.get(User, session['user_id'])
     
-    total_questions = Question.query.count()
-    mastered_count = UserProgress.query.filter_by(user_id=user.id, status='mastered').count()
-    attempted_count = UserProgress.query.filter_by(user_id=user.id).count()
+    user_progs = UserProgress.query.filter_by(user_id=user.id).all()
+    mastered_prog_ids = {p.question_id for p in user_progs if p.status == 'mastered'}
+    attempted_count = len(user_progs)
+    mastered_count = len(mastered_prog_ids)
     bookmarked_count = Bookmark.query.filter_by(user_id=user.id).count()
+
+    all_qs_cat = db.session.query(Question.id, Question.category).all()
+    total_questions = len(all_qs_cat)
+    cat_to_qids = {}
+    for qid, cat in all_qs_cat:
+        if cat not in cat_to_qids:
+            cat_to_qids[cat] = []
+        cat_to_qids[cat].append(qid)
 
     if total_questions > 0:
         practiced_only = max(0, attempted_count - mastered_count)
@@ -9720,12 +9766,9 @@ def profile():
     categories = ['Frontend', 'Backend', 'Data Structures', 'System Design', 'Behavioral']
     cat_stats = []
     for cat in categories:
-        cat_total = Question.query.filter_by(category=cat).count()
-        cat_mastered = UserProgress.query.join(Question).filter(
-            UserProgress.user_id == user.id,
-            UserProgress.status == 'mastered',
-            Question.category == cat
-        ).count()
+        c_qids = cat_to_qids.get(cat, [])
+        cat_total = len(c_qids)
+        cat_mastered = sum(1 for qid in c_qids if qid in mastered_prog_ids)
         cat_stats.append({
             'name': cat,
             'total': cat_total,

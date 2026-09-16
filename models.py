@@ -92,7 +92,7 @@ class Question(db.Model):
                 pass
         return 'A'
 
-    def to_dict(self, user_id=None):
+    def to_dict(self, user_id=None, progress_map=None, bookmark_map=None):
         data = {
             'id': self.id,
             'category': self.category,
@@ -108,29 +108,59 @@ class Question(db.Model):
             'correct_option': self.get_correct_option()
         }
         if user_id:
-            progress = UserProgress.query.filter_by(user_id=user_id, question_id=self.id).first()
-            bookmark = Bookmark.query.filter_by(user_id=user_id, question_id=self.id).first()
-            data['status'] = progress.status if progress else 'unattempted'
-            data['user_notes'] = progress.notes if progress else ''
-            data['is_bookmarked'] = bool(bookmark)
+            if progress_map is not None or bookmark_map is not None:
+                p_info = (progress_map or {}).get(self.id)
+                data['status'] = p_info.status if p_info else 'unattempted'
+                data['user_notes'] = p_info.notes if (p_info and p_info.notes) else ''
+                data['is_bookmarked'] = bool((bookmark_map or {}).get(self.id))
+            else:
+                progress = UserProgress.query.filter_by(user_id=user_id, question_id=self.id).first()
+                bookmark = Bookmark.query.filter_by(user_id=user_id, question_id=self.id).first()
+                data['status'] = progress.status if progress else 'unattempted'
+                data['user_notes'] = progress.notes if progress else ''
+                data['is_bookmarked'] = bool(bookmark)
         return data
+
+    @classmethod
+    def to_dict_list(cls, questions, user_id=None):
+        if not questions:
+            return []
+        if not user_id:
+            return [q.to_dict() for q in questions]
+
+        q_ids = [q.id for q in questions]
+        user_progs = UserProgress.query.filter(
+            UserProgress.user_id == user_id,
+            UserProgress.question_id.in_(q_ids)
+        ).all()
+        user_bookmarks = Bookmark.query.filter(
+            Bookmark.user_id == user_id,
+            Bookmark.question_id.in_(q_ids)
+        ).all()
+
+        progress_map = {p.question_id: p for p in user_progs}
+        bookmark_map = {b.question_id: True for b in user_bookmarks}
+
+        return [q.to_dict(user_id=user_id, progress_map=progress_map, bookmark_map=bookmark_map) for q in questions]
 
 class UserProgress(db.Model):
     __tablename__ = 'user_progress'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
-    status = db.Column(db.String(20), default='needs_practice')  # needs_practice, mastered
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False, index=True)
+    status = db.Column(db.String(20), default='needs_practice', index=True)  # needs_practice, mastered
     notes = db.Column(db.Text, nullable=True)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'question_id', name='_user_question_prog_uc'),)
 
 class Bookmark(db.Model):
     __tablename__ = 'bookmarks'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     __table_args__ = (db.UniqueConstraint('user_id', 'question_id', name='_user_question_uc'),)
