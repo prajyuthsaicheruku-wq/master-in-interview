@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Aptitude Practice & Study Portal | InterviewMaster{% endblock %}
+{% block title %}Interview Master | Aptitude Practice & Study Portal{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 1280px; padding: 1rem 0 3rem;">
@@ -14,59 +14,198 @@
         <p class="aptitude-main-subtitle">Practice Quantitative Aptitude, Logical Reasoning & Verbal Ability questions.</p>
     </div>
 
-    <!-- 2. MAIN 2-COLUMN DASHBOARD GRID -->
-    <div id="aptitudeDashboardMainView" class="aptitude-dashboard-grid">
+    <!-- 2. MAIN DASHBOARD VIEW (FULL WIDTH VERTICAL FLOW) -->
+    <div id="aptitudeDashboardMainView" class="aptitude-dashboard-container">
         
-        <!-- ================= LEFT / MAIN COLUMN ================= -->
-        <div class="aptitude-main-col">
-            
-            <!-- A. HERO BANNER CARD -->
-            <div class="aptitude-hero-card">
-                <div class="hero-content-flex">
-                    <div class="hero-left-side">
-                        <div class="hero-tagline">Strengthen Your Basics.</div>
-                        <h2 class="hero-headline">Practice. Analyze. <span class="highlight">Improve.</span></h2>
-                        <p class="hero-desc">Access curated study files, topic-wise questions and track your progress in real time.</p>
-                        
-                        <div class="hero-pills-row">
-                            <div class="hero-stat-pill">
-                                <span>📄</span>
-                                <div><span class="pill-num">{{ user_stats.total_questions if user_stats else 805 }}+</span> Practice Questions</div>
-                            </div>
-                            <div class="hero-stat-pill">
-                                <span>✓</span>
-                                <div><span class="pill-num">27</span> Study Files</div>
-                            </div>
-                            <div class="hero-stat-pill">
-                                <span>📊</span>
-                                <div><span id="heroAvgScoreText" class="pill-num">{{ user_stats.avg_score if user_stats else 0 }}%</span> Your Avg Score</div>
-                            </div>
-                            <div class="hero-stat-pill">
-                                <span>🔥</span>
-                                <div><span id="heroStreakCount" class="pill-num">{{ current_user.streak_count if current_user and current_user.streak_count else 1 }}</span> Day Streak</div>
-                            </div>
+        <!-- A. HERO BANNER CARD (FULL WIDTH: LEFT TO RIGHT) -->
+        <div class="aptitude-hero-card">
+            <div class="hero-content-flex">
+                <div class="hero-left-side">
+                    <div class="hero-tagline">Strengthen Your Basics.</div>
+                    <h2 class="hero-headline">Practice. Analyze. <span class="highlight">Improve.</span></h2>
+                    <p class="hero-desc">Access curated study files, topic-wise questions and track your progress in real time.</p>
+                    
+                    <div class="hero-pills-row">
+                        <div class="hero-stat-pill">
+                            <span>📄</span>
+                            <div><span class="pill-num">{{ user_stats.total_questions if user_stats else 805 }}+</span> Practice Questions</div>
+                        </div>
+                        <div class="hero-stat-pill">
+                            <span>✓</span>
+                            <div><span class="pill-num">27</span> Study Files</div>
+                        </div>
+                        <div class="hero-stat-pill">
+                            <span>📊</span>
+                            <div><span id="heroAvgScoreText" class="pill-num">{{ user_stats.avg_score if user_stats else 0 }}%</span> Your Avg Score</div>
+                        </div>
+                        <div class="hero-stat-pill">
+                            <span>🔥</span>
+                            <div><span id="heroStreakCount" class="pill-num">{{ current_user.streak_count if current_user and current_user.streak_count else 1 }}</span> Day Streak</div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="hero-right-side">
-                        <div class="hero-ring-container">
-                            <svg class="hero-ring-svg" viewBox="0 0 100 100">
-                                <circle class="hero-ring-bg" cx="50" cy="50" r="45"></circle>
-                                <circle id="heroOverallProgCircle" class="hero-ring-prog" cx="50" cy="50" r="45" style="stroke-dasharray: {{ (((user_stats.overall_progress if user_stats else 0) * 283) / 100) | round(1) }}, 283;"></circle>
-                            </svg>
-                            <div class="hero-ring-text">
-                                <div id="heroOverallProgText" class="hero-ring-val">{{ user_stats.overall_progress if user_stats else 0 }}%</div>
-                                <div class="hero-ring-sub">Overall Progress</div>
-                            </div>
+                <div class="hero-right-side">
+                    <div class="hero-ring-container">
+                        <svg class="hero-ring-svg" viewBox="0 0 100 100">
+                            <circle class="hero-ring-bg" cx="50" cy="50" r="45"></circle>
+                            <circle id="heroOverallProgCircle" class="hero-ring-prog" cx="50" cy="50" r="45" style="stroke-dasharray: {{ (((user_stats.overall_progress if user_stats else 0) * 283) / 100) | round(1) }}, 283;"></circle>
+                        </svg>
+                        <div class="hero-ring-text">
+                            <div id="heroOverallProgText" class="hero-ring-val">{{ user_stats.overall_progress if user_stats else 0 }}%</div>
+                            <div class="hero-ring-sub">Overall Progress</div>
                         </div>
-                        <button type="button" onclick="scrollToStudyTopics()" class="hero-continue-btn">
-                            Continue Practice →
-                        </button>
+                    </div>
+                    <button type="button" onclick="scrollToStudyTopics()" class="hero-continue-btn">
+                        Continue Practice →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- B. 3 WIDGETS ROW: YOUR PERFORMANCE, ACCURACY OVERVIEW, RECENT TESTS -->
+        <div class="aptitude-widgets-3grid">
+            
+            <!-- 1. YOUR PERFORMANCE WIDGET -->
+            <div class="dash-widget-card">
+                <div class="widget-head-row">
+                    <h4 class="widget-title">Your Performance</h4>
+                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); background: var(--border-glass); padding: 0.2rem 0.6rem; border-radius: 6px;">This Week</span>
+                </div>
+
+                <div class="perf-chart-wrap" id="perfChartWrap">
+                    <svg class="perf-chart-svg" viewBox="0 0 300 110" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="perfGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
+                                <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0"/>
+                            </linearGradient>
+                        </defs>
+                        {% set avg_perf = user_stats.avg_score if user_stats else 0 %}
+                        {% set has_act = user_stats.has_activity if user_stats and user_stats.has_activity else false %}
+                        
+                        <!-- Area Fill -->
+                        <path id="perfAreaPath" d="{{ user_stats.area_path if has_act else '' }}" fill="url(#perfGrad)" style="{{ 'display: block;' if has_act else 'display: none;' }}"></path>
+                        
+                        <!-- Stroke Curve Line -->
+                        <path id="perfLinePath" d="{{ user_stats.curve_path if has_act else '' }}" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" style="{{ 'display: block;' if has_act else 'display: none;' }}"></path>
+                        
+                        <!-- Baseline dashed line when no activity -->
+                        <line id="perfBaseDashed" x1="0" y1="95" x2="300" y2="95" stroke="var(--border-glass)" stroke-dasharray="4,4" stroke-width="1.5" style="{{ 'display: none;' if has_act else 'display: block;' }}"></line>
+                        <line id="perfBaseSolid" x1="0" y1="95" x2="300" y2="95" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" style="{{ 'display: none;' if has_act else 'display: block;' }}"></line>
+                        
+                        <!-- Indicator circle & score pill -->
+                        <circle id="perfDotCircle" cx="280" cy="{{ 95 - (avg_perf * 0.8) | round if has_act else 95 }}" r="4.5" fill="#4f46e5" stroke="#ffffff" stroke-width="2"></circle>
+                        <g id="perfScoreBadgeG" transform="translate(240, {{ (95 - (avg_perf * 0.8) - 22) | round if has_act else 70 }})">
+                            <rect width="46" height="18" rx="6" fill="#4f46e5"></rect>
+                            <text id="perfScoreBadgeText" x="23" y="13" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">{{ avg_perf }}%</text>
+                        </g>
+                    </svg>
+
+                    <div class="perf-days-labels">
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                        <span>Sun</span>
                     </div>
                 </div>
             </div>
 
-            <!-- B. QUICK ACTIONS (4 CARDS ROW) -->
+            <!-- 2. ACCURACY OVERVIEW WIDGET -->
+            <div class="dash-widget-card">
+                <div class="widget-head-row">
+                    <h4 class="widget-title">Accuracy Overview</h4>
+                </div>
+
+                <div class="accuracy-donut-flex">
+                    {% set correct_c = user_stats.correct_count if user_stats else 0 %}
+                    {% set incorrect_c = user_stats.incorrect_count if user_stats else 0 %}
+                    {% set unattempted_c = user_stats.unattempted_count if user_stats else 805 %}
+                    {% set correct_p = user_stats.correct_pct if user_stats else 0 %}
+                    {% set incorrect_p = user_stats.incorrect_pct if user_stats else 0 %}
+                    {% set unattempted_p = user_stats.unattempted_pct if user_stats else 100 %}
+
+                    <div class="donut-chart-box">
+                        <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                            <!-- Background unattempted ring -->
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--border-glass)" stroke-width="4.5" stroke-dasharray="100, 100" opacity="0.35"/>
+                            <!-- Incorrect ring -->
+                            <path id="donutIncorrectPath" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ef4444" stroke-width="4.5" stroke-dasharray="{{ incorrect_p }}, 100" stroke-dashoffset="-{{ correct_p }}" style="{{ 'display: block;' if incorrect_p > 0 else 'display: none;' }}"/>
+                            <!-- Correct ring -->
+                            <path id="donutCorrectPath" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-width="4.5" stroke-dasharray="{{ correct_p }}, 100" stroke-dashoffset="0" style="{{ 'display: block;' if correct_p > 0 else 'display: none;' }}"/>
+                        </svg>
+                    </div>
+
+                    <div class="accuracy-legend-list">
+                        <div class="accuracy-legend-item">
+                            <div class="legend-dot-name">
+                                <span class="legend-dot dot-green"></span> Correct
+                            </div>
+                            <span id="legendCorrectVal" class="legend-val">{{ correct_c }} ({{ correct_p }}%)</span>
+                        </div>
+                        <div class="accuracy-legend-item">
+                            <div class="legend-dot-name">
+                                <span class="legend-dot dot-red"></span> Incorrect
+                            </div>
+                            <span id="legendIncorrectVal" class="legend-val">{{ incorrect_c }} ({{ incorrect_p }}%)</span>
+                        </div>
+                        <div class="accuracy-legend-item">
+                            <div class="legend-dot-name">
+                                <span class="legend-dot dot-gray"></span> Unattempted
+                            </div>
+                            <span id="legendUnattemptedVal" class="legend-val">{{ unattempted_c }} ({{ unattempted_p }}%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="totalQuestionsLabel" class="accuracy-total-label">
+                    Total: {{ user_stats.total_questions if user_stats else 805 }} Practice Questions
+                </div>
+            </div>
+
+            <!-- 3. RECENT TESTS WIDGET -->
+            <div class="dash-widget-card" id="recentTestsWidget">
+                <div class="widget-head-row">
+                    <h4 class="widget-title">Recent Tests</h4>
+                    <a href="{{ url_for('progress') }}" class="widget-link-sm">View All</a>
+                </div>
+
+                <div class="recent-tests-list" id="recentTestsListContainer">
+                    {% if recent_tests and recent_tests | length > 0 %}
+                        {% for t in recent_tests %}
+                        <div class="recent-test-row">
+                            <div class="recent-test-left">
+                                <span class="recent-test-icon">📄</span>
+                                <div>
+                                    <div class="recent-test-title">{{ t.title }}</div>
+                                    <div class="recent-test-sub">{{ t.meta }}</div>
+                                </div>
+                            </div>
+                            <span class="recent-test-score {{ 'score-green' if t.score >= 70 else 'score-amber' }}">{{ t.score }}%</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div id="noTestsPlaceholder" style="padding: 1.5rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+                            <div style="font-size: 1.75rem; margin-bottom: 0.35rem;">📋</div>
+                            <strong style="color: var(--text-main); display: block; margin-bottom: 0.2rem;">No Tests Taken Yet</strong>
+                            <span>Start practicing questions or take a quick test to track your attempts!</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="widget-bottom-action">
+                    <a href="{{ url_for('progress') }}" class="widget-bottom-link">
+                        View All Attempts →
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- C. QUICK ACTIONS (4 CARDS ROW) -->
             <div class="quick-actions-section">
                 <h3 class="quick-actions-title">Quick Actions</h3>
                 <div class="quick-actions-grid">
@@ -278,150 +417,6 @@
                     <span id="allTopicsBtnText">View All Topics ⌄</span>
                 </button>
             </div>
-
-        </div>
-
-        <!-- ================= RIGHT SIDEBAR COLUMN ================= -->
-        <div class="aptitude-sidebar-col">
-            
-            <!-- 1. YOUR PERFORMANCE WIDGET -->
-            <div class="dash-widget-card">
-                <div class="widget-head-row">
-                    <h4 class="widget-title">Your Performance</h4>
-                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); background: var(--border-glass); padding: 0.2rem 0.6rem; border-radius: 6px;">This Week</span>
-                </div>
-
-                <div class="perf-chart-wrap" id="perfChartWrap">
-                    <svg class="perf-chart-svg" viewBox="0 0 300 110" preserveAspectRatio="none">
-                        <defs>
-                            <linearGradient id="perfGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
-                                <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0"/>
-                            </linearGradient>
-                        </defs>
-                        {% set avg_perf = user_stats.avg_score if user_stats else 0 %}
-                        {% set has_act = user_stats.has_activity if user_stats and user_stats.has_activity else false %}
-                        
-                        <!-- Area Fill -->
-                        <path id="perfAreaPath" d="{{ user_stats.area_path if has_act else '' }}" fill="url(#perfGrad)" style="{{ 'display: block;' if has_act else 'display: none;' }}"></path>
-                        
-                        <!-- Stroke Curve Line -->
-                        <path id="perfLinePath" d="{{ user_stats.curve_path if has_act else '' }}" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" style="{{ 'display: block;' if has_act else 'display: none;' }}"></path>
-                        
-                        <!-- Baseline dashed line when no activity -->
-                        <line id="perfBaseDashed" x1="0" y1="95" x2="300" y2="95" stroke="var(--border-glass)" stroke-dasharray="4,4" stroke-width="1.5" style="{{ 'display: none;' if has_act else 'display: block;' }}"></line>
-                        <line id="perfBaseSolid" x1="0" y1="95" x2="300" y2="95" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" style="{{ 'display: none;' if has_act else 'display: block;' }}"></line>
-                        
-                        <!-- Indicator circle & score pill -->
-                        <circle id="perfDotCircle" cx="280" cy="{{ 95 - (avg_perf * 0.8) | round if has_act else 95 }}" r="4.5" fill="#4f46e5" stroke="#ffffff" stroke-width="2"></circle>
-                        <g id="perfScoreBadgeG" transform="translate(240, {{ (95 - (avg_perf * 0.8) - 22) | round if has_act else 70 }})">
-                            <rect width="46" height="18" rx="6" fill="#4f46e5"></rect>
-                            <text id="perfScoreBadgeText" x="23" y="13" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">{{ avg_perf }}%</text>
-                        </g>
-                    </svg>
-
-                    <div class="perf-days-labels">
-                        <span>Mon</span>
-                        <span>Tue</span>
-                        <span>Wed</span>
-                        <span>Thu</span>
-                        <span>Fri</span>
-                        <span>Sat</span>
-                        <span>Sun</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. ACCURACY OVERVIEW WIDGET -->
-            <div class="dash-widget-card">
-                <div class="widget-head-row">
-                    <h4 class="widget-title">Accuracy Overview</h4>
-                </div>
-
-                <div class="accuracy-donut-flex">
-                    {% set correct_c = user_stats.correct_count if user_stats else 0 %}
-                    {% set incorrect_c = user_stats.incorrect_count if user_stats else 0 %}
-                    {% set unattempted_c = user_stats.unattempted_count if user_stats else 805 %}
-                    {% set correct_p = user_stats.correct_pct if user_stats else 0 %}
-                    {% set incorrect_p = user_stats.incorrect_pct if user_stats else 0 %}
-                    {% set unattempted_p = user_stats.unattempted_pct if user_stats else 100 %}
-
-                    <div class="donut-chart-box">
-                        <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
-                            <!-- Background unattempted ring -->
-                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--border-glass)" stroke-width="4.5" stroke-dasharray="100, 100" opacity="0.35"/>
-                            <!-- Incorrect ring -->
-                            <path id="donutIncorrectPath" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ef4444" stroke-width="4.5" stroke-dasharray="{{ incorrect_p }}, 100" stroke-dashoffset="-{{ correct_p }}" style="{{ 'display: block;' if incorrect_p > 0 else 'display: none;' }}"/>
-                            <!-- Correct ring -->
-                            <path id="donutCorrectPath" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-width="4.5" stroke-dasharray="{{ correct_p }}, 100" stroke-dashoffset="0" style="{{ 'display: block;' if correct_p > 0 else 'display: none;' }}"/>
-                        </svg>
-                    </div>
-
-                    <div class="accuracy-legend-list">
-                        <div class="accuracy-legend-item">
-                            <div class="legend-dot-name">
-                                <span class="legend-dot dot-green"></span> Correct
-                            </div>
-                            <span id="legendCorrectVal" class="legend-val">{{ correct_c }} ({{ correct_p }}%)</span>
-                        </div>
-                        <div class="accuracy-legend-item">
-                            <div class="legend-dot-name">
-                                <span class="legend-dot dot-red"></span> Incorrect
-                            </div>
-                            <span id="legendIncorrectVal" class="legend-val">{{ incorrect_c }} ({{ incorrect_p }}%)</span>
-                        </div>
-                        <div class="accuracy-legend-item">
-                            <div class="legend-dot-name">
-                                <span class="legend-dot dot-gray"></span> Unattempted
-                            </div>
-                            <span id="legendUnattemptedVal" class="legend-val">{{ unattempted_c }} ({{ unattempted_p }}%)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="totalQuestionsLabel" class="accuracy-total-label">
-                    Total: {{ user_stats.total_questions if user_stats else 805 }} Practice Questions
-                </div>
-            </div>
-
-            <!-- 3. RECENT TESTS WIDGET -->
-            <div class="dash-widget-card" id="recentTestsWidget">
-                <div class="widget-head-row">
-                    <h4 class="widget-title">Recent Tests</h4>
-                    <a href="{{ url_for('progress') }}" class="widget-link-sm">View All</a>
-                </div>
-
-                <div class="recent-tests-list" id="recentTestsListContainer">
-                    {% if recent_tests and recent_tests | length > 0 %}
-                        {% for t in recent_tests %}
-                        <div class="recent-test-row">
-                            <div class="recent-test-left">
-                                <span class="recent-test-icon">📄</span>
-                                <div>
-                                    <div class="recent-test-title">{{ t.title }}</div>
-                                    <div class="recent-test-sub">{{ t.meta }}</div>
-                                </div>
-                            </div>
-                            <span class="recent-test-score {{ 'score-green' if t.score >= 70 else 'score-amber' }}">{{ t.score }}%</span>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div id="noTestsPlaceholder" style="padding: 1.5rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
-                            <div style="font-size: 1.75rem; margin-bottom: 0.35rem;">📋</div>
-                            <strong style="color: var(--text-main); display: block; margin-bottom: 0.2rem;">No Tests Taken Yet</strong>
-                            <span>Start practicing questions or take a quick test to track your attempts!</span>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="widget-bottom-action">
-                    <a href="{{ url_for('progress') }}" class="widget-bottom-link">
-                        View All Attempts →
-                    </a>
-                </div>
-            </div>
-
-        </div>
 
     </div>
 

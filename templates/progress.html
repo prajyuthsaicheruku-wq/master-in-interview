@@ -1,159 +1,159 @@
 {% extends "base.html" %}
 
-{% block title %}Progress & Performance Analytics | InterviewMaster{% endblock %}
+{% block title %}Interview Master | Analytics & Progress{% endblock %}
 
 {% block content %}
-<div class="progress-page-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem 4rem 1rem;">
+<div class="progress-page-wrapper">
 
     <!-- PAGE HEADER -->
-    <div class="progress-header-strip" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div class="prog-header-strip">
         <div>
-            <h1 style="font-size: 2.1rem; font-weight: 800; color: #0f172a; margin: 0 0 0.3rem 0; display: flex; align-items: center; gap: 0.6rem;">
+            <h1 class="prog-page-title">
                 📈 Comprehensive Progress Dashboard
             </h1>
-            <p style="color: #64748b; font-size: 1rem; margin: 0;">
+            <p class="prog-page-subtitle">
                 Track your interview readiness, weekly activity, skill mastery, and earned achievement badges.
             </p>
         </div>
-        <div style="display: flex; gap: 0.6rem;">
-            <a href="{{ url_for('questions') }}" class="btn btn-primary btn-sm" style="font-weight: 700; padding: 0.6rem 1.2rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.4rem;">
+        <div class="prog-header-btns">
+            <a href="{{ url_for('questions') }}" class="btn btn-primary btn-prog-action">
                 🚀 Practice Questions
             </a>
-            <a href="{{ url_for('mock_interview') }}" class="btn btn-outline btn-sm" style="font-weight: 700; padding: 0.6rem 1.2rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.4rem;">
+            <a href="{{ url_for('mock_interview') }}" class="btn btn-outline btn-prog-action">
                 🎙️ Mock Interview
             </a>
         </div>
     </div>
 
     <!-- 1. OVERVIEW TOP METRICS GRID (6 CARDS IN CLEAN 3x2 GRID) -->
-    <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2.25rem;">
+    <div class="prog-metrics-grid">
         
         <!-- CARD 1: OVERALL READINESS SCORE -->
-        <div class="metric-card" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1.5px solid #bfdbfe; border-radius: 0.85rem; padding: 1.25rem 1.4rem; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.08); display: flex; align-items: center; gap: 1.1rem;">
-            <div style="font-size: 1.8rem; background: #ffffff; width: 52px; height: 52px; min-width: 52px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15); border: 1px solid #bfdbfe;">
+        <div class="prog-metric-card prog-card-highlight-blue">
+            <div class="prog-metric-icon-box prog-icon-blue">
                 🎯
             </div>
-            <div style="flex: 1; min-width: 0;">
-                <div style="font-size: 0.76rem; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Overall Readiness</div>
-                <div style="font-size: 1.95rem; font-weight: 900; color: #1e3a8a; line-height: 1.1; margin-top: 0.15rem;">
+            <div class="prog-metric-info">
+                <div class="prog-metric-label">Overall Readiness</div>
+                <div class="prog-metric-val">
                     {{ readiness_score }}%
                 </div>
-                <div style="margin-top: 0.4rem; background: rgba(255,255,255,0.8); height: 6px; border-radius: 9999px; overflow: hidden; width: 100%;">
-                    <div style="width: {{ readiness_score }}%; background: #2563eb; height: 100%;"></div>
+                <div class="prog-mini-bar-bg">
+                    <div class="prog-mini-bar-fill" style="width: {{ readiness_score }}%;"></div>
                 </div>
             </div>
         </div>
 
         <!-- CARD 2: QUESTIONS SOLVED -->
-        <div class="metric-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.25rem 1.4rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 1.1rem;">
-            <div style="font-size: 1.8rem; background: #ecfdf5; width: 52px; height: 52px; min-width: 52px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 1px solid #a7f3d0;">
+        <div class="prog-metric-card">
+            <div class="prog-metric-icon-box prog-icon-green">
                 💻
             </div>
-            <div>
-                <div style="font-size: 0.76rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Questions Solved</div>
-                <div style="font-size: 1.95rem; font-weight: 900; color: #0f172a; line-height: 1.1; margin-top: 0.15rem;">
+            <div class="prog-metric-info">
+                <div class="prog-metric-label">Questions Solved</div>
+                <div class="prog-metric-val">
                     {{ questions_solved }}
                 </div>
-                <span style="font-size: 0.76rem; color: #059669; font-weight: 700; display: block; margin-top: 0.25rem;">✓ Verified & Mastered</span>
+                <span class="prog-metric-subtext subtext-green">✓ Verified & Mastered</span>
             </div>
         </div>
 
         <!-- CARD 3: MOCK INTERVIEWS COMPLETED -->
-        <div class="metric-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.25rem 1.4rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 1.1rem;">
-            <div style="font-size: 1.8rem; background: #eef2ff; width: 52px; height: 52px; min-width: 52px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 1px solid #c7d2fe;">
+        <div class="prog-metric-card">
+            <div class="prog-metric-icon-box prog-icon-indigo">
                 🎙️
             </div>
-            <div>
-                <div style="font-size: 0.76rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Mock Interviews</div>
-                <div style="font-size: 1.95rem; font-weight: 900; color: #0f172a; line-height: 1.1; margin-top: 0.15rem;">
+            <div class="prog-metric-info">
+                <div class="prog-metric-label">Mock Interviews</div>
+                <div class="prog-metric-val">
                     {{ mock_interviews_completed }}
                 </div>
-                <span style="font-size: 0.76rem; color: #4f46e5; font-weight: 700; display: block; margin-top: 0.25rem;">Completed Sessions</span>
+                <span class="prog-metric-subtext subtext-indigo">Completed Sessions</span>
             </div>
         </div>
 
         <!-- CARD 4: APTITUDE TESTS ATTEMPTED -->
-        <div class="metric-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.25rem 1.4rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 1.1rem;">
-            <div style="font-size: 1.8rem; background: #fffbeb; width: 52px; height: 52px; min-width: 52px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 1px solid #fde68a;">
+        <div class="prog-metric-card">
+            <div class="prog-metric-icon-box prog-icon-amber">
                 🧠
             </div>
-            <div>
-                <div style="font-size: 0.76rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Aptitude Tests</div>
-                <div style="font-size: 1.95rem; font-weight: 900; color: #0f172a; line-height: 1.1; margin-top: 0.15rem;">
+            <div class="prog-metric-info">
+                <div class="prog-metric-label">Aptitude Tests</div>
+                <div class="prog-metric-val">
                     {{ aptitude_tests_attempted }}
                 </div>
-                <span style="font-size: 0.76rem; color: #d97706; font-weight: 700; display: block; margin-top: 0.25rem;">Attempted Tests</span>
+                <span class="prog-metric-subtext subtext-amber">Attempted Tests</span>
             </div>
         </div>
 
         <!-- CARD 5: RESUME COMPLETION PERCENTAGE -->
-        <div class="metric-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.85rem; padding: 1.25rem 1.4rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 1.1rem;">
-            <div style="font-size: 1.8rem; background: #f3e8ff; width: 52px; height: 52px; min-width: 52px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 1px solid #e9d5ff;">
+        <div class="prog-metric-card">
+            <div class="prog-metric-icon-box prog-icon-purple">
                 📄
             </div>
-            <div>
-                <div style="font-size: 0.76rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Resume Score</div>
-                <div style="font-size: 1.95rem; font-weight: 900; color: #0f172a; line-height: 1.1; margin-top: 0.15rem;">
+            <div class="prog-metric-info">
+                <div class="prog-metric-label">Resume Score</div>
+                <div class="prog-metric-val">
                     {{ resume_completion }}%
                 </div>
-                <span style="font-size: 0.76rem; color: #7c3aed; font-weight: 700; display: block; margin-top: 0.25rem;">Completion Level</span>
+                <span class="prog-metric-subtext subtext-purple">Completion Level</span>
             </div>
         </div>
 
         <!-- CARD 6: CURRENT STREAK -->
-        <div class="metric-card" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1.5px solid #fed7aa; border-radius: 0.85rem; padding: 1.25rem 1.4rem; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.08); display: flex; align-items: center; gap: 1.1rem;">
-            <div style="font-size: 1.8rem; background: #ffffff; width: 52px; height: 52px; min-width: 52px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(234, 88, 12, 0.15); border: 1px solid #fed7aa;">
+        <div class="prog-metric-card prog-card-highlight-orange">
+            <div class="prog-metric-icon-box prog-icon-orange">
                 🔥
             </div>
-            <div>
-                <div style="font-size: 0.76rem; font-weight: 800; color: #c2410c; text-transform: uppercase; letter-spacing: 0.5px;">Current Streak</div>
-                <div style="font-size: 1.95rem; font-weight: 900; color: #9a3412; line-height: 1.1; margin-top: 0.15rem;">
+            <div class="prog-metric-info">
+                <div class="prog-metric-label">Current Streak</div>
+                <div class="prog-metric-val">
                     {{ streak_days }} <span style="font-size: 0.95rem; font-weight: 700;">Days</span>
                 </div>
-                <span style="font-size: 0.76rem; color: #ea580c; font-weight: 700; display: block; margin-top: 0.25rem;">Daily Active Streak</span>
+                <span class="prog-metric-subtext subtext-orange">Daily Active Streak</span>
             </div>
         </div>
 
     </div>
 
     <!-- MAIN TWO-COLUMN SPLIT -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; margin-bottom: 2rem;">
+    <div class="prog-2col-grid">
 
         <!-- LEFT COLUMN: SKILL BREAKDOWN & ASCII BAR DISPLAY -->
-        <div class="glass-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.75rem; box-shadow: 0 6px 20px rgba(0,0,0,0.03);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9;">
-                <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+        <div class="prog-panel-card">
+            <div class="prog-panel-header">
+                <h2 class="prog-panel-title">
                     📊 Skill Mastery Breakdown
                 </h2>
-                <span style="font-size: 0.75rem; font-weight: 800; background: #eff6ff; color: #2563eb; padding: 0.25rem 0.65rem; border-radius: 9999px;">
+                <span class="prog-pill-tag prog-pill-blue">
                     Round Wise
                 </span>
             </div>
 
             <!-- ASCII BLOCK REPRESENTATION CONTAINER -->
-            <div class="ascii-terminal-box" style="background: #0f172a; color: #38bdf8; font-family: 'Fira Code', 'Courier New', Courier, monospace; padding: 1.25rem; border-radius: 0.75rem; margin-bottom: 1.5rem; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5); font-size: 0.92rem; line-height: 1.8;">
-                <div style="color: #94a3b8; font-size: 0.78rem; margin-bottom: 0.6rem; font-weight: 700; letter-spacing: 0.5px; border-bottom: 1px solid #334155; padding-bottom: 0.4rem;">
+            <div class="prog-ascii-box">
+                <div class="prog-ascii-header">
                     // ASCII SKILL MATRIX LOG
                 </div>
                 {% for item in skills_breakdown %}
-                <div style="display: flex; justify-content: space-between; gap: 1rem; font-weight: 600;">
-                    <span style="color: #f8fafc; min-width: 150px;">{{ item.name }}</span>
-                    <span style="color: #38bdf8; letter-spacing: 1px;">{{ item.ascii }}</span>
-                    <span style="color: #4ade80; font-weight: 800; min-width: 45px; text-align: right;">{{ item.percent }}%</span>
+                <div class="prog-ascii-row">
+                    <span class="prog-ascii-name">{{ item.name }}</span>
+                    <span class="prog-ascii-bar">{{ item.ascii }}</span>
+                    <span class="prog-ascii-pct">{{ item.percent }}%</span>
                 </div>
                 {% endfor %}
             </div>
 
             <!-- VISUAL PROGRESS BARS LIST -->
-            <div style="display: flex; flex-direction: column; gap: 1.1rem;">
+            <div class="prog-skill-list">
                 {% for item in skills_breakdown %}
                 <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 0.35rem;">
+                    <div class="prog-skill-info">
                         <span>{{ item.name }}</span>
                         <span style="color: {{ item.color }};">{{ item.percent }}%</span>
                     </div>
-                    <div style="background: #f1f5f9; height: 10px; border-radius: 9999px; overflow: hidden; position: relative;">
-                        <div style="width: {{ item.percent }}%; background: {{ item.color }}; height: 100%; border-radius: 9999px; transition: width 0.6s ease;"></div>
+                    <div class="prog-skill-bar-bg">
+                        <div class="prog-skill-bar-fill" style="width: {{ item.percent }}%; background: {{ item.color }};"></div>
                     </div>
                 </div>
                 {% endfor %}
@@ -161,51 +161,51 @@
         </div>
 
         <!-- RIGHT COLUMN: WEEKLY ACTIVITY CHART -->
-        <div class="glass-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.75rem; box-shadow: 0 6px 20px rgba(0,0,0,0.03);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9;">
-                <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+        <div class="prog-panel-card">
+            <div class="prog-panel-header">
+                <h2 class="prog-panel-title">
                     📅 Weekly Activity Chart
                 </h2>
-                <span style="font-size: 0.75rem; font-weight: 800; background: #f0fdf4; color: #16a34a; padding: 0.25rem 0.65rem; border-radius: 9999px;">
+                <span class="prog-pill-tag prog-pill-green">
                     Last 7 Days
                 </span>
             </div>
 
             <!-- SUMMARY CHIPS -->
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; text-align: center;">
-                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.6rem; padding: 0.75rem 0.5rem;">
-                    <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Questions / Day</div>
-                    <div style="font-size: 1.25rem; font-weight: 800; color: #2563eb; margin-top: 0.15rem;">{{ total_weekly_questions }} total</div>
+            <div class="prog-summary-chips">
+                <div class="prog-chip">
+                    <div class="prog-chip-lbl">Questions / Day</div>
+                    <div class="prog-chip-val prog-chip-blue">{{ total_weekly_questions }} total</div>
                 </div>
-                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.6rem; padding: 0.75rem 0.5rem;">
-                    <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Mock Sessions</div>
-                    <div style="font-size: 1.25rem; font-weight: 800; color: #4f46e5; margin-top: 0.15rem;">{{ total_weekly_interviews }} attended</div>
+                <div class="prog-chip">
+                    <div class="prog-chip-lbl">Mock Sessions</div>
+                    <div class="prog-chip-val prog-chip-indigo">{{ total_weekly_interviews }} attended</div>
                 </div>
-                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.6rem; padding: 0.75rem 0.5rem;">
-                    <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Practice Time</div>
-                    <div style="font-size: 1.25rem; font-weight: 800; color: #059669; margin-top: 0.15rem;">{{ total_weekly_time_hrs }} Hours</div>
+                <div class="prog-chip">
+                    <div class="prog-chip-lbl">Practice Time</div>
+                    <div class="prog-chip-val prog-chip-emerald">{{ total_weekly_time_hrs }} Hours</div>
                 </div>
             </div>
 
             <!-- VISUAL BAR CHART -->
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 170px; padding-top: 1rem; border-bottom: 2px solid #e2e8f0; margin-bottom: 0.5rem;">
+            <div class="prog-chart-container">
                 {% for item in weekly_activity %}
                 {% set height_pct = (item.questions / 25 * 100) | round %}
-                <div style="display: flex; flex-direction: column; align-items: center; width: 12%;">
-                    <span style="font-size: 0.72rem; font-weight: 800; color: #2563eb; margin-bottom: 0.3rem;">{{ item.questions }}</span>
-                    <div style="width: 100%; max-width: 28px; background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%); height: {{ height_pct }}%; border-radius: 6px 6px 0 0; transition: height 0.4s ease;" title="{{ item.day }}: {{ item.questions }} Qs, {{ item.time_mins }} Mins"></div>
+                <div class="prog-chart-col">
+                    <span class="prog-chart-num">{{ item.questions }}</span>
+                    <div class="prog-chart-bar" style="height: {{ height_pct }}%;" title="{{ item.day }}: {{ item.questions }} Qs, {{ item.time_mins }} Mins"></div>
                 </div>
                 {% endfor %}
             </div>
 
             <!-- DAY LABELS -->
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 0.2rem;">
+            <div class="prog-chart-days">
                 {% for item in weekly_activity %}
-                <span style="font-size: 0.78rem; font-weight: 700; color: #64748b; width: 12%; text-align: center;">{{ item.day }}</span>
+                <span class="prog-chart-day-lbl">{{ item.day }}</span>
                 {% endfor %}
             </div>
 
-            <p style="font-size: 0.82rem; color: #64748b; margin-top: 1.25rem; text-align: center;">
+            <p class="prog-tip-text">
                 💡 Consistent daily practice increases technical assessment speed by 40%.
             </p>
         </div>
@@ -213,30 +213,30 @@
     </div>
 
     <!-- LOWER SECTION: ACHIEVEMENTS & COMPLETED ACTIVITIES -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem;">
+    <div class="prog-2col-grid">
 
         <!-- ACHIEVEMENTS / BADGES SECTION -->
-        <div class="glass-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.75rem; box-shadow: 0 6px 20px rgba(0,0,0,0.03);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9;">
-                <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+        <div class="prog-panel-card">
+            <div class="prog-panel-header">
+                <h2 class="prog-panel-title">
                     🏆 Achievements / Badges
                 </h2>
                 {% set unlocked_count = achievements | selectattr('unlocked') | list | length %}
-                <span style="font-size: 0.75rem; font-weight: 800; background: #fef3c7; color: #d97706; padding: 0.25rem 0.65rem; border-radius: 9999px;">
+                <span class="prog-pill-tag prog-pill-amber">
                     {{ unlocked_count }} / {{ achievements | length }} Unlocked
                 </span>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="prog-badges-grid">
                 {% for badge in achievements %}
-                <div style="background: {{ '#ffffff' if badge.unlocked else '#f8fafc' }}; border: 1px solid {{ '#cbd5e1' if badge.unlocked else '#e2e8f0' }}; border-radius: 0.85rem; padding: 1.1rem; display: flex; align-items: flex-start; gap: 0.85rem; opacity: {{ '1' if badge.unlocked else '0.7' }};">
-                    <div style="font-size: 1.8rem; background: #ffffff; width: 46px; height: 46px; min-width: 46px; border-radius: 0.6rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #cbd5e1;">
+                <div class="prog-badge-item {{ '' if badge.unlocked else 'locked' }}">
+                    <div class="prog-badge-icon-box">
                         {{ badge.icon }}
                     </div>
                     <div>
-                        <h4 style="font-size: 0.95rem; font-weight: 800; color: #0f172a; margin: 0 0 0.2rem 0;">{{ badge.title }}</h4>
-                        <p style="font-size: 0.78rem; color: #64748b; margin: 0; line-height: 1.35;">{{ badge.desc }}</p>
-                        <span style="display: inline-block; font-size: 0.68rem; font-weight: 800; color: {{ '#16a34a' if badge.unlocked else '#64748b' }}; background: {{ '#dcfce7' if badge.unlocked else '#f1f5f9' }}; padding: 0.1rem 0.45rem; border-radius: 0.3rem; margin-top: 0.4rem;">
+                        <h4 class="prog-badge-title">{{ badge.title }}</h4>
+                        <p class="prog-badge-desc">{{ badge.desc }}</p>
+                        <span class="prog-badge-date {{ 'unlocked' if badge.unlocked else 'locked' }}">
                             {{ badge.date }}
                         </span>
                     </div>
@@ -246,40 +246,40 @@
         </div>
 
         <!-- RECENT COMPLETED ACTIVITIES SECTION -->
-        <div class="glass-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.75rem; box-shadow: 0 6px 20px rgba(0,0,0,0.03);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9;">
-                <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+        <div class="prog-panel-card">
+            <div class="prog-panel-header">
+                <h2 class="prog-panel-title">
                     ✅ Recent Activity
                 </h2>
-                <span style="font-size: 0.75rem; font-weight: 800; background: #eff6ff; color: #2563eb; padding: 0.25rem 0.65rem; border-radius: 9999px;">
+                <span class="prog-pill-tag prog-pill-blue">
                     Completed
                 </span>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <div class="prog-activity-list">
                 {% if recent_activities %}
                     {% for act in recent_activities %}
-                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 0.9rem 1.1rem; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;">
+                    <div class="prog-activity-row">
                         <div style="display: flex; align-items: center; gap: 0.85rem;">
-                            <span style="width: 28px; height: 28px; border-radius: 50%; background: #dcfce7; color: #16a34a; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; border: 1px solid #86efac;">
+                            <span class="prog-act-icon">
                                 {{ act.icon }}
                             </span>
                             <div>
-                                <div style="font-size: 0.95rem; font-weight: 800; color: #0f172a;">{{ act.title }}</div>
-                                <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.1rem;">{{ act.time }}</div>
+                                <div class="prog-act-title">{{ act.title }}</div>
+                                <div class="prog-act-time">{{ act.time }}</div>
                             </div>
                         </div>
-                        <span style="font-size: 0.72rem; font-weight: 700; background: #ffffff; border: 1px solid #cbd5e1; color: #475569; padding: 0.2rem 0.6rem; border-radius: 9999px;">
+                        <span class="prog-act-pill">
                             {{ act.badge }}
                         </span>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <div style="text-align: center; padding: 2rem 1rem; color: #64748b;">
+                    <div style="text-align: center; padding: 2rem 1rem; color: #cbd5e1;">
                         <div style="font-size: 2rem; margin-bottom: 0.5rem;">📝</div>
-                        <p style="font-size: 0.92rem; margin: 0; font-weight: 600;">No practice activity recorded yet.</p>
-                        <p style="font-size: 0.82rem; margin-top: 0.25rem;">Start solving questions to see your live progress here!</p>
-                        <a href="{{ url_for('questions') }}" class="btn btn-primary btn-sm" style="margin-top: 0.75rem; display: inline-block;">Solve First Question →</a>
+                        <p style="font-size: 0.95rem; margin: 0; font-weight: 700; color: #ffffff;">No practice activity recorded yet.</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.25rem; color: #94a3b8;">Start solving questions to see your live progress here!</p>
+                        <a href="{{ url_for('questions') }}" class="btn btn-primary btn-sm" style="margin-top: 0.85rem; display: inline-block;">Solve First Question →</a>
                     </div>
                 {% endif %}
             </div>
@@ -288,20 +288,4 @@
     </div>
 
 </div>
-
-<style>
-@media (max-width: 1024px) {
-    .metrics-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
-}
-@media (max-width: 640px) {
-    .metrics-grid {
-        grid-template-columns: 1fr !important;
-    }
-    div[style*="grid-template-columns: 1fr 1fr"] {
-        grid-template-columns: 1fr !important;
-    }
-}
-</style>
 {% endblock %}

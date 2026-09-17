@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- SIDEBAR ACTIVE SELECTION FEEDBACK ---
+    const navLinks = document.querySelectorAll('.sidebar-item');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            if (!e.defaultPrevented && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                document.querySelectorAll('.sidebar-item.active').forEach(el => el.classList.remove('active'));
+                link.classList.add('active');
+            }
+        });
+    });
+
     // --- BOOKMARK TOGGLE ---
     const bookmarkBtns = document.querySelectorAll('.bookmark-btn');
     bookmarkBtns.forEach(btn => {

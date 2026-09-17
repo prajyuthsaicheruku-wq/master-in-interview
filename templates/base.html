@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Interview Prep Portal{% endblock %}</title>
+    <title>{% block title %}Interview Master{% endblock %}</title>
     <meta name="description" content="Ace your technical and behavioral software engineering interviews with dynamic question banks and mock practice.">
     <meta name="theme-color" content="#6366f1">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/icon-192.png') }}">
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=v2026_dark_theme_live_v27">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=v2026_about_dark_mode_clear_v65">
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -19,14 +24,14 @@
         })();
     </script>
 </head>
-<body class="{% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' %}has-perm-sidebar{% endif %}">
+<body class="{% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' and request.endpoint != 'reset_password_confirm' %}has-perm-sidebar{% endif %}">
 
-    {% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' %}
+    {% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' and request.endpoint != 'reset_password_confirm' %}
     <!-- PERMANENT LEFT VERTICAL SIDEBAR (MATCHING LET'S CODE TOGETHER DASHBOARD PANEL) -->
     <aside class="perm-sidebar" id="permSidebar">
         <div class="sidebar-top">
-            <a href="{{ url_for('index') }}" class="brand-logo">
-                <div class="brand-icon">⚡</div>
+            <a href="{{ url_for('index') }}" class="brand-logo" style="display: flex; align-items: center; gap: 0.65rem;">
+                <img src="{{ url_for('static', filename='images/emblem.png') }}" alt="Interview Master Logo" style="width: 34px; height: 34px; object-fit: contain; flex-shrink: 0;">
                 <span>Interview<span class="gradient-text">Master</span></span>
             </a>
             <button type="button" class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close menu">&times;</button>
@@ -55,11 +60,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('resume_builder') }}" class="sidebar-item {{ 'active' if request.endpoint == 'resume_builder' }}">
-                        Resume Builder
-                    </a>
-                </li>
-                <li>
                     <a href="{{ url_for('progress') }}" class="sidebar-item {{ 'active' if request.endpoint == 'progress' }}">
                         Progress
                     </a>
@@ -67,6 +67,11 @@
                 <li>
                     <a href="{{ url_for('leaderboard') }}" class="sidebar-item {{ 'active' if request.endpoint == 'leaderboard' }}">
                         Leaderboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-item {{ 'active' if request.endpoint == 'resume_builder' }}">
+                        Resume Builder
                     </a>
                 </li>
                 <li>
@@ -106,7 +111,7 @@
 
     <!-- MAIN PAGE CONTAINER -->
     <div class="main-page-wrapper">
-        {% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' %}
+        {% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' and request.endpoint != 'reset_password_confirm' %}
         <!-- TOP HEADER BAR IN MAIN CONTAINER -->
         <header class="main-top-header" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem; gap: 1rem;">
             <div class="header-left" style="display: flex; align-items: center; gap: 1rem;">

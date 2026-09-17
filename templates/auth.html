@@ -1,35 +1,110 @@
 {% extends "base.html" %}
 
-{% block title %}Login / Sign Up | Interview Prep Portal{% endblock %}
+{% block title %}Interview Master - Login & Sign Up{% endblock %}
 
 {% block content %}
 <div class="auth-wrapper" style="position: relative;">
-    <!-- TOP RIGHT CONTROLS BAR (INSTALL APP) -->
+    <!-- TOP RIGHT CONTROLS BAR (INSTALL APP & THEME) -->
     <div style="position: absolute; top: 1.25rem; right: 1.5rem; z-index: 100; display: flex; align-items: center; gap: 0.75rem;">
+        <button type="button" id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Dark or White Mode" title="Toggle Dark / White Mode" style="border-radius: var(--radius-full); padding: 0.45rem 1rem;">
+            <span class="theme-icon-dark">🌙</span>
+            <span class="theme-icon-light" style="display: none;">☀️</span>
+            <span class="theme-label">Dark Mode</span>
+        </button>
         <button type="button" id="installAuthAppBtn" onclick="triggerPWAInstall()" class="btn btn-sm" style="display: inline-flex; align-items: center; gap: 0.45rem; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff; font-weight: 700; border: none; padding: 0.55rem 1.15rem; border-radius: var(--radius-full); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); cursor: pointer; transition: all 0.25s ease;">
             📲 Install App
         </button>
     </div>
     <!-- Animated Ambient Background & Grid Overlay -->
     <div class="auth-bg-decorations">
+        <!-- Ambient Background Logo Watermark -->
+        <div class="auth-bg-logo-watermark">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Interview Master Logo Background">
+        </div>
         <div class="glow-orb orb-1"></div>
         <div class="glow-orb orb-2"></div>
         <div class="glow-orb orb-3"></div>
         <div class="auth-grid-pattern"></div>
-        
-        <!-- Floating Tech Pills -->
-        <div class="floating-badge badge-1"><span>⚡ System Design</span></div>
-        <div class="floating-badge badge-2"><span>🚀 Full Stack Dev</span></div>
-        <div class="floating-badge badge-3"><span>🧠 Data Structures</span></div>
-        <div class="floating-badge badge-4"><span>💡 Mock Interviews</span></div>
-        <div class="floating-badge badge-5"><span>🐍 Python & JS</span></div>
-        <div class="floating-badge badge-6"><span>📊 LeetCode Mastery</span></div>
     </div>
 
-    <div class="glass-card auth-card">
-        <div class="auth-header">
-            <div class="rocket-icon">🚀</div>
-            <h2>Crack Your Interview With <span class="gradient-text">Confidence</span></h2>
+    <!-- SPLIT CONTAINER (HERO ON LEFT, LOGIN FORM ON THE RIGHT SIDE) -->
+    <div class="auth-split-container">
+        
+        <!-- LEFT HERO SHOWCASE PANEL -->
+        <div class="auth-left-hero">
+            <div class="auth-badge-tag">
+                <span>⚡ All-In-One Placement Readiness</span>
+            </div>
+
+            <h1 class="auth-hero-title">
+                Crack Your Dream Tech Role With <span class="gradient-text">Confidence</span>
+            </h1>
+
+            <p class="auth-hero-desc">
+                Everything you need to master technical coding, aptitude, system design, and mock interviews in one cohesive platform.
+            </p>
+
+            <div class="auth-feature-list">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon">📚</div>
+                    <div class="auth-feature-content">
+                        <h4>880+ Curated Placement Questions</h4>
+                        <p>Complete with verified code solutions, complexity analyses, and hints.</p>
+                    </div>
+                </div>
+
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon">🧮</div>
+                    <div class="auth-feature-content">
+                        <h4>Quantitative & Logical Aptitude</h4>
+                        <p>20+ topic modules, formula cheat sheets, shortcuts, and mock tests.</p>
+                    </div>
+                </div>
+
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon">🎯</div>
+                    <div class="auth-feature-content">
+                        <h4>Real-Time Mock Interviews</h4>
+                        <p>Timed practice sessions simulating actual tech company assessments.</p>
+                    </div>
+                </div>
+
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon">📄</div>
+                    <div class="auth-feature-content">
+                        <h4>Free ATS-Friendly Resume Builder</h4>
+                        <p>Generate clean, recruiter-ready resumes tailored for engineering roles.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-hero-stats">
+                <div class="auth-stat-item">
+                    <span class="stat-num">880+</span>
+                    <span class="stat-label">Curated Questions</span>
+                </div>
+                <div style="width: 1px; height: 32px; background: rgba(148, 163, 184, 0.25);"></div>
+                <div class="auth-stat-item">
+                    <span class="stat-num">50+</span>
+                    <span class="stat-label">Core Topics</span>
+                </div>
+                <div style="width: 1px; height: 32px; background: rgba(148, 163, 184, 0.25);"></div>
+                <div class="auth-stat-item">
+                    <span class="stat-num">100%</span>
+                    <span class="stat-label">Free & Student-Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: AUTH / LOGIN FORM PANEL -->
+        <div class="auth-right-panel">
+            <div class="glass-card auth-card">
+        <div class="auth-header" style="text-align: center;">
+            <div style="margin-bottom: 0.6rem;">
+                <img src="{{ url_for('static', filename='images/emblem.png') }}" alt="Interview Master" style="width: 68px; height: 68px; object-fit: contain; filter: drop-shadow(0 4px 14px rgba(99, 102, 241, 0.35));">
+            </div>
+            <h2>Master-in-<span class="gradient-text">Interview</span></h2>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; margin-bottom: 1.15rem; letter-spacing: 0.5px;">Practice • Prepare • Succeed</p>
         </div>
 
         <div class="auth-tabs">
@@ -38,10 +113,10 @@
         </div>
 
         <!-- LOGIN FORM -->
-        <form id="loginForm" action="{{ url_for('login') }}" method="POST" style="{% if initial_mode == 'register' or initial_mode == 'reset' %}display: none;{% else %}display: block;{% endif %}">
+        <form id="loginForm" action="{{ url_for('login') }}" method="POST" autocomplete="off" style="{% if initial_mode == 'register' or initial_mode == 'reset' %}display: none;{% else %}display: block;{% endif %}">
             <div class="form-group">
                 <label class="form-label" for="loginIdentity">Username or Email</label>
-                <input type="text" id="loginIdentity" name="identity" class="form-input" placeholder="e.g. alex_dev or alex@example.com" required>
+                <input type="text" id="loginIdentity" name="identity" class="form-input" placeholder="Enter your username or email" autocomplete="off" required>
             </div>
 
             <div class="form-group">
@@ -50,8 +125,10 @@
                     <a href="#" id="forgotPasswordBtn" style="font-size: 0.82rem; color: var(--accent-cyan);">Forgot Password?</a>
                 </div>
                 <div style="position: relative; margin-top: 0.4rem;">
-                    <input type="password" id="loginPassword" name="password" class="form-input" placeholder="••••••••" required>
-                    <button type="button" class="toggle-password" data-target="loginPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                    <input type="password" id="loginPassword" name="password" class="form-input" placeholder="Enter your password" autocomplete="new-password" style="padding-right: 44px;" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('loginPassword', this)" aria-label="Toggle password visibility" title="Show password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; color: var(--text-muted); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; z-index: 10; padding: 0; border-radius: 6px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                    </button>
                 </div>
             </div>
 
@@ -65,74 +142,98 @@
             </div>
         </form>
 
-        <!-- RESET PASSWORD FORM -->
-        <form id="resetForm" action="{{ url_for('reset_password') }}" method="POST" style="{% if initial_mode == 'reset' %}display: block;{% else %}display: none;{% endif %}">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; text-align: center; color: var(--accent-cyan);">🔑 Password Recovery</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 1.25rem;">
-                Enter your registered email address and a new password to reset access.
-            </p>
+        <!-- RESET PASSWORD / FORGOT PASSWORD FLOW (EMAIL MAGIC RESET LINK) -->
+        <div id="resetContainer" style="{% if initial_mode == 'reset' %}display: block;{% else %}display: none;{% endif %}">
+            
+            <!-- STEP 1: ENTER REGISTERED EMAIL -->
+            <form id="resetFormStep1" action="javascript:void(0);" onsubmit="event.preventDefault(); handleSendResetLink(event);" autocomplete="off">
+                <div style="text-align: center; margin-bottom: 1.25rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.25rem;">🔑</div>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.35rem 0;">Password Recovery</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                        Enter your registered email address to receive a secure password reset link.
+                    </p>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label" for="resetEmail">Registered Email</label>
-                <input type="email" id="resetEmail" name="email" class="form-input" placeholder="alex@example.com" required>
-            </div>
+                <div class="form-group">
+                    <label class="form-label" for="resetEmail">Registered Email</label>
+                    <input type="email" id="resetEmail" name="email" class="form-input" placeholder="Enter your registered email" autocomplete="email" required>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label" for="resetNewPassword">New Password</label>
-                <div style="position: relative;">
-                    <input type="password" id="resetNewPassword" name="new_password" class="form-input" placeholder="Minimum 6 characters" minlength="6" required>
-                    <button type="button" class="toggle-password" data-target="resetNewPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                <div id="resetStep1Alert" class="alert-box" style="display: none; margin-top: 0.75rem;"></div>
+
+                <button type="submit" id="sendResetOtpBtn" class="btn btn-primary" style="width: 100%; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span>Send Password Reset Link ✉️</span>
+                </button>
+
+                <div style="text-align: center; margin-top: 1.25rem;">
+                    <button type="button" onclick="switchAuthTab('login')" style="background: none; border: none; color: var(--accent-cyan); font-weight: 700; cursor: pointer; text-decoration: underline; font-size: 0.88rem;">
+                        ← Back to Log In
+                    </button>
+                </div>
+            </form>
+
+            <!-- STEP 2: EMAIL SENT CONFIRMATION STATE -->
+            <div id="resetSuccessState" style="display: none; text-align: center; padding: 0.5rem 0;">
+                <div style="font-size: 2.75rem; margin-bottom: 0.5rem;">📬</div>
+                <h3 style="font-size: 1.2rem; font-weight: 700; color: #38bdf8; margin: 0 0 0.4rem 0;">Check Your Email!</h3>
+                <p style="font-size: 0.86rem; color: #cbd5e1; line-height: 1.5; margin: 0 0 1.25rem 0;">
+                    We have dispatched a password reset link to:<br>
+                    <strong id="displayResetTargetEmail" style="color: #ffffff; font-size: 0.95rem;"></strong>
+                </p>
+
+                <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 12px; padding: 14px 16px; margin-bottom: 1.25rem; text-align: left; font-size: 0.82rem; color: #94a3b8; line-height: 1.6;">
+                    <div style="font-weight: 700; color: #818cf8; margin-bottom: 4px;">Next Steps:</div>
+                    1. Open your <strong>Mail App</strong> (e.g. Gmail, Outlook).<br>
+                    2. Look for the email with subject <em>"Reset your Interview Master password"</em>.<br>
+                    3. Click the <strong>"🔐 Create New Password"</strong> button in the email to set your new password.<br>
+                    <span style="display: inline-block; margin-top: 4px; font-size: 0.76rem; color: #64748b;">(Check spam/junk folder if not received within 1 minute)</span>
+                </div>
+
+                <button type="button" onclick="switchAuthTab('login')" class="btn btn-primary" style="width: 100%;">
+                    ← Back to Log In
+                </button>
+
+                <div style="margin-top: 1rem;">
+                    <button type="button" onclick="goBackToResetStep1()" style="background: none; border: none; color: var(--accent-cyan); font-size: 0.82rem; text-decoration: underline; cursor: pointer;">
+                        Didn't get it? Try another email or resend
+                    </button>
                 </div>
             </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Update Password & Log In →</button>
-            <button type="button" id="backToLoginBtn" onclick="switchAuthTab('login')" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.75rem;">← Back to Login</button>
-        </form>
+        </div>
 
         <!-- REGISTER & OTP VERIFICATION FORM -->
         <div id="registerContainer" style="{% if initial_mode == 'register' %}display: block;{% else %}display: none;{% endif %}">
             
             <!-- STEP 1: ACCOUNT DETAILS -->
-            <form id="registerFormStep1" onsubmit="handleSendOtp(event)">
+            <form id="registerFormStep1" action="javascript:void(0);" onsubmit="event.preventDefault(); handleSendOtp(event);" autocomplete="off">
                 <div class="form-group">
                     <label class="form-label" for="regUsername">Username</label>
-                    <input type="text" id="regUsername" name="username" class="form-input" placeholder="e.g. alex_coder" required minlength="3">
+                    <input type="text" id="regUsername" name="username" class="form-input" placeholder="Choose a username" autocomplete="off" required minlength="3">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="regEmail">Email Address</label>
-                    <input type="email" id="regEmail" name="email" class="form-input" placeholder="alex@example.com" required>
+                    <input type="email" id="regEmail" name="email" class="form-input" placeholder="Enter your email address" autocomplete="off" required>
                     <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem; display: block;">
-                        🔒 A 6-digit OTP verification code will be sent to your email.
+                        🔒 A 6-digit OTP verification code will be sent to your email inbox.
                     </small>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="regPassword">Password</label>
                     <div style="position: relative;">
-                        <input type="password" id="regPassword" name="password" class="form-input" placeholder="Minimum 6 characters" minlength="6" required>
-                        <button type="button" class="toggle-password" data-target="regPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                        <input type="password" id="regPassword" name="password" class="form-input" placeholder="Create a password (min. 6 characters)" minlength="6" autocomplete="new-password" style="padding-right: 44px;" required>
+                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('regPassword', this)" aria-label="Toggle password visibility" title="Show password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; color: var(--text-muted); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; z-index: 10; padding: 0; border-radius: 6px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        </button>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="targetRole">Target Role</label>
-                    <select id="targetRole" name="target_role" class="form-select">
-                        <option value="Software Engineer">Software Engineer (Full Stack)</option>
-                        <option value="Frontend Engineer">Frontend Engineer</option>
-                        <option value="Backend Engineer">Backend Engineer</option>
-                        <option value="System Design Architect">System Design Architect</option>
-                        <option value="Data Engineer">Data Engineer / AI Engineer</option>
-                        <option value="Engineering Manager">Engineering Manager</option>
-                    </select>
                 </div>
 
                 <div id="step1Alert" class="alert-box" style="display: none; margin-top: 0.75rem;"></div>
 
                 <button type="submit" id="sendOtpBtn" class="btn btn-primary" style="width: 100%; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                    <span>Create Account & Get OTP</span>
-                    <span id="sendOtpSpinner" class="spinner-small" style="display: none;">⏳</span>
-                    <span>→</span>
+                    <span>Create Account & Get OTP →</span>
                 </button>
 
                 <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
@@ -144,12 +245,15 @@
             </form>
 
             <!-- STEP 2: OTP VERIFICATION BOX -->
-            <form id="registerFormStep2" onsubmit="handleVerifyOtp(event)" style="display: none;">
+            <form id="registerFormStep2" action="javascript:void(0);" onsubmit="event.preventDefault(); handleVerifyOtp(event);" style="display: none;">
                 <div style="text-align: center; margin-bottom: 1.25rem;">
                     <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">📩</div>
                     <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.35rem 0;">Enter Verification Code</h3>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
                         We sent a 6-digit OTP to <strong id="displayTargetEmail" style="color: var(--accent-cyan);"></strong>
+                    </p>
+                    <p style="font-size: 0.78rem; color: #94a3b8; margin: 4px 0 0 0;">
+                        (Check your Inbox or Spam folder)
                     </p>
                 </div>
 
@@ -164,7 +268,7 @@
                            style="text-align: center; font-size: 1.75rem; letter-spacing: 12px; font-weight: 800; color: var(--accent-cyan); background: rgba(15, 23, 42, 0.6); padding: 0.75rem;" 
                            required>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.6rem; font-size: 0.8rem;">
-                        <span id="otpTimerText" style="color: var(--text-muted);">⏱️ Code valid for 10m</span>
+                        <span id="otpTimerText" style="color: var(--text-muted);">⏱️ Code valid for 15m</span>
                         <button type="button" id="resendOtpBtn" onclick="resendOtpCode()" style="background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 0.82rem; text-decoration: underline; padding: 0;" disabled>
                             Resend OTP (<span id="resendCountdown">45</span>s)
                         </button>
@@ -174,9 +278,7 @@
                 <div id="step2Alert" class="alert-box" style="display: none; margin-top: 0.75rem;"></div>
 
                 <button type="submit" id="verifyOtpBtn" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                    <span>Verify & Complete Registration</span>
-                    <span id="verifySpinner" class="spinner-small" style="display: none;">⏳</span>
-                    <span>🚀</span>
+                    <span>Verify & Complete Registration 🚀</span>
                 </button>
 
                 <button type="button" onclick="goBackToStep1()" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.75rem;">
@@ -185,43 +287,348 @@
             </form>
         </div>
     </div>
+    </div>
+</div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-// Inline tab switch fallback to ensure instant responsiveness even before external JS finishes loading
+// --- CORE AUTH LOGIC (INLINE TO PREVENT ANY SCRIPT LOADING OR CACHING ISSUES) ---
+const SVG_EYE_OPEN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+const SVG_EYE_SLASH = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+
+let resendTimerInterval = null;
+let resetResendTimerInterval = null;
+
+function showAlert(elementId, message, type = 'danger') {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    el.style.display = 'block';
+    el.className = 'alert-box';
+    if (type === 'danger') {
+        el.style.background = 'rgba(239, 68, 68, 0.15)';
+        el.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+        el.style.color = '#fca5a5';
+    } else if (type === 'success') {
+        el.style.background = 'rgba(34, 197, 94, 0.15)';
+        el.style.border = '1px solid rgba(34, 197, 94, 0.4)';
+        el.style.color = '#86efac';
+    }
+    el.style.padding = '0.65rem 0.9rem';
+    el.style.borderRadius = '8px';
+    el.style.fontSize = '0.85rem';
+    el.innerHTML = message;
+}
+
+function hideAlert(elementId) {
+    const el = document.getElementById(elementId);
+    if (el) el.style.display = 'none';
+}
+
 function switchAuthTab(mode) {
     const loginTabBtn = document.getElementById('loginTabBtn');
     const registerTabBtn = document.getElementById('registerTabBtn');
     const loginForm = document.getElementById('loginForm');
     const registerContainer = document.getElementById('registerContainer');
-    const resetForm = document.getElementById('resetForm');
-    const step1 = document.getElementById('registerFormStep1');
-    const step2 = document.getElementById('registerFormStep2');
+    const resetContainer = document.getElementById('resetContainer');
+    const regStep1 = document.getElementById('registerFormStep1');
+    const regStep2 = document.getElementById('registerFormStep2');
+    const resetStep1 = document.getElementById('resetFormStep1');
+    const resetStep2 = document.getElementById('resetFormStep2');
+
+    hideAlert('step1Alert');
+    hideAlert('step2Alert');
+    hideAlert('resetStep1Alert');
+    hideAlert('resetStep2Alert');
 
     if (mode === 'register') {
         if (registerTabBtn) registerTabBtn.classList.add('active');
         if (loginTabBtn) loginTabBtn.classList.remove('active');
         if (loginForm) loginForm.style.display = 'none';
-        if (resetForm) resetForm.style.display = 'none';
+        if (resetContainer) resetContainer.style.display = 'none';
         if (registerContainer) registerContainer.style.display = 'block';
-        if (step1) step1.style.display = 'block';
-        if (step2) step2.style.display = 'none';
+        if (regStep1) regStep1.style.display = 'block';
+        if (regStep2) regStep2.style.display = 'none';
     } else if (mode === 'reset') {
         if (loginTabBtn) loginTabBtn.classList.remove('active');
         if (registerTabBtn) registerTabBtn.classList.remove('active');
         if (loginForm) loginForm.style.display = 'none';
         if (registerContainer) registerContainer.style.display = 'none';
-        if (resetForm) resetForm.style.display = 'block';
+        if (resetContainer) resetContainer.style.display = 'block';
+        if (resetStep1) resetStep1.style.display = 'block';
+        if (resetStep2) resetStep2.style.display = 'none';
     } else {
         if (loginTabBtn) loginTabBtn.classList.add('active');
         if (registerTabBtn) registerTabBtn.classList.remove('active');
         if (loginForm) loginForm.style.display = 'block';
         if (registerContainer) registerContainer.style.display = 'none';
-        if (resetForm) resetForm.style.display = 'none';
+        if (resetContainer) resetContainer.style.display = 'none';
     }
 }
+
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (btn) {
+            btn.innerHTML = SVG_EYE_OPEN;
+            btn.title = 'Hide password';
+            btn.setAttribute('aria-label', 'Hide password');
+            btn.style.color = '#4f46e5';
+        }
+    } else {
+        input.type = 'password';
+        if (btn) {
+            btn.innerHTML = SVG_EYE_SLASH;
+            btn.title = 'Show password';
+            btn.setAttribute('aria-label', 'Show password');
+            btn.style.color = 'var(--text-muted)';
+        }
+    }
+}
+
+// --- REGISTER OTP FLOW ---
+async function handleSendOtp(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    hideAlert('step1Alert');
+
+    const username = document.getElementById('regUsername').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+
+    if (!username || !email || !password) {
+        showAlert('step1Alert', '⚠️ Please fill in all required fields.');
+        return false;
+    }
+
+    if (username.length < 3) {
+        showAlert('step1Alert', '⚠️ Username must be at least 3 characters long.');
+        return false;
+    }
+
+    if (password.length < 6) {
+        showAlert('step1Alert', '⚠️ Password must be at least 6 characters long.');
+        return false;
+    }
+
+    const btn = document.getElementById('sendOtpBtn');
+    btn.disabled = true;
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = '<span>📨 Sending verification OTP...</span>';
+
+    try {
+        const res = await fetch('/api/auth/send-register-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            document.getElementById('registerFormStep1').style.display = 'none';
+            document.getElementById('registerFormStep2').style.display = 'block';
+            document.getElementById('displayTargetEmail').textContent = email;
+            const otpInput = document.getElementById('regOtpCode');
+            otpInput.value = '';
+            setTimeout(() => otpInput.focus(), 150);
+            startResendCountdown(45);
+        } else {
+            showAlert('step1Alert', data.message || '⚠️ Failed to send verification code. Please try again.');
+        }
+    } catch (err) {
+        showAlert('step1Alert', '⚠️ Network error communicating with server. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+    }
+    return false;
+}
+
+async function handleVerifyOtp(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    hideAlert('step2Alert');
+
+    const username = document.getElementById('regUsername').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const targetRoleEl = document.getElementById('targetRole');
+    const target_role = targetRoleEl ? targetRoleEl.value : 'Software Engineer';
+    const otp_code = document.getElementById('regOtpCode').value.trim();
+
+    if (!otp_code || otp_code.length !== 6) {
+        showAlert('step2Alert', '⚠️ Please enter the full 6-digit OTP code.');
+        return false;
+    }
+
+    const btn = document.getElementById('verifyOtpBtn');
+    btn.disabled = true;
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = '<span>⏳ Verifying OTP & Creating Account...</span>';
+
+    try {
+        const res = await fetch('/api/auth/verify-register-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password, target_role, otp_code })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            showAlert('step2Alert', '✅ OTP Verified! Welcome to Interview Master. Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = data.redirect_url || '/dashboard';
+            }, 700);
+        } else {
+            showAlert('step2Alert', data.message || '⚠️ Invalid or expired OTP code.');
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+        }
+    } catch (err) {
+        showAlert('step2Alert', '⚠️ Network error during verification. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+    }
+    return false;
+}
+
+function startResendCountdown(seconds) {
+    const resendBtn = document.getElementById('resendOtpBtn');
+    const countdownSpan = document.getElementById('resendCountdown');
+    if (!resendBtn || !countdownSpan) return;
+
+    if (resendTimerInterval) clearInterval(resendTimerInterval);
+    resendBtn.disabled = true;
+    let remaining = seconds;
+    countdownSpan.textContent = remaining;
+
+    resendTimerInterval = setInterval(() => {
+        remaining -= 1;
+        countdownSpan.textContent = remaining;
+        if (remaining <= 0) {
+            clearInterval(resendTimerInterval);
+            resendBtn.disabled = false;
+            resendBtn.innerHTML = 'Resend OTP';
+        }
+    }, 1000);
+}
+
+async function resendOtpCode() {
+    hideAlert('step2Alert');
+    const username = document.getElementById('regUsername').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+
+    const resendBtn = document.getElementById('resendOtpBtn');
+    resendBtn.disabled = true;
+    resendBtn.textContent = 'Sending...';
+
+    try {
+        const res = await fetch('/api/auth/send-register-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            showAlert('step2Alert', '✅ New verification code sent to your email!', 'success');
+            startResendCountdown(45);
+        } else {
+            showAlert('step2Alert', data.message || '⚠️ Failed to resend code.');
+            resendBtn.disabled = false;
+            resendBtn.textContent = 'Resend OTP';
+        }
+    } catch (err) {
+        showAlert('step2Alert', '⚠️ Network error. Please try again.');
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend OTP';
+    }
+}
+
+function goBackToStep1() {
+    hideAlert('step1Alert');
+    hideAlert('step2Alert');
+    document.getElementById('registerFormStep2').style.display = 'none';
+    document.getElementById('registerFormStep1').style.display = 'block';
+}
+
+// --- PASSWORD RESET LINK FLOW ---
+async function handleSendResetLink(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    hideAlert('resetStep1Alert');
+
+    const email = document.getElementById('resetEmail').value.trim();
+    if (!email) {
+        showAlert('resetStep1Alert', '⚠️ Please enter your registered email address.');
+        return false;
+    }
+
+    const btn = document.getElementById('sendResetOtpBtn');
+    btn.disabled = true;
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = '<span>📨 Sending reset link...</span>';
+
+    try {
+        const res = await fetch('/api/auth/send-reset-link', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            document.getElementById('resetFormStep1').style.display = 'none';
+            document.getElementById('resetSuccessState').style.display = 'block';
+            document.getElementById('displayResetTargetEmail').textContent = email;
+        } else {
+            showAlert('resetStep1Alert', data.message || '⚠️ Failed to send reset link. Please check your email.');
+        }
+    } catch (err) {
+        showAlert('resetStep1Alert', '⚠️ Network error communicating with server. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+    }
+    return false;
+}
+
+function goBackToResetStep1() {
+    hideAlert('resetStep1Alert');
+    const successState = document.getElementById('resetSuccessState');
+    if (successState) successState.style.display = 'none';
+    const form1 = document.getElementById('resetFormStep1');
+    if (form1) form1.style.display = 'block';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Auto-verify register OTP when 6 numeric digits are entered
+    const otpInput = document.getElementById('regOtpCode');
+    if (otpInput) {
+        otpInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            if (e.target.value.length === 6) {
+                handleVerifyOtp();
+            }
+        });
+    }
+
+    // Auto-format reset OTP
+    const resetOtpInput = document.getElementById('resetOtpCode');
+    if (resetOtpInput) {
+        resetOtpInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+    }
+
+    const forgotBtn = document.getElementById('forgotPasswordBtn');
+    if (forgotBtn) {
+        forgotBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchAuthTab('reset');
+        });
+    }
+});
 </script>
-<script src="{{ url_for('static', filename='js/auth.js') }}?v=v2026_otp_full_v5"></script>
+<script src="{{ url_for('static', filename='js/auth.js') }}?v=v2026_otp_full_v10"></script>
 {% endblock %}

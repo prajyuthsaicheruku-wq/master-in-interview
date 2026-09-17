@@ -1,13 +1,13 @@
 import random
 import os
+import socket
 from datetime import datetime, date, timedelta
 from functools import wraps
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response, send_from_directory
 from models import db, User, Question, UserProgress, Bookmark, AptitudeTestAttempt, MockInterviewAttempt, EmailVerificationOTP
-from email_service import send_brevo_otp_email
-
-# Load environment variables from .env file
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from email_service import send_brevo_otp_email, send_brevo_password_reset_link_email, send_async_otp_email, send_async_reset_link_email
 load_dotenv()
 
 app = Flask(__name__)
@@ -29,6 +29,52 @@ if 'mysql' in db_url:
     }
 
 db.init_app(app)
+
+# SQLite Performance PRAGMAs (WAL Mode, In-Memory Temp Store, Cache Size)
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+import time
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    try:
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.execute("PRAGMA cache_size=-64000")
+        cursor.execute("PRAGMA temp_store=MEMORY")
+        cursor.close()
+    except Exception:
+        pass
+
+# In-Memory Question & Platform Metadata Cache (Avoids heavy table scans on repeated page navigation)
+_q_metadata_cache = {
+    'timestamp': 0,
+    'total_questions': 0,
+    'total_users': 0,
+    'cat_to_qids': {},
+    'all_qs_cat': []
+}
+
+def get_cached_question_metadata():
+    now = time.time()
+    if now - _q_metadata_cache['timestamp'] > 300 or not _q_metadata_cache['all_qs_cat']:
+        all_qs_cat = db.session.query(Question.id, Question.category).all()
+        cat_to_qids = {}
+        for qid, cat in all_qs_cat:
+            if cat not in cat_to_qids:
+                cat_to_qids[cat] = []
+            cat_to_qids[cat].append(qid)
+        try:
+            total_users = User.query.count()
+        except Exception:
+            total_users = 1
+        _q_metadata_cache['timestamp'] = now
+        _q_metadata_cache['total_questions'] = len(all_qs_cat)
+        _q_metadata_cache['total_users'] = total_users
+        _q_metadata_cache['cat_to_qids'] = cat_to_qids
+        _q_metadata_cache['all_qs_cat'] = all_qs_cat
+    return _q_metadata_cache['total_questions'], _q_metadata_cache['cat_to_qids'], _q_metadata_cache['all_qs_cat'], _q_metadata_cache['total_users']
 
 import re
 
@@ -63,14 +109,17 @@ def clean_title(title):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('Please log in to access this page.', 'warning')
-            return redirect(url_for('auth_page'))
-        user = db.session.get(User, session['user_id'])
+        user_id = session.get('user_id')
+        if not user_id:
+            return redirect(url_for('auth_page', mode='login'))
+        try:
+            user = db.session.get(User, int(user_id))
+        except Exception:
+            user = None
         if not user:
-            session.clear()
-            flash('Session expired. Please log in again.', 'warning')
-            return redirect(url_for('auth_page'))
+            session.pop('user_id', None)
+            session.pop('username', None)
+            return redirect(url_for('auth_page', mode='login'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -78,38 +127,59 @@ def login_required(f):
 @app.context_processor
 def inject_user():
     current_user = None
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         try:
-            current_user = db.session.get(User, session['user_id'])
+            current_user = db.session.get(User, int(user_id))
         except Exception:
             current_user = None
     return dict(current_user=current_user)
 
 @app.after_request
 def add_header(response):
+    if request.path.startswith('/static/'):
+        response.headers['Cache-Control'] = 'public, max-age=86400, immutable'
+        response.headers.pop('Pragma', None)
+        response.headers.pop('Expires', None)
+        return response
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
     return response
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 # --- AUTH ROUTES ---
 
 @app.route('/')
 def index():
-    if 'user_id' in session:
-        user = db.session.get(User, session['user_id'])
-        if user:
-            return redirect(url_for('dashboard'))
-        session.clear()
-    return redirect(url_for('auth_page'))
+    user_id = session.get('user_id')
+    if user_id:
+        try:
+            user = db.session.get(User, int(user_id))
+            if user:
+                return redirect(url_for('dashboard'))
+        except Exception:
+            pass
+        session.pop('user_id', None)
+        session.pop('username', None)
+    return redirect(url_for('auth_page', mode='login'))
 
 @app.route('/auth', methods=['GET'])
 def auth_page():
-    if 'user_id' in session and not request.args.get('force'):
-        user = db.session.get(User, session['user_id'])
-        if user:
-            return redirect(url_for('dashboard'))
-        session.clear()
+    user_id = session.get('user_id')
+    if user_id and not request.args.get('force'):
+        try:
+            user = db.session.get(User, int(user_id))
+            if user:
+                return redirect(url_for('dashboard'))
+        except Exception:
+            pass
+        session.pop('user_id', None)
+        session.pop('username', None)
     mode = request.args.get('mode', 'login')
     return render_template('auth.html', initial_mode=mode)
 
@@ -129,11 +199,17 @@ def login():
         flash('Username/Email and Password are required.', 'danger')
         return redirect(url_for('auth_page', mode='login'))
 
-    user = User.query.filter((User.username == identity) | (User.email == identity.lower())).first()
+    # Case-insensitive lookup for username or email
+    user = User.query.filter(
+        (db.func.lower(User.username) == identity.lower()) | 
+        (db.func.lower(User.email) == identity.lower())
+    ).first()
+
     if user and user.check_password(password):
+        session.permanent = True
         session['user_id'] = user.id
         session['username'] = user.username
-        flash(f'Welcome back, {user.username}!', 'success')
+        flash(f'Welcome back, {user.full_name or user.username}!', 'success')
         return redirect(url_for('dashboard'))
     
     flash('Invalid credentials. Please check your username/email and password.', 'danger')
@@ -141,111 +217,135 @@ def login():
 
 @app.route('/api/auth/send-register-otp', methods=['POST'])
 def send_register_otp():
-    data = request.get_json(silent=True) or request.form
-    username = (data.get('username') or '').strip()
-    email = (data.get('email') or '').strip().lower()
-    password = data.get('password') or ''
+    try:
+        data = request.get_json(silent=True) or request.form
+        username = (data.get('username') or '').strip()
+        email = (data.get('email') or '').strip().lower()
+        password = data.get('password') or ''
 
-    if not username or not email or not password:
-        return jsonify({'success': False, 'message': 'Username, Email, and Password are all required.'}), 400
+        if not username or not email or not password:
+            return jsonify({'success': False, 'message': 'Username, Email, and Password are all required.'}), 400
 
-    if len(username) < 3:
-        return jsonify({'success': False, 'message': 'Username must be at least 3 characters long.'}), 400
+        if len(username) < 3:
+            return jsonify({'success': False, 'message': 'Username must be at least 3 characters long.'}), 400
 
-    if len(password) < 6:
-        return jsonify({'success': False, 'message': 'Password must be at least 6 characters long.'}), 400
+        if len(password) < 6:
+            return jsonify({'success': False, 'message': 'Password must be at least 6 characters long.'}), 400
 
-    if '@' not in email or '.' not in email:
-        return jsonify({'success': False, 'message': 'Please enter a valid email address.'}), 400
+        if '@' not in email or '.' not in email:
+            return jsonify({'success': False, 'message': 'Please enter a valid email address.'}), 400
 
-    if User.query.filter_by(username=username).first():
-        return jsonify({'success': False, 'message': 'This username is already taken. Please choose another.'}), 400
+        if User.query.filter(db.func.lower(User.username) == username.lower()).first():
+            return jsonify({'success': False, 'message': 'This username is already taken. Please choose another.'}), 400
 
-    if User.query.filter_by(email=email).first():
-        return jsonify({'success': False, 'message': 'This email address is already registered. Please log in.'}), 400
+        if User.query.filter(db.func.lower(User.email) == email.lower()).first():
+            return jsonify({'success': False, 'message': 'This email address is already registered. Please log in.'}), 400
 
-    # Invalidate existing unused OTPs for this email and purpose
-    EmailVerificationOTP.query.filter_by(email=email, purpose='register', is_used=False).update({'is_used': True})
-    
-    # Generate 6-digit OTP
-    otp_code = f"{random.randint(100000, 999999)}"
-    expires_at = datetime.utcnow() + timedelta(minutes=10)
+        # Check if there is an active valid OTP sent in the last 45 seconds to reuse
+        recent_active_otp = EmailVerificationOTP.query.filter_by(
+            email=email, purpose='register', is_used=False
+        ).filter(EmailVerificationOTP.expires_at > datetime.utcnow()).order_by(EmailVerificationOTP.created_at.desc()).first()
 
-    otp_entry = EmailVerificationOTP(
-        email=email,
-        otp_code=otp_code,
-        purpose='register',
-        expires_at=expires_at,
-        is_used=False
-    )
-    db.session.add(otp_entry)
-    db.session.commit()
+        if recent_active_otp and (datetime.utcnow() - recent_active_otp.created_at).total_seconds() < 45:
+            otp_code = recent_active_otp.otp_code
+        else:
+            # Invalidate older unused OTPs for this email and purpose
+            EmailVerificationOTP.query.filter_by(email=email, purpose='register', is_used=False).update({'is_used': True})
+            
+            # Generate 6-digit OTP
+            otp_code = f"{random.randint(100000, 999999)}"
+            expires_at = datetime.utcnow() + timedelta(minutes=15)
 
-    # Send verification email via Brevo
-    success, send_msg = send_brevo_otp_email(email, otp_code, username)
+            otp_entry = EmailVerificationOTP(
+                email=email,
+                otp_code=otp_code,
+                purpose='register',
+                expires_at=expires_at,
+                is_used=False
+            )
+            db.session.add(otp_entry)
+            db.session.commit()
 
-    return jsonify({
-        'success': True,
-        'message': f'Verification code sent to {email}. Please check your inbox (and spam folder).'
-    })
+        # Send verification email asynchronously in background thread for instant response (< 50ms)
+        send_async_otp_email(email, otp_code, username)
+
+        return jsonify({
+            'success': True,
+            'message': f'Verification code sent to {email}! Please check your inbox (and spam folder).'
+        })
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error in send_register_otp: {e}")
+        return jsonify({'success': False, 'message': 'An error occurred while sending the verification code. Please try again.'}), 500
 
 @app.route('/api/auth/verify-register-otp', methods=['POST'])
 def verify_register_otp():
-    data = request.get_json(silent=True) or request.form
-    username = (data.get('username') or '').strip()
-    email = (data.get('email') or '').strip().lower()
-    password = data.get('password') or ''
-    target_role = data.get('target_role') or 'Software Engineer'
-    otp_code = (data.get('otp_code') or '').strip()
+    try:
+        data = request.get_json(silent=True) or request.form
+        username = (data.get('username') or '').strip()
+        email = (data.get('email') or '').strip().lower()
+        password = data.get('password') or ''
+        target_role = (data.get('target_role') or 'Software Engineer').strip()
+        raw_otp = data.get('otp_code') or ''
+        otp_code = re.sub(r'[^0-9]', '', str(raw_otp)).strip()
 
-    if not username or not email or not password or not otp_code:
-        return jsonify({'success': False, 'message': 'Missing required fields or OTP code.'}), 400
+        if not username or not email or not password or not otp_code:
+            return jsonify({'success': False, 'message': 'Missing required fields or OTP code.'}), 400
 
-    if User.query.filter_by(username=username).first():
-        return jsonify({'success': False, 'message': 'Username already taken.'}), 400
+        if len(otp_code) != 6:
+            return jsonify({'success': False, 'message': 'Please enter the full 6-digit verification code.'}), 400
 
-    if User.query.filter_by(email=email).first():
-        return jsonify({'success': False, 'message': 'Email address already registered.'}), 400
+        if User.query.filter(db.func.lower(User.username) == username.lower()).first():
+            return jsonify({'success': False, 'message': 'Username already taken. Please choose another.'}), 400
 
-    # Verify OTP
-    otp_entry = EmailVerificationOTP.query.filter_by(
-        email=email,
-        otp_code=otp_code,
-        purpose='register',
-        is_used=False
-    ).order_by(EmailVerificationOTP.created_at.desc()).first()
+        if User.query.filter(db.func.lower(User.email) == email.lower()).first():
+            return jsonify({'success': False, 'message': 'Email address already registered. Please log in.'}), 400
 
-    if not otp_entry:
-        return jsonify({'success': False, 'message': 'Invalid OTP code. Please check and try again.'}), 400
+        # Verify OTP
+        otp_entry = EmailVerificationOTP.query.filter_by(
+            email=email,
+            otp_code=otp_code,
+            purpose='register',
+            is_used=False
+        ).order_by(EmailVerificationOTP.created_at.desc()).first()
 
-    if datetime.utcnow() > otp_entry.expires_at:
-        return jsonify({'success': False, 'message': 'This OTP has expired. Please request a new code.'}), 400
+        if not otp_entry:
+            return jsonify({'success': False, 'message': 'Invalid OTP code. Please check and re-enter.'}), 400
 
-    # Mark OTP as used
-    otp_entry.is_used = True
+        if datetime.utcnow() > otp_entry.expires_at:
+            return jsonify({'success': False, 'message': 'This OTP has expired. Please request a new code.'}), 400
 
-    # Create new verified User
-    new_user = User(
-        username=username,
-        email=email,
-        target_role=target_role,
-        streak_count=1,
-        last_active_date=date.today()
-    )
-    new_user.set_password(password)
-    db.session.add(new_user)
-    db.session.commit()
+        # Mark OTP as used
+        otp_entry.is_used = True
 
-    # Set authenticated session
-    session['user_id'] = new_user.id
-    session['username'] = new_user.username
+        # Create new verified User in Database
+        new_user = User(
+            username=username,
+            full_name=username.title(),
+            email=email,
+            target_role=target_role,
+            streak_count=1,
+            last_active_date=date.today()
+        )
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
 
-    flash(f'🎉 Welcome {new_user.username}! Your account has been verified and created successfully.', 'success')
-    return jsonify({
-        'success': True,
-        'message': 'Account verified and created successfully!',
-        'redirect_url': url_for('dashboard')
-    })
+        # Set authenticated session
+        session.permanent = True
+        session['user_id'] = new_user.id
+        session['username'] = new_user.username
+
+        flash(f'🎉 Welcome {new_user.username}! Your account has been verified and created successfully.', 'success')
+        return jsonify({
+            'success': True,
+            'message': 'Account verified and created successfully!',
+            'redirect_url': url_for('dashboard')
+        })
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error in verify_register_otp: {e}")
+        return jsonify({'success': False, 'message': f'Registration failed: {str(e)}'}), 500
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -271,46 +371,125 @@ def register():
         flash('Invalid or expired OTP code. Please try again.', 'danger')
         return redirect(url_for('auth_page', mode='register'))
 
-    if User.query.filter_by(username=username).first():
+    if User.query.filter(db.func.lower(User.username) == username.lower()).first():
         flash('Username already taken.', 'danger')
         return redirect(url_for('auth_page', mode='register'))
 
-    if User.query.filter_by(email=email).first():
+    if User.query.filter(db.func.lower(User.email) == email.lower()).first():
         flash('Email address already registered.', 'danger')
         return redirect(url_for('auth_page', mode='register'))
 
     otp_entry.is_used = True
-    new_user = User(username=username, email=email, target_role=target_role, streak_count=1, last_active_date=date.today())
+    new_user = User(
+        username=username,
+        full_name=username.title(),
+        email=email,
+        target_role=target_role,
+        streak_count=1,
+        last_active_date=date.today()
+    )
     new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()
 
+    session.permanent = True
     session['user_id'] = new_user.id
     session['username'] = new_user.username
-    flash('Account verified and created successfully! Welcome to Interview Prep Portal.', 'success')
+    flash('Account verified and created successfully! Welcome to Interview Master.', 'success')
     return redirect(url_for('dashboard'))
 
-@app.route('/reset-password', methods=['POST'])
-def reset_password():
-    email = request.form.get('email', '').strip().lower()
-    new_password = request.form.get('new_password', '')
+def get_server_base_url():
+    env_url = (os.environ.get('APP_BASE_URL') or os.environ.get('BASE_URL') or '').strip()
+    if env_url:
+        return env_url.rstrip('/')
 
-    if not email or not new_password:
-        flash('Email and New Password are required.', 'danger')
-        return redirect(url_for('auth_page', mode='reset'))
+    host = request.host
+    if host and not ('localhost' in host or '127.0.0.1' in host):
+        return f"{request.scheme}://{host}"
 
-    user = User.query.filter_by(email=email).first()
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        lan_ip = s.getsockname()[0]
+        s.close()
+        port = request.environ.get('SERVER_PORT', '5000')
+        return f"http://{lan_ip}:{port}"
+    except Exception:
+        return request.host_url.rstrip('/')
+
+@app.route('/api/auth/send-reset-otp', methods=['POST'])
+@app.route('/api/auth/send-reset-link', methods=['POST'])
+def send_reset_link():
+    data = request.get_json(silent=True) or request.form
+    email = (data.get('email') or '').strip().lower()
+
+    if not email or '@' not in email or '.' not in email:
+        return jsonify({'success': False, 'message': 'Please enter a valid registered email address.'}), 400
+
+    user = User.query.filter(db.func.lower(User.email) == email.lower()).first()
     if not user:
-        flash('No account found associated with that email address.', 'danger')
-        return redirect(url_for('auth_page', mode='reset'))
+        return jsonify({'success': False, 'message': 'No account found with this email address.'}), 404
+
+    # Generate secure timed token (valid for 30 mins)
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    token = serializer.dumps(user.email, salt='password-reset-salt')
+
+    base_url = get_server_base_url()
+    reset_url = f"{base_url}/reset-password-confirm?token={token}"
+    local_reset_url = f"http://127.0.0.1:5000/reset-password-confirm?token={token}"
+
+    # Send direct password reset email asynchronously with dual link support
+    send_async_reset_link_email(user.email, reset_url, username=user.username, local_reset_url=local_reset_url)
+
+    return jsonify({
+        'success': True,
+        'message': f'Password reset link sent to {email}! Please check your email inbox (and spam folder) and click the button to create your new password.'
+    })
+
+@app.route('/reset-password-confirm', methods=['GET', 'POST'])
+def reset_password_confirm():
+    token = request.args.get('token') or request.form.get('token')
+    if not token:
+        return render_template('reset_password_confirm.html', error='Missing or invalid password reset token. Please request a new reset link.', token=None, user=None)
+
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token, salt='password-reset-salt', max_age=1800) # 30 minutes
+    except SignatureExpired:
+        return render_template('reset_password_confirm.html', error='This password reset link has expired (links expire after 30 minutes). Please request a new link.', token=None, user=None)
+    except (BadSignature, Exception):
+        return render_template('reset_password_confirm.html', error='Invalid or corrupted password reset link. Please check your email link or request a new one.', token=None, user=None)
+
+    user = User.query.filter(db.func.lower(User.email) == email.lower()).first()
+    if not user:
+        return render_template('reset_password_confirm.html', error='No account found associated with this reset link.', token=None, user=None)
+
+    if request.method == 'GET':
+        return render_template('reset_password_confirm.html', token=token, email=email, user=user, error=None)
+
+    # POST: Update password
+    new_password = (request.form.get('new_password') or (request.get_json(silent=True) or {}).get('new_password') or '').strip()
+    confirm_password = (request.form.get('confirm_password') or (request.get_json(silent=True) or {}).get('confirm_password') or '').strip()
+
+    if not new_password or len(new_password) < 6:
+        flash('Password must be at least 6 characters long.', 'danger')
+        return render_template('reset_password_confirm.html', token=token, email=email, user=user, error='Password must be at least 6 characters long.')
+
+    if confirm_password and new_password != confirm_password:
+        flash('Passwords do not match.', 'danger')
+        return render_template('reset_password_confirm.html', token=token, email=email, user=user, error='Passwords do not match. Please re-enter.')
 
     user.set_password(new_password)
     db.session.commit()
 
-    session['user_id'] = user.id
-    session['username'] = user.username
-    flash('Password updated successfully! Welcome back.', 'success')
-    return redirect(url_for('dashboard'))
+    # Show success confirmation without auto-login or redirecting to website dashboard
+    if request.is_json or (request.headers.get('Accept') and 'application/json' in request.headers.get('Accept')):
+        return jsonify({
+            'success': True,
+            'message': 'Password changed successfully!'
+        })
+
+    return render_template('reset_password_confirm.html', success=True, user=user)
 
 @app.route('/logout')
 def logout():
@@ -389,14 +568,8 @@ def dashboard():
     mastered_count = len(mastered_prog_ids)
     bookmarked_count = Bookmark.query.filter_by(user_id=user.id).count()
 
-    # Pre-fetch all question categories and IDs in ONE lightweight query
-    all_qs_cat = db.session.query(Question.id, Question.category).all()
-    total_questions = len(all_qs_cat)
-    cat_to_qids = {}
-    for qid, cat in all_qs_cat:
-        if cat not in cat_to_qids:
-            cat_to_qids[cat] = []
-        cat_to_qids[cat].append(qid)
+    # Pre-fetch all question categories and IDs using fast metadata cache
+    total_questions, cat_to_qids, all_qs_cat, _ = get_cached_question_metadata()
 
     # 2. Dynamic Readiness Score
     if total_questions > 0:
@@ -1906,7 +2079,7 @@ def company_detail(company_name):
             'logo_icon': '🌐',
             'brand_color': '#4285f4',
             'accent_bg': 'linear-gradient(135deg, #4285f4 0%, #34a853 100%)',
-            'roles': 'Software Engineer (L3 / Early Career)',
+            'roles': 'Software Engineer (L1/L2 / Early Career)',
             'ctc': '₹25.0 - ₹60.0 LPA',
             'eligibility': 'B.S / M.S / Ph.D in CS or STEM',
             'difficulty': 'Very Hard',
@@ -1917,11 +2090,44 @@ def company_detail(company_name):
             'logo_icon': '💼',
             'brand_color': '#4e148c',
             'accent_bg': 'linear-gradient(135deg, #4e148c 0%, #6b21a8 100%)',
-            'roles': 'Project Engineer (Elite NTH & Turbo)',
+            'roles': 'Project Engineer (Elite & Turbo)',
             'ctc': '₹3.5 - ₹6.5 LPA',
             'eligibility': '60% or 6.0 CGPA in 10th, 12th & Graduation',
             'difficulty': 'Easy to Moderate',
             'difficulty_class': 'badge-info'
+        })
+    elif 'netflix' in c_lower:
+        company_meta.update({
+            'logo_icon': '🎬',
+            'brand_color': '#e50914',
+            'accent_bg': 'linear-gradient(135deg, #e50914 0%, #b81d24 100%)',
+            'roles': 'Software Engineer (L4/L5) & Platform Engineer',
+            'ctc': '₹35.0 - ₹75.0 LPA',
+            'eligibility': 'B.E / B.Tech / M.Tech in CS/IT or equivalent',
+            'difficulty': 'Very Hard / Elite',
+            'difficulty_class': 'badge-danger'
+        })
+    elif 'oracle' in c_lower:
+        company_meta.update({
+            'logo_icon': '🔴',
+            'brand_color': '#f80000',
+            'accent_bg': 'linear-gradient(135deg, #f80000 0%, #c00000 100%)',
+            'roles': 'Associate Software Engineer / Server Technology',
+            'ctc': '₹14.0 - ₹28.0 LPA',
+            'eligibility': '60% or 6.5 CGPA in B.E/B.Tech/MCA',
+            'difficulty': 'Hard',
+            'difficulty_class': 'badge-danger'
+        })
+    elif 'adobe' in c_lower:
+        company_meta.update({
+            'logo_icon': '🎨',
+            'brand_color': '#ff0000',
+            'accent_bg': 'linear-gradient(135deg, #ff0000 0%, #cc0000 100%)',
+            'roles': 'Member of Technical Staff (MTS-1) / Software Engineer',
+            'ctc': '₹18.0 - ₹40.0 LPA',
+            'eligibility': 'B.E / B.Tech / M.Tech in CS/IT/ECE with 7.0+ CGPA',
+            'difficulty': 'Hard / Product Tier',
+            'difficulty_class': 'badge-danger'
         })
 
     return render_template('company_detail.html',
@@ -9154,12 +9360,10 @@ def practice():
     duration = request.args.get('duration', '90 Mins').strip()
     year = request.args.get('year', '2025').strip()
     
-    query = Question.query
+    q_data = []
     if category != 'All':
-        query = query.filter_by(category=category)
-        
-    questions_list = query.all()
-    q_data = Question.to_dict_list(questions_list, user_id=user_id)
+        questions_list = Question.query.filter_by(category=category).all()
+        q_data = Question.to_dict_list(questions_list, user_id=user_id)
 
     available_papers = [
         {
@@ -9428,7 +9632,7 @@ def progress():
     user = db.session.get(User, session['user_id'])
     
     # 1. ACTUAL QUESTIONS SOLVED & MASTERED
-    total_questions = Question.query.count()
+    total_questions, cat_to_ids, all_qs, _ = get_cached_question_metadata()
     user_progs = UserProgress.query.filter_by(user_id=user.id).all()
     attempted_count = len(user_progs)
     mastered_count = sum(1 for p in user_progs if p.status == 'mastered')
@@ -9471,13 +9675,6 @@ def progress():
         readiness_score = 0
 
     # 7. DYNAMIC SKILL BREAKDOWN & ASCII BARS
-    all_qs = db.session.query(Question.id, Question.category).all()
-    cat_to_ids = {}
-    for qid, cat in all_qs:
-        if cat not in cat_to_ids:
-            cat_to_ids[cat] = []
-        cat_to_ids[cat].append(qid)
-
     user_solved_ids = {p.question_id for p in user_progs}
 
     skill_categories = [
@@ -9740,13 +9937,7 @@ def profile():
     mastered_count = len(mastered_prog_ids)
     bookmarked_count = Bookmark.query.filter_by(user_id=user.id).count()
 
-    all_qs_cat = db.session.query(Question.id, Question.category).all()
-    total_questions = len(all_qs_cat)
-    cat_to_qids = {}
-    for qid, cat in all_qs_cat:
-        if cat not in cat_to_qids:
-            cat_to_qids[cat] = []
-        cat_to_qids[cat].append(qid)
+    total_questions, cat_to_qids, all_qs_cat, _ = get_cached_question_metadata()
 
     if total_questions > 0:
         practiced_only = max(0, attempted_count - mastered_count)
@@ -9792,9 +9983,9 @@ def profile():
 @login_required
 def update_profile():
     user = db.session.get(User, session['user_id'])
-    user.full_name = request.form.get('full_name', '').strip() or 'Demo User'
+    user.full_name = request.form.get('full_name', '').strip() or user.username.title()
     user.education = request.form.get('education', '').strip() or 'B.Tech'
-    user.college = request.form.get('college', '').strip() or 'Demo College of Engineering'
+    user.college = request.form.get('college', '').strip() or ''
     user.location = request.form.get('location', '').strip() or 'India'
     user.target_role = request.form.get('target_role', '').strip() or 'Software Developer'
     user.preferred_domain = request.form.get('preferred_domain', '').strip() or 'Python / Full Stack'
@@ -9804,6 +9995,59 @@ def update_profile():
     flash('Profile updated successfully!', 'success')
     return redirect(url_for('profile'))
 
+@app.route('/profile/change-password', methods=['POST'])
+@login_required
+def change_password():
+    user = db.session.get(User, session['user_id'])
+    if not user:
+        session.clear()
+        if request.is_json:
+            return jsonify({'success': False, 'message': 'Session expired. Please log in again.'}), 401
+        flash('Session expired. Please log in again.', 'warning')
+        return redirect(url_for('auth_page'))
+
+    data = request.get_json(silent=True) or request.form
+    current_password = data.get('current_password', '')
+    new_password = data.get('new_password', '')
+    confirm_password = data.get('confirm_password', '')
+
+    if not current_password or not new_password or not confirm_password:
+        msg = 'All password fields are required.'
+        if request.is_json:
+            return jsonify({'success': False, 'message': msg}), 400
+        flash(msg, 'danger')
+        return redirect(url_for('profile'))
+
+    if not user.check_password(current_password):
+        msg = 'Current password is incorrect. Please check and try again.'
+        if request.is_json:
+            return jsonify({'success': False, 'message': msg}), 400
+        flash(msg, 'danger')
+        return redirect(url_for('profile'))
+
+    if len(new_password) < 6:
+        msg = 'New password must be at least 6 characters long.'
+        if request.is_json:
+            return jsonify({'success': False, 'message': msg}), 400
+        flash(msg, 'danger')
+        return redirect(url_for('profile'))
+
+    if new_password != confirm_password:
+        msg = 'New password and confirmation do not match.'
+        if request.is_json:
+            return jsonify({'success': False, 'message': msg}), 400
+        flash(msg, 'danger')
+        return redirect(url_for('profile'))
+
+    user.set_password(new_password)
+    db.session.commit()
+
+    success_msg = 'Password changed successfully! Keep your new password safe.'
+    if request.is_json:
+        return jsonify({'success': True, 'message': success_msg})
+    flash(success_msg, 'success')
+    return redirect(url_for('profile'))
+
 @app.route('/about')
 @app.route('/about-us')
 def about_us():
@@ -9811,8 +10055,7 @@ def about_us():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
     
-    total_questions = Question.query.count()
-    total_users = User.query.count()
+    total_questions, _, _, total_users = get_cached_question_metadata()
     
     return render_template('about.html',
                            user=user,
@@ -9931,15 +10174,11 @@ with app.app_context():
 @app.errorhandler(500)
 def handle_500_error(e):
     app.logger.error(f"Internal Server Error: {e}")
-    if 'user_id' in session:
-        try:
-            if not db.session.get(User, session['user_id']):
-                session.clear()
-                return redirect(url_for('auth_page'))
-        except Exception:
-            session.clear()
-            return redirect(url_for('auth_page'))
-    return redirect(url_for('auth_page'))
+    try:
+        db.session.rollback()
+    except Exception:
+        pass
+    return render_template('auth.html', error="An unexpected server error occurred. Please refresh or try again.", initial_mode='login'), 500
 
 import socket
 import sys

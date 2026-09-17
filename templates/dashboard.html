@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Executive Dashboard | InterviewMaster{% endblock %}
+{% block title %}Interview Master | Executive Dashboard{% endblock %}
 
 {% block content %}
 <div class="pro-dash-wrapper">
@@ -28,14 +28,9 @@
                     <h1 class="pro-hero-title">
                         Crack Your Interview With <span class="pro-gradient-name">Confidence</span>
                     </h1>
-                    <p class="pro-hero-subtitle">
+                    <p class="pro-hero-subtitle" style="margin-bottom: 0;">
                         Welcome back, <strong>{{ user.full_name or user.username }}</strong>! Master algorithms, system design, and placement interview tracks.
                     </p>
-
-                    <div class="pro-hero-cta-group">
-                        <a href="{{ url_for('questions') }}" class="btn btn-primary btn-md">🚀 Check Out Questions →</a>
-                        <a href="{{ url_for('mock_interview') }}" class="btn btn-outline btn-md">🎙️ Launch AI Mock Session</a>
-                    </div>
                 </div>
             </div>
 
@@ -57,7 +52,84 @@
         </div>
     </div>
 
-    <!-- 2. "HOW TO PREPARE FOR AN INTERVIEW?" SECTION -->
+    <!-- 2. "TOP COMPANIES TO PREPARE FOR" SECTION -->
+    <div class="glass-card top-companies-section" id="companies-section">
+        <div class="pro-section-head" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+                <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0;">Top Companies To Prepare For</h2>
+                <span class="pro-head-tag" style="color: var(--text-muted); font-size: 0.88rem;">FAANG & Top Product Tech Firms</span>
+            </div>
+            <a href="{{ url_for('practice') }}" class="pro-view-all-link">View All Companies →</a>
+        </div>
+
+        <div class="company-badges-grid">
+            <a href="{{ url_for('company_detail', company_name='Amazon') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/amazon.svg') }}" alt="Amazon Logo" class="company-logo-img">
+                <div class="company-info">
+                    <span class="company-role">Software Dev Engineer (SDE)</span>
+                    <span class="company-count">Leadership Principles & DSA</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Google') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/google.svg') }}" alt="Google Logo" class="company-logo-img">
+                <div class="company-info">
+                    <span class="company-role">Software Engineer (L1/L2)</span>
+                    <span class="company-count">Graphs & Algorithms</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Microsoft') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/microsoft.svg') }}" alt="Microsoft Logo" class="company-logo-img">
+                <div class="company-info">
+                    <span class="company-role">SDE & Cloud Engineer</span>
+                    <span class="company-count">System Design & OOPs</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Meta') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/meta.svg') }}" alt="Meta Logo" class="company-logo-img">
+                <div class="company-info">
+                    <span class="company-role">Production Engineer / SDE</span>
+                    <span class="company-count">Trees & Dynamic Prog</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Netflix') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/netflix.svg') }}" alt="Netflix Logo" class="company-logo-img" style="height: 22px;">
+                <div class="company-info">
+                    <span class="company-role">Senior Software Engineer</span>
+                    <span class="company-count">Microservices & Concurrency</span>
+                </div>
+            </a>
+
+            <a href="{{ url_for('company_detail', company_name='Oracle') }}" class="company-card" style="text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/oracle.svg') }}" alt="Oracle Logo" class="company-logo-img" style="height: 20px;">
+                <div class="company-info">
+                    <span class="company-role">Associate Software Engineer</span>
+                    <span class="company-count">SQL, Cloud & Algorithms</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 3. QUESTION OF THE DAY -->
+    {% if question_of_the_day %}
+    <div class="glass-card pro-qotd-card" style="margin-bottom: 1.5rem;">
+        <div class="pro-card-head">
+            <span class="pro-pill-badge cyan">⭐ Question of the Day</span>
+            <span class="badge badge-{{ question_of_the_day.difficulty | lower }}">{{ question_of_the_day.difficulty }}</span>
+        </div>
+        <h3 class="pro-qotd-title">{{ question_of_the_day.title }}</h3>
+        <p class="pro-qotd-snippet">{{ question_of_the_day.question_text | truncate(180) }}</p>
+        <div class="pro-qotd-foot">
+            <span class="pro-cat-tag">Category: {{ question_of_the_day.category }}</span>
+            <a href="{{ url_for('questions', q=question_of_the_day.title) }}" class="btn btn-primary btn-sm">Solve Now →</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 4. "HOW TO PREPARE FOR AN INTERVIEW?" SECTION -->
     <div class="glass-card prep-guide-card">
         <div class="prep-guide-header">
             <h2 class="prep-guide-title">Interview Prep Tracks</h2>
@@ -99,152 +171,6 @@
         <div class="prep-guide-footer">
             <span>💡 Complete practice questions and model tests for every round.</span>
         </div>
-    </div>
-
-    <!-- 3. "TOP COMPANIES TO PREPARE FOR" SECTION -->
-    <div class="glass-card top-companies-section" id="companies-section">
-        <div class="pro-section-head" style="margin-bottom: 1rem;">
-            <h2>Top Companies To Prepare For</h2>
-            <span class="pro-head-tag">FAANG & Top Product Tech Firms</span>
-        </div>
-
-        <div class="company-badges-grid">
-            <a href="{{ url_for('company_detail', company_name='Amazon') }}" class="company-card" style="text-decoration: none;">
-                <img src="{{ url_for('static', filename='images/amazon.svg') }}" alt="Amazon Logo" class="company-logo-img">
-                <div class="company-info">
-                    <span class="company-role">Software Dev Engineer (SDE)</span>
-                    <span class="company-count">Leadership Principles & DSA</span>
-                </div>
-            </a>
-
-            <a href="{{ url_for('company_detail', company_name='Google') }}" class="company-card" style="text-decoration: none;">
-                <img src="{{ url_for('static', filename='images/google.svg') }}" alt="Google Logo" class="company-logo-img">
-                <div class="company-info">
-                    <span class="company-role">Software Engineer (L3/L4)</span>
-                    <span class="company-count">Graphs & Algorithms</span>
-                </div>
-            </a>
-
-            <a href="{{ url_for('company_detail', company_name='Microsoft') }}" class="company-card" style="text-decoration: none;">
-                <img src="{{ url_for('static', filename='images/microsoft.svg') }}" alt="Microsoft Logo" class="company-logo-img">
-                <div class="company-info">
-                    <span class="company-role">SDE & Cloud Engineer</span>
-                    <span class="company-count">System Design & OOPs</span>
-                </div>
-            </a>
-
-            <a href="{{ url_for('company_detail', company_name='Meta') }}" class="company-card" style="text-decoration: none;">
-                <img src="{{ url_for('static', filename='images/meta.svg') }}" alt="Meta Logo" class="company-logo-img">
-                <div class="company-info">
-                    <span class="company-role">Production Engineer / SDE</span>
-                    <span class="company-count">Trees & Dynamic Prog</span>
-                </div>
-            </a>
-
-            <a href="{{ url_for('company_detail', company_name='TCS NQT') }}" class="company-card" style="text-decoration: none;">
-                <div style="display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;">
-                    <img src="{{ url_for('static', filename='images/tcs.svg') }}" alt="TCS Logo" class="company-logo-img" style="height: 24px;">
-                    <img src="{{ url_for('static', filename='images/infosys.svg') }}" alt="Infosys Logo" class="company-logo-img" style="height: 24px;">
-                </div>
-                <div class="company-info">
-                    <span class="company-role">Ninja & Digital Roles</span>
-                    <span class="company-count">Aptitude & Coding</span>
-                </div>
-            </a>
-
-            <a href="{{ url_for('company_detail', company_name='Wipro') }}" class="company-card" style="text-decoration: none;">
-                <div style="display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;">
-                    <img src="{{ url_for('static', filename='images/ibm.svg') }}" alt="IBM Logo" class="company-logo-img" style="height: 22px;">
-                    <img src="{{ url_for('static', filename='images/wipro.svg') }}" alt="Wipro Logo" class="company-logo-img" style="height: 22px;">
-                </div>
-                <div class="company-info">
-                    <span class="company-role">Associate Software Engineer</span>
-                    <span class="company-count">Technical & Managerial</span>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <!-- 4. EXECUTIVE METRICS STATS BAR -->
-    <div class="pro-metrics-grid">
-        <div class="pro-metric-card">
-            <div class="pro-metric-icon icon-cyan">🎯</div>
-            <div class="pro-metric-data">
-                <div class="pro-metric-val">{{ readiness_percentage }}%</div>
-                <div class="pro-metric-lbl">Readiness Score</div>
-            </div>
-        </div>
-
-        <div class="pro-metric-card">
-            <div class="pro-metric-icon icon-emerald">⚡</div>
-            <div class="pro-metric-data">
-                <div class="pro-metric-val">{{ mastered_count }} <span class="pro-metric-sub">/ {{ total_questions }}</span></div>
-                <div class="pro-metric-lbl">Questions Mastered</div>
-            </div>
-        </div>
-
-        <div class="pro-metric-card">
-            <div class="pro-metric-icon icon-amber">🔥</div>
-            <div class="pro-metric-data">
-                <div class="pro-metric-val">{{ user.streak_count or 1 }} Days</div>
-                <div class="pro-metric-lbl">Active Streak</div>
-            </div>
-        </div>
-
-        <div class="pro-metric-card">
-            <div class="pro-metric-icon icon-purple">📌</div>
-            <div class="pro-metric-data">
-                <div class="pro-metric-val">{{ bookmarked_count }}</div>
-                <div class="pro-metric-lbl">Saved Bookmarks</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. QUESTION OF THE DAY & CATEGORY MASTERY SPLIT -->
-    <div class="pro-main-split">
-
-        <!-- LEFT COLUMN: SPOTLIGHT QOTD -->
-        <div class="pro-left-col">
-            {% if question_of_the_day %}
-            <div class="glass-card pro-qotd-card">
-                <div class="pro-card-head">
-                    <span class="pro-pill-badge cyan">⭐ Question of the Day</span>
-                    <span class="badge badge-{{ question_of_the_day.difficulty | lower }}">{{ question_of_the_day.difficulty }}</span>
-                </div>
-                <h3 class="pro-qotd-title">{{ question_of_the_day.title }}</h3>
-                <p class="pro-qotd-snippet">{{ question_of_the_day.question_text | truncate(150) }}</p>
-                <div class="pro-qotd-foot">
-                    <span class="pro-cat-tag">Category: {{ question_of_the_day.category }}</span>
-                    <a href="{{ url_for('questions', q=question_of_the_day.title) }}" class="btn btn-primary btn-sm">Solve Now →</a>
-                </div>
-            </div>
-            {% endif %}
-
-
-        </div>
-
-        <!-- RIGHT COLUMN: CATEGORY MASTERY BREAKDOWN -->
-        <div class="pro-right-col">
-            <div class="glass-card pro-cat-card">
-                <div class="pro-card-head">
-                    <h3>📊 Category Breakdown</h3>
-                </div>
-                <div class="pro-cat-list">
-                    {% for cat in cat_stats %}
-                    <div class="pro-cat-item">
-                        <div class="pro-cat-info">
-                            <span class="pro-cat-name">{{ cat.name }}</span>
-                            <span class="pro-cat-val">{{ cat.mastered }} / {{ cat.total }}</span>
-                        </div>
-                        <div class="pro-progress-bar">
-                            <div class="pro-progress-fill" style="width: {{ cat.percent }}%;"></div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
     </div>
 
 </div>
