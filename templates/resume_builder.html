@@ -4,12 +4,27 @@
 
 {% block content %}
 <style>
-    /* INTERVIEW MASTER RESUME BUILDER STYLING */
+    /* INTERVIEW MASTER RESUME BUILDER STYLING & FULLSCREEN LOCK */
+    #permSidebar,
+    .perm-sidebar,
+    .main-top-header,
+    .mobile-sidebar-overlay {
+        display: none !important;
+    }
+
     body, html {
         margin: 0 !important;
         padding: 0 !important;
         background-color: #ffffff !important;
         font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+
+    body.has-perm-sidebar .main-page-wrapper,
+    .main-page-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
     }
 
     .livecareer-wrapper {
@@ -545,11 +560,11 @@
             </div>
 
             <div class="lc-sidebar-footer">
-                <a href="{{ url_for('dashboard') }}">Home</a>
-                <a href="{{ url_for('practice') }}">Practice</a>
-                <a href="{{ url_for('mock_interview') }}">Mock Interview</a>
-                <a href="{{ url_for('profile') }}">Profile</a>
-                <a href="{{ url_for('about_us') }}">About Us</a>
+                <a href="{{ url_for('dashboard') }}" data-no-spa="true">Home</a>
+                <a href="{{ url_for('practice') }}" data-no-spa="true">Practice</a>
+                <a href="{{ url_for('mock_interview') }}" data-no-spa="true">Mock Interview</a>
+                <a href="{{ url_for('profile') }}" data-no-spa="true">Profile</a>
+                <a href="{{ url_for('about_us') }}" data-no-spa="true">About Us</a>
                 <span style="margin-top:0.3rem;">© 2026, InterviewMaster. All rights reserved.</span>
             </div>
         </div>
@@ -557,7 +572,7 @@
 
     <!-- MAIN FORM WORKSPACE -->
     <div class="lc-main-content">
-        <a href="{{ url_for('dashboard') }}" class="lc-go-back-btn">
+        <a href="{{ url_for('dashboard') }}" data-no-spa="true" class="lc-go-back-btn">
             ← Back to Dashboard
         </a>
 

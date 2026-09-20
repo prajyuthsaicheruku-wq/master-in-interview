@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="20" fill="#2874F0"/>
+  <!-- Flipkart Yellow Bag with 'f' -->
+  <g transform="translate(25, 14) scale(0.5)">
+    <!-- Shopping bag handle -->
+    <path d="M35 30 C35 12 65 12 65 30" fill="none" stroke="#FFE11B" stroke-width="8" stroke-linecap="round"/>
+    <!-- Bag body -->
+    <rect x="15" y="28" width="70" height="68" rx="8" fill="#FFE11B"/>
+    <!-- f character in blue -->
+    <text x="50" y="78" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-style="italic" font-weight="900" font-size="52" fill="#2874F0">f</text>
+  </g>
+  <text x="50" y="85" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-style="italic" font-weight="900" font-size="12.5" fill="#FFFFFF" letter-spacing="-0.5">Flipkart</text>
+</svg>

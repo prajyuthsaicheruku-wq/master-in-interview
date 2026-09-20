@@ -3,36 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Interview Master{% endblock %}</title>
-    <meta name="description" content="Ace your technical and behavioral software engineering interviews with dynamic question banks and mock practice.">
+    <title>{% block title %}Interview Master - Ace Placement & Technical Interviews{% endblock %}</title>
+    
+    <!-- PRIMARY SEARCH ENGINE SEO META TAGS -->
+    <meta name="description" content="Ace software engineering and campus placement interviews. Practice coding, DSA, quantitative aptitude, system design, HR questions, and authentic company past papers for Amazon, Google, TCS, Deloitte, and more.">
+    <meta name="keywords" content="Interview Master, placement preparation, coding interview questions, DSA practice, quantitative aptitude, mock interview simulator, TCS Digital prep, Amazon SDE, technical interview questions, HR interview questions, resume builder">
+    <meta name="author" content="Interview Master">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="{{ request.base_url }}">
+
+    <!-- OPEN GRAPH / FACEBOOK / LINKEDIN / WHATSAPP PREVIEWS -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Interview Master">
+    <meta property="og:url" content="{{ request.base_url }}">
+    <meta property="og:title" content="Interview Master - Ultimate Technical & Placement Prep Platform">
+    <meta property="og:description" content="Master coding algorithms, quantitative aptitude, system design, and placement papers for top tech firms.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo.png', _external=True) }}">
+
+    <!-- TWITTER CARD META TAGS -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.base_url }}">
+    <meta name="twitter:title" content="Interview Master - Placement & Coding Prep Portal">
+    <meta name="twitter:description" content="Master algorithms, aptitude, system design, and placement tracks for top tech companies.">
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/logo.png', _external=True) }}">
+
+    <!-- GOOGLE STRUCTURED DATA / SCHEMA.ORG JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Interview Master",
+      "url": "{{ request.url_root }}",
+      "description": "Comprehensive software developer placement and technical interview preparation platform with mock tests and past papers.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+
     <meta name="theme-color" content="#6366f1">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
-    <link rel="icon" type="image/png" sizes="64x64" href="{{ url_for('static', filename='images/favicon.png') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/icon-192.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}?v=v2026_icon_v2">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}?v=v2026_icon_v2">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ url_for('static', filename='images/favicon-48x48.png') }}?v=v2026_icon_v2">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ url_for('static', filename='images/favicon.png') }}?v=v2026_icon_v2">
+    <link rel="icon" type="image/png" sizes="128x128" href="{{ url_for('static', filename='images/favicon-128x128.png') }}?v=v2026_icon_v2">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='images/icon-192.png') }}?v=v2026_icon_v2">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}?v=v2026_icon_v2">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/icon-192.png') }}?v=v2026_icon_v2">
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=v2026_about_dark_mode_clear_v65">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=v2026_layout_fix_v8">
+    <style>
+        body.is-fullscreen-page .perm-sidebar,
+        body.is-fullscreen-page #permSidebar,
+        body.is-fullscreen-page .main-top-header,
+        body.is-fullscreen-page .mobile-sidebar-overlay {
+            display: none !important;
+        }
+        body.is-fullscreen-page .main-page-wrapper {
+            margin-left: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+    </style>
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.classList.add('light-theme');
-            } else if (savedTheme === 'dark') {
+            if (savedTheme === 'dark') {
                 document.documentElement.classList.remove('light-theme');
+            } else {
+                document.documentElement.classList.add('light-theme');
             }
         })();
     </script>
 </head>
-<body class="{% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' and request.endpoint != 'reset_password_confirm' %}has-perm-sidebar{% endif %}">
+{% set is_fullscreen_page = request.endpoint in ['auth_page', 'resume_builder', 'reset_password_confirm', 'mock_test_session'] %}
+<body class="{% if is_fullscreen_page %}is-fullscreen-page{% else %}has-perm-sidebar{% endif %}">
 
-    {% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' and request.endpoint != 'reset_password_confirm' %}
+    {% if not is_fullscreen_page %}
     <!-- PERMANENT LEFT VERTICAL SIDEBAR (MATCHING LET'S CODE TOGETHER DASHBOARD PANEL) -->
     <aside class="perm-sidebar" id="permSidebar">
         <div class="sidebar-top">
-            <a href="{{ url_for('index') }}" class="brand-logo" style="display: flex; align-items: center; gap: 0.65rem;">
-                <img src="{{ url_for('static', filename='images/emblem.png') }}" alt="Interview Master Logo" style="width: 34px; height: 34px; object-fit: contain; flex-shrink: 0;">
-                <span>Interview<span class="gradient-text">Master</span></span>
+            <a href="{{ url_for('index') }}" class="brand-logo" style="display: flex; align-items: center; gap: 0.65rem; text-decoration: none;">
+                <img src="{{ url_for('static', filename='images/emblem.png') }}" alt="Interview Master Logo" style="width: 32px; height: 32px; object-fit: contain; flex-shrink: 0;">
+                <div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -0.02em;">Interview<span style="color: #2563eb;">Master</span></div>
+                    <div style="font-size: 0.65rem; color: #64748b; font-weight: 600; letter-spacing: 0.01em; margin-top: 2px;">Prepare • Practice • Get Hired</div>
+                </div>
             </a>
             <button type="button" class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close menu">&times;</button>
         </div>
@@ -41,61 +102,61 @@
             <ul class="sidebar-menu-list">
                 <li>
                     <a href="{{ url_for('dashboard') }}" class="sidebar-item {{ 'active' if request.endpoint == 'dashboard' or request.endpoint == 'index' }}">
-                        Home
+                        <span>Home</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ url_for('practice') }}" class="sidebar-item {{ 'active' if request.endpoint == 'practice' or request.endpoint == 'company_detail' or request.endpoint == 'questions' }}">
-                        Companies
+                        <span>Companies</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ url_for('aptitude') }}" class="sidebar-item {{ 'active' if request.endpoint == 'aptitude' }}">
-                        Aptitude
+                        <span>Aptitude</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ url_for('mock_interview') }}" class="sidebar-item {{ 'active' if request.endpoint == 'mock_interview' or request.endpoint == 'mock_test_session' }}">
-                        Mock Interview
+                        <span>Mock Interview</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ url_for('progress') }}" class="sidebar-item {{ 'active' if request.endpoint == 'progress' }}">
-                        Progress
+                        <span>Progress</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ url_for('leaderboard') }}" class="sidebar-item {{ 'active' if request.endpoint == 'leaderboard' }}">
-                        Leaderboard
+                        <span>Leaderboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('resume_builder') }}" class="sidebar-item {{ 'active' if request.endpoint == 'resume_builder' }}">
-                        Resume Builder
+                    <a href="{{ url_for('resume_builder') }}" data-no-spa="true" class="sidebar-item {{ 'active' if request.endpoint == 'resume_builder' }}">
+                        <span>Resume Builder</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ url_for('profile') }}" class="sidebar-item {{ 'active' if request.endpoint == 'profile' }}">
-                        Profile
+                        <span>Profile</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ url_for('about_us') }}" class="sidebar-item {{ 'active' if request.endpoint == 'about_us' }}">
-                        About Us
+                        <span>About Us</span>
                     </a>
                 </li>
                 {% if session.user_id %}
                     <li class="sidebar-divider"></li>
                     <li>
                         <a href="{{ url_for('logout') }}" class="sidebar-item sidebar-item-logout">
-                            Logout
+                            <span>Logout</span>
                         </a>
                     </li>
                 {% endif %}
             </ul>
 
             <!-- BOTTOM APP INSTALL BUTTON (COMPACT) -->
-            <div class="sidebar-bottom-app" id="installAppSidebarCard">
+            <div class="sidebar-bottom-app" id="installAppSidebarCard" style="margin-top: auto; padding-top: 0.65rem;">
                 <button type="button" class="btn-install-app-small" id="btnInstallApp" onclick="handleInstallAppClick()" title="Install App">
                     <span class="install-small-icon">📲</span>
                     <span class="install-small-text">Install App</span>
@@ -111,37 +172,45 @@
 
     <!-- MAIN PAGE CONTAINER -->
     <div class="main-page-wrapper">
-        {% if request.endpoint != 'auth_page' and request.endpoint != 'resume_builder' and request.endpoint != 'reset_password_confirm' %}
+        {% if not is_fullscreen_page %}
         <!-- TOP HEADER BAR IN MAIN CONTAINER -->
-        <header class="main-top-header" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem; gap: 1rem;">
+        <header class="main-top-header" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.75rem; gap: 1rem; position: relative;">
             <div class="header-left" style="display: flex; align-items: center; gap: 1rem;">
                 <button type="button" class="mobile-menu-trigger" id="mobileMenuTrigger" aria-label="Open Navigation">
                     <span style="font-size: 1.2rem;">⋮</span> Menu
                 </button>
             </div>
 
-            <div class="header-right" style="display: flex; align-items: center; gap: 0.85rem; margin-left: auto;">
-                <!-- DARK / WHITE MODE TOGGLE BUTTON -->
-                <button type="button" id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Dark or White Mode" title="Toggle Dark / White Mode">
-                    <span class="theme-icon-dark">🌙</span>
-                    <span class="theme-icon-light" style="display: none;">☀️</span>
-                    <span class="theme-label">Dark Mode</span>
-                </button>
+            <!-- MOBILE APP CENTERED BRAND LOGO -->
+            <div class="mobile-header-logo-wrap">
+                <a href="{{ url_for('dashboard') if session.user_id else url_for('index') }}" class="mobile-header-brand" style="display: flex; align-items: center; gap: 0.55rem; text-decoration: none;">
+                    <img src="{{ url_for('static', filename='images/emblem.png') }}" alt="Interview Master" style="width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(99, 102, 241, 0.25));">
+                    <span class="mobile-header-brand-text" style="font-size: 1.08rem; font-weight: 800; color: #0f172a; line-height: 1; letter-spacing: -0.02em;">Interview<span style="color: #2563eb;">Master</span></span>
+                </a>
+            </div>
 
+            <div class="header-right" style="display: flex; align-items: center; gap: 1rem; margin-left: auto;">
                 <!-- USER PROFILE PILL -->
                 {% if session.user_id %}
                     <a href="{{ url_for('profile') }}" class="user-profile-pill">
                         <div class="user-avatar-circle">
-                            {{ (current_user.username[0] if current_user and current_user.username else 'D') | upper }}
+                            {{ (current_user.username[0] if current_user and current_user.username else 'P') | upper }}
                         </div>
                         <div class="user-meta-info">
-                            <span class="user-name-text">{{ current_user.full_name or current_user.username or 'Demo Candidate' }}</span>
-                            <span class="user-role-text">Profile ⌄</span>
+                            <span class="user-name-text">{{ current_user.full_name or current_user.username or 'Prajyuthsai' }}</span>
+                            <span class="user-role-text">{{ current_user.college_year or 'Fourth Year' }}</span>
                         </div>
                     </a>
                 {% else %}
-                    <a href="{{ url_for('auth_page', mode='login') }}" class="btn btn-secondary btn-sm" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">Log In</a>
-                    <a href="{{ url_for('auth_page', mode='register') }}" class="btn btn-primary btn-sm" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">Sign Up</a>
+                    <a href="{{ url_for('profile') }}" class="user-profile-pill">
+                        <div class="user-avatar-circle">
+                            P
+                        </div>
+                        <div class="user-meta-info">
+                            <span class="user-name-text">Prajyuthsai</span>
+                            <span class="user-role-text">Fourth Year</span>
+                        </div>
+                    </a>
                 {% endif %}
             </div>
         </header>
@@ -165,7 +234,7 @@
         </main>
     </div>
 
-    <script src="{{ url_for('static', filename='js/portal.js') }}?v=v2026_theme_live_v26"></script>
+    <script src="{{ url_for('static', filename='js/portal.js') }}?v=v2026_profile_modal_fix_v9"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

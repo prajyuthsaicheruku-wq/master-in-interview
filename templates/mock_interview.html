@@ -37,9 +37,9 @@
                         </svg>
                     </div>
                     <div class="mock-stat-info">
-                        <div class="mock-stat-num">{{ mock_stats.total_rounds if mock_stats else 8 }}</div>
+                        <div class="mock-stat-num">{{ mock_stats.total_rounds if mock_stats else 20 }}</div>
                         <div class="mock-stat-label">Total Rounds</div>
-                        <div class="mock-stat-desc">Across all domains</div>
+                        <div class="mock-stat-desc">Across all 4 domains</div>
                     </div>
                 </div>
 
@@ -119,16 +119,11 @@
         <div class="mock-hero-right">
             <div class="mock-hero-art-wrapper">
                 <svg viewBox="0 0 320 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="mock-hero-svg">
-                    <!-- Background ambient glow -->
                     <circle cx="160" cy="110" r="100" fill="url(#heroGlow)" fill-opacity="0.6"/>
-                    
-                    <!-- Floating Sparkles -->
                     <path d="M40 70L43 60L46 70L56 73L46 76L43 86L40 76L30 73L40 70Z" fill="#c084fc" opacity="0.8"/>
                     <path d="M280 45L282 38L284 45L291 47L284 49L282 56L280 49L273 47L280 45Z" fill="#818cf8" opacity="0.9"/>
                     <circle cx="50" cy="140" r="4" fill="#a78bfa" opacity="0.5"/>
                     <circle cx="295" cy="120" r="3" fill="#60a5fa" opacity="0.6"/>
-
-                    <!-- Floating Chat Bubble Left -->
                     <g filter="url(#dropShadowSoft)">
                         <rect x="25" y="32" width="55" height="38" rx="10" fill="#ffffff" stroke="#e0e7ff" stroke-width="1.5"/>
                         <circle cx="38" cy="51" r="3" fill="#818cf8"/>
@@ -136,89 +131,56 @@
                         <circle cx="58" cy="51" r="3" fill="#c084fc"/>
                         <path d="M35 70L42 70L38 76Z" fill="#ffffff"/>
                     </g>
-
-                    <!-- Floating Analytics Card Right -->
                     <g filter="url(#dropShadowSoft)">
                         <rect x="235" y="30" width="60" height="42" rx="10" fill="#ffffff" stroke="#e0e7ff" stroke-width="1.5"/>
-                        <!-- Bars -->
                         <rect x="245" y="52" width="6" height="12" rx="2" fill="#c7d2fe"/>
                         <rect x="255" y="44" width="6" height="20" rx="2" fill="#818cf8"/>
                         <rect x="265" y="38" width="6" height="26" rx="2" fill="#6366f1"/>
                         <rect x="275" y="48" width="6" height="16" rx="2" fill="#a5b4fc"/>
                     </g>
-
-                    <!-- Desk Base Shadow -->
                     <ellipse cx="160" cy="195" rx="130" ry="12" fill="#1e1b4b" fill-opacity="0.08"/>
-
-                    <!-- Potted Plant on Desk (Right) -->
                     <g transform="translate(230, 140)">
                         <path d="M12 25 L16 48 L32 48 L36 25 Z" fill="#c4b5fd"/>
-                        <!-- Plant Leaves -->
                         <path d="M24 25 C15 15, 8 18, 5 22 C12 28, 20 26, 24 25 Z" fill="#34d399"/>
                         <path d="M24 25 C20 10, 28 5, 32 8 C34 16, 28 22, 24 25 Z" fill="#10b981"/>
                         <path d="M24 25 C32 15, 42 16, 45 22 C38 27, 28 26, 24 25 Z" fill="#059669"/>
                     </g>
-
-                    <!-- Coffee Mug (Left) -->
                     <g transform="translate(48, 155)">
                         <rect x="6" y="10" width="22" height="28" rx="4" fill="#a78bfa"/>
                         <path d="M28 16 C34 16, 34 26, 28 26" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" fill="none"/>
-                        <!-- Steam -->
                         <path d="M12 5 C14 2, 10 0, 13 -3" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
                         <path d="M18 6 C20 3, 16 1, 19 -2" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
                     </g>
-
-                    <!-- Laptop Base & Stand -->
                     <g>
-                        <!-- Screen Frame -->
                         <rect x="80" y="55" width="160" height="105" rx="12" fill="#4338ca"/>
                         <rect x="84" y="59" width="152" height="97" rx="8" fill="#e0e7ff"/>
                         <rect x="86" y="61" width="148" height="93" rx="6" fill="#f8fafc"/>
-
-                        <!-- Candidate Inside Screen (Video Call UI) -->
                         <rect x="86" y="61" width="148" height="93" rx="6" fill="url(#screenGrad)"/>
-
-                        <!-- Video Call Candidate Illustration -->
                         <g transform="translate(160, 115)">
-                            <!-- Body / Blazer -->
                             <path d="M-28 39 C-28 22, -18 15, 0 15 C18 15, 28 22, 28 39 Z" fill="#6366f1"/>
-                            <!-- Shirt collar -->
                             <path d="M-10 15 L0 25 L10 15 Z" fill="#ffffff"/>
                             <path d="M-3 20 L0 38 L3 20 Z" fill="#f43f5e"/>
-                            <!-- Neck -->
                             <rect x="-6" y="5" width="12" height="12" fill="#fbcfe8" rx="2"/>
-                            <!-- Head -->
                             <ellipse cx="0" cy="-2" rx="14" ry="16" fill="#fde047"/>
-                            <!-- Hair -->
                             <path d="M-14 -4 C-15 -18, 15 -18, 14 -4 C11 -12, -11 -12, -14 -4 Z" fill="#312e81"/>
-                            <!-- Eyes & Smile -->
                             <circle cx="-5" cy="-2" r="2" fill="#1e1b4b"/>
                             <circle cx="5" cy="-2" r="2" fill="#1e1b4b"/>
                             <path d="M-4 5 Q0 9 4 5" stroke="#1e1b4b" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-                            <!-- Headset -->
                             <path d="M-14 -2 C-16 -12, 16 -12, 14 -2" stroke="#475569" stroke-width="2.5" fill="none"/>
                             <rect x="-16" y="-5" width="4" height="8" rx="2" fill="#334155"/>
                             <rect x="12" y="-5" width="4" height="8" rx="2" fill="#334155"/>
                             <path d="M14 0 C14 8, 8 10, 3 9" stroke="#334155" stroke-width="1.8" fill="none"/>
                             <circle cx="2" cy="9" r="2" fill="#ef4444"/>
-
-                            <!-- Waving Hand -->
                             <g transform="translate(22, 0)">
                                 <path d="M2 12 C8 8, 14 0, 12 -4 C10 -6, 6 -2, 4 3 L-2 14 Z" fill="#fde047"/>
                                 <circle cx="10" cy="-3" r="3" fill="#fde047"/>
                             </g>
                         </g>
-
-                        <!-- Top Screen Camera & Status -->
                         <circle cx="160" cy="65" r="2" fill="#22c55e"/>
-
-                        <!-- Laptop Keyboard Base -->
                         <path d="M60 160 L260 160 L275 174 L45 174 Z" fill="#312e81" rx="4"/>
                         <path d="M70 160 L250 160 L262 172 L58 172 Z" fill="#4338ca"/>
-                        <!-- Touchpad notch -->
                         <rect x="140" y="163" width="40" height="7" rx="3" fill="#6366f1"/>
                     </g>
-
                     <defs>
                         <linearGradient id="heroGlow" x1="60" y1="30" x2="260" y2="190" gradientUnits="userSpaceOnUse">
                             <stop stop-color="#c084fc"/>
@@ -239,7 +201,7 @@
 
 
     <!-- =========================================================================
-         SECTION 1: TECHNICAL ROUND (8 ASSESSMENT CARDS)
+         SECTION 1: TECHNICAL ROUND (20 ASSESSMENTS IN 4 CATEGORIES)
          ========================================================================= -->
     <div class="mock-section-block">
         <!-- Section Header -->
@@ -253,308 +215,297 @@
                 </div>
                 <div>
                     <h2 class="mock-section-title">Section 1: Technical Round</h2>
-                    <p class="mock-section-subtitle">Practice core technical concepts and problem solving skills.</p>
+                    <p class="mock-section-subtitle">Practice core technical concepts, programming languages, system design and framework skills.</p>
                 </div>
             </div>
             
-            <a href="#technical-grid" class="btn-view-rounds">
-                View All Rounds →
-            </a>
+            <span style="font-size: 0.88rem; font-weight: 700; background: #f1f5f9; color: #334155; padding: 0.4rem 1rem; border-radius: 9999px; border: 1px solid #cbd5e1;">
+                {{ all_tech_topics | length }} Technical Domains
+            </span>
         </div>
 
-        <!-- 8 Technical Cards Grid -->
-        <div class="mock-tech-grid" id="technical-grid">
+        <!-- CATEGORY FILTER TABS RIBBON -->
+        <div class="mock-cat-filter-ribbon">
+            <button type="button" class="mock-cat-btn active" data-filter="all" onclick="filterTechCategory('all', this)">
+                <span>🌐</span> All Technical ({{ all_tech_topics | length }})
+            </button>
+            <button type="button" class="mock-cat-btn" data-filter="programming" onclick="filterTechCategory('programming', this)">
+                <span>💻</span> Programming ({{ topics_by_cat.programming.topics | length }})
+            </button>
+            <button type="button" class="mock-cat-btn" data-filter="core_cs" onclick="filterTechCategory('core_cs', this)">
+                <span>⚙️</span> Core CS ({{ topics_by_cat.core_cs.topics | length }})
+            </button>
+            <button type="button" class="mock-cat-btn" data-filter="web_dev" onclick="filterTechCategory('web_dev', this)">
+                <span>🌐</span> Web Development ({{ topics_by_cat.web_dev.topics | length }})
+            </button>
+            <button type="button" class="mock-cat-btn" data-filter="emerging" onclick="filterTechCategory('emerging', this)">
+                <span>🚀</span> Emerging Technologies ({{ topics_by_cat.emerging.topics | length }})
+            </button>
+        </div>
 
-            <!-- Card 1: Python -->
-            {% set py_att = mock_stats.topic_attempts.get('python') if mock_stats and mock_stats.topic_attempts else none %}
-            <div class="mock-tech-card">
-                <div class="mock-tech-card-top">
-                    <div class="mock-tech-icon-circle python-bg">
-                        <!-- Python Logo SVG -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M11.9 1.5C6.8 1.5 7.1 3.7 7.1 3.7V6H12v.8H5.2S1.5 6.4 1.5 11.8s3.2 5.5 3.2 5.5h1.9v-2.7s-.1-3.2 3.2-3.2h5.1s3.1.1 3.1-3V4.7s.5-3.2-6.1-3.2zm-1.8 1.7a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2z" fill="#3b82f6"/>
-                            <path d="M12.1 22.5c5.1 0 4.8-2.2 4.8-2.2v-2.3H12v-.8h6.8s3.7.4 3.7-5-3.2-5.5-3.2-5.5h-1.9v2.7s.1 3.2-3.2 3.2H9.2s-3.1-.1-3.1 3v3.8s-.5 3.2 6 3.2zm1.8-1.7a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2z" fill="#eab308"/>
-                        </svg>
-                    </div>
-                    <div class="mock-tech-header-info">
-                        <div class="mock-tech-name-row">
-                            <h3 class="mock-tech-title">Python</h3>
-                            {% if py_att %}
-                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ py_att.score_percentage }}%</span>
-                            {% else %}
-                                <span class="difficulty-pill pill-easy">Easy</span>
-                            {% endif %}
-                        </div>
-                        <div class="mock-tech-meta">
-                            <span class="meta-users">👥 20 Questions</span>
-                            <span class="meta-dot">•</span>
-                            <span class="meta-time">30 Mins</span>
-                            {% if py_att %}
-                                <span class="meta-dot">•</span>
-                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
-                            {% endif %}
-                        </div>
-                    </div>
+        <!-- CATEGORIZED TECHNICAL CARDS SECTIONS -->
+        <div class="mock-categories-container" id="technical-grid">
+
+            <!-- 1. PROGRAMMING (9 TOPICS: Python, Java, C, C++, JavaScript, TypeScript, Go, C#, Ruby) -->
+            <div class="mock-category-group" data-cat="programming">
+                <div class="mock-cat-group-header">
+                    <div class="mock-cat-badge programming-badge">💻 Programming</div>
+                    <span class="mock-cat-count">{{ topics_by_cat.programming.topics | length }} Domains</span>
                 </div>
-                <a href="{{ url_for('mock_test_session', topic_key='python') }}" class="btn-start-test" {% if py_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
-                    {{ 'Retake Test 🔄' if py_att else 'Start Test →' }}
-                </a>
+                <div class="mock-tech-grid">
+                    {% for topic in topics_by_cat.programming.topics %}
+                        {% set att = mock_stats.topic_attempts.get(topic.key) if mock_stats and mock_stats.topic_attempts else none %}
+                        <div class="mock-tech-card" data-domain="{{ topic.key }}">
+                            <div class="mock-tech-card-top">
+                                <div class="mock-tech-icon-circle {{ topic.icon_class }}">
+                                    {% if topic.key == 'python' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="url(#py-b-{{ topic.key }})" d="M63.7 3.3c-28.7 0-26.9 12.4-26.9 12.4l.1 12.9h27.4v3.9H25.4s-17.7 2-17.7 26.6c0 24.5 15.5 25.6 15.5 25.6h9.2V71.8s-.5-15.5 15.3-15.5h26.4s14.8-.2 14.8-14.4V17.7S101.4 3.3 63.7 3.3zM49.2 11.5a4.3 4.3 0 1 1 0 8.6 4.3 4.3 0 0 1 0-8.6z"/><path fill="url(#py-y-{{ topic.key }})" d="M64.3 124.7c28.7 0 26.9-12.4 26.9-12.4l-.1-12.9H63.7v-3.9h38.9s17.7-2 17.7-26.6c0-24.5-15.5-25.6-15.5-25.6h-9.2v12.9s.5 15.5-15.3 15.5H74.1s-14.8.2-14.8 14.4v24.2s-2.5 14.4 35 14.4zm14.5-8.2a4.3 4.3 0 1 1 0-8.6 4.3 4.3 0 0 1 0 8.6z"/><defs><linearGradient id="py-b-{{ topic.key }}" x1="15%" y1="10%" x2="70%" y2="70%"><stop offset="0%" stop-color="#387eb8"/><stop offset="100%" stop-color="#366994"/></linearGradient><linearGradient id="py-y-{{ topic.key }}" x1="20%" y1="20%" x2="80%" y2="80%"><stop offset="0%" stop-color="#ffe873"/><stop offset="100%" stop-color="#ffd43b"/></linearGradient></defs></svg>
+                                    {% elif topic.key == 'java' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="#5382a1" d="M46.7 93.4s-8.1 4.7 5.8 6.3c16.8 2 25.4 1.8 44-1.9 0 0 6.6 4.1 15.8 1.8-31 13.8-73.4 5.3-65.6-6.2zM43.3 80.2s-9.3 6.4 5 7.9c17.5 1.8 30.1 2.1 52.8-2.6 0 0 4.6 3.4 11.7 2.1-38 12.5-79.6 5.1-69.5-7.4z"/><path fill="#e76f00" d="M72.2 46.5c6.2 7.1-1.6 13.6-1.6 13.6s15.7-8.1 8.5-22.9c-6.8-14.1-13-21.2 19.3-37.2-27.4 9.1-39.8 30.8-26.2 46.5zM91.9 70.3s18.2-9.4 6.7-27.1c-9.1-14.1-3.6-21.8 0-30.8-13.6 8.3-25.9 21.6-18.7 34.3 8.9 15.6 12 23.6 12 23.6z"/><path fill="#5382a1" d="M84.7 114.7c25.4-4.2 38.3-21.4 38.3-21.4s-10.4 7.3-30.6 9.4c-22.5 2.3-47.5 1.5-66.7-2.3 0 0-3.6 5.2 6.8 8.8 23.1 8 72.2 5.5 52.2 5.5z"/></svg>
+                                    {% elif topic.key == 'c' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="#00599c" d="M117.7 89.6L70.4 117c-3.9 2.3-8.8 2.3-12.7 0L10.3 89.6c-3.9-2.3-6.4-6.5-6.4-11V24.2c0-4.5 2.4-8.7 6.4-11L57.6 1c3.9-2.3 8.8-2.3 12.7 0l47.3 27.3c3.9 2.3 6.4 6.5 6.4 11v11.9l-11.8 6.8V30.5L64 12.8 21.6 37.3v49.8L64 109.6l42.4-24.5V72.9l11.8-6.8v12.5c-.1 4.5-2.5 8.7-6.5 11z"/><path fill="#004482" d="M89.7 75.2c-5.4 6.8-13.8 11.2-23.2 11.2-16.3 0-29.6-13.3-29.6-29.6s13.3-29.6 29.6-29.6c9.4 0 17.8 4.4 23.2 11.2l9.3-9.3C90.8 19.3 78.2 13.4 64 13.4 39.9 13.4 20.3 33 20.3 57.1S39.9 100.8 64 100.8c14.2 0 26.8-5.9 35-15.7l-9.3-9.9z"/></svg>
+                                    {% elif topic.key == 'cpp' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="#00599c" d="M117.7 89.6L70.4 117c-3.9 2.3-8.8 2.3-12.7 0L10.3 89.6c-3.9-2.3-6.4-6.5-6.4-11V24.2c0-4.5 2.4-8.7 6.4-11L57.6 1c3.9-2.3 8.8-2.3 12.7 0l47.3 27.3c3.9 2.3 6.4 6.5 6.4 11v54.4c-.1 4.5-2.5 8.7-6.5 11z"/><path fill="#ffffff" d="M60.6 84.7c-13.7 0-24.8-11.1-24.8-24.8s11.1-24.8 24.8-24.8c7.9 0 14.9 3.7 19.4 9.4l7.8-7.8c-6.9-8.2-17.4-13.1-27.2-13.1-20.2 0-36.6 16.4-36.6 36.6s16.4 36.6 36.6 36.6c9.8 0 20.3-4.9 27.2-13.1l-7.8-7.8c-4.5 5.7-11.5 9.4-19.4 9.4zM86.5 55.4h5.2V48h4.5v7.4h5.2v4.5h-5.2v7.4h-4.5v-7.4h-5.2v-4.5zM105.5 55.4h5.2V48h4.5v7.4h5.2v4.5h-5.2v7.4h-4.5v-7.4h-5.2v-4.5z"/></svg>
+                                    {% elif topic.key == 'javascript' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="#f7df1e" d="M2 2h124v124H2z"/><path fill="#000000" d="M67.3 100.1c4.5 7.8 11.8 12.8 23.4 12.8 13.4 0 22.3-6.6 22.3-15.8 0-11-8.9-15.3-23.7-21.7-17-7.3-28.2-14.8-28.2-33 0-16.3 12.6-28.7 32.5-28.7 14.1 0 24.2 4.9 31.7 18.2l-16.2 10.4c-3.4-6.1-7.1-8.5-15.5-8.5-7.3 0-12.8 4.6-12.8 10.8 0 7.4 5.3 10.6 18.4 16.3 19.9 8.6 33.7 16.4 33.7 38.6 0 22-17.3 31.3-42.5 31.3-24.1 0-38-11.4-44.6-25.3l15.5-7.5zm-44.1 1.9c3.2 5.5 6.2 10.1 13.5 10.1 7.1 0 11.6-2.9 11.6-14V35.4h20.6v62.4c0 23.3-13.6 33.7-33 33.7-17.7 0-27.9-9.2-33-20.5l14.3-9.1z"/></svg>
+                                    {% elif topic.key == 'typescript' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="#3178c6" d="M2 2h124v124H2z"/><path fill="#ffffff" d="M38.8 55.4H21.5V40.2h54.9v15.2H59.1v56H38.8v-56zm39.7 44.8c4.5 7.8 11.8 12.8 23.4 12.8 13.4 0 22.3-6.6 22.3-15.8 0-11-8.9-15.3-23.7-21.7-17-7.3-28.2-14.8-28.2-33 0-16.3 12.6-28.7 32.5-28.7 14.1 0 24.2 4.9 31.7 18.2l-16.2 10.4c-3.4-6.1-7.1-8.5-15.5-8.5-7.3 0-12.8 4.6-12.8 10.8 0 7.4 5.3 10.6 18.4 16.3 19.9 8.6 33.7 16.4 33.7 38.6 0 22-17.3 31.3-42.5 31.3-24.1 0-38-11.4-44.6-25.3l15.5-7.5z"/></svg>
+                                    {% elif topic.key == 'golang' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="#00add8" d="M12.8 53.6c5.8-1.2 10.4-3.1 14.2-5.7-3.9 6.2-9.6 10.8-16.8 13.6l2.6-7.9zm-2.8 12.4c7.8-1.4 14-4.2 18.8-8.2-5.5 8.1-13.6 13.8-23.8 16.6l5-8.4zm44.2-41.5c15.2 0 27.6 12.4 27.6 27.6s-12.4 27.6-27.6 27.6c-15.2 0-27.6-12.4-27.6-27.6s12.4-27.6 27.6-27.6zm0 13c-8.1 0-14.6 6.5-14.6 14.6s6.5 14.6 14.6 14.6 14.6-6.5 14.6-14.6-6.5-14.6-14.6-14.6zm54.3-13c12.7 0 23.3 9.1 24.8 21.3h-13c-1.2-5.3-5.9-9.3-11.8-9.3-6.9 0-12.4 5.6-12.4 12.4v10.6c0 6.9 5.6 12.4 12.4 12.4 5.9 0 10.6-4 11.8-9.3h-14.9v-11.8h27.9v23.6c-5.3 7.8-14.6 13.1-24.8 13.1-16.8 0-30.4-13.7-30.4-30.4.1-16.8 13.6-30.6 30.4-30.6z"/></svg>
+                                    {% elif topic.key == 'csharp' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="#9b4993" d="M117.7 89.6L70.4 117c-3.9 2.3-8.8 2.3-12.7 0L10.3 89.6c-3.9-2.3-6.4-6.5-6.4-11V24.2c0-4.5 2.4-8.7 6.4-11L57.6 1c3.9-2.3 8.8-2.3 12.7 0l47.3 27.3c3.9 2.3 6.4 6.5 6.4 11v54.4c-.1 4.5-2.5 8.7-6.5 11z"/><path fill="#ffffff" d="M59.6 84.7c-13.7 0-24.8-11.1-24.8-24.8s11.1-24.8 24.8-24.8c7.9 0 14.9 3.7 19.4 9.4l7.8-7.8c-6.9-8.2-17.4-13.1-27.2-13.1-20.2 0-36.6 16.4-36.6 36.6s16.4 36.6 36.6 36.6c9.8 0 20.3-4.9 27.2-13.1l-7.8-7.8c-4.5 5.7-11.5 9.4-19.4 9.4zM95.8 45.4l-2.4 9.5h8.9v4.8h-10.1l-2.8 11.2h10.1v4.8H88.2l-2.7 10.7h-4.8l2.7-10.7h-8.2l-2.7 10.7h-4.8l2.7-10.7H63v-4.8h8.7l2.8-11.2H65.4v-4.8h10.3l2.4-9.5h4.8l-2.4 9.5h8.2l2.4-9.5h4.7zm-14.1 14.3l-2.8 11.2h8.2l2.8-11.2h-8.2z"/></svg>
+                                    {% elif topic.key == 'ruby' %}
+                                        <svg width="26" height="26" viewBox="0 0 128 128"><path fill="#cc342d" d="M26.8 11.3l74.4 0 22.8 33.9-60 78.8-60-78.8z"/><path fill="#e0115f" d="M26.8 11.3l37.2 33.9-37.2 78.8-22.8-78.8z" opacity="0.6"/><path fill="#990000" d="M101.2 11.3l-37.2 33.9 37.2 78.8 22.8-78.8z" opacity="0.6"/><path fill="#ffffff" d="M26.8 11.3h74.4l-37.2 33.9z" opacity="0.3"/></svg>
+                                    {% endif %}
+                                </div>
+                                <div class="mock-tech-header-info">
+                                    <div class="mock-tech-name-row">
+                                        <h3 class="mock-tech-title">{{ topic.name }}</h3>
+                                        {% if att %}
+                                            <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ att.score_percentage }}%</span>
+                                        {% else %}
+                                            <span class="difficulty-pill pill-{{ topic.difficulty | lower }}">{{ topic.difficulty }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mock-tech-meta">
+                                        <span class="meta-users">👥 {{ topic.questions_count }} Questions</span>
+                                        <span class="meta-dot">•</span>
+                                        <span class="meta-time">{{ topic.duration }}</span>
+                                        {% if att and att.is_within_1h %}
+                                            <span class="meta-dot">•</span>
+                                            <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('mock_test_session', topic_key=topic.key) }}" data-no-spa="true" 
+                               class="btn-start-test" 
+                               {% if att and att.is_within_1h %}
+                                   style="background: linear-gradient(135deg, #059669 0%, #047857 100%); cursor: pointer;" 
+                                   data-rem-sec="{{ att.remaining_seconds }}"
+                               {% else %}
+                                   style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); cursor: pointer;"
+                               {% endif %}>
+                                {{ 'Retake Test 🔄' if (att and att.is_within_1h) else 'Start Test →' }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
-            <!-- Card 2: Java -->
-            {% set java_att = mock_stats.topic_attempts.get('java') if mock_stats and mock_stats.topic_attempts else none %}
-            <div class="mock-tech-card">
-                <div class="mock-tech-card-top">
-                    <div class="mock-tech-icon-circle java-bg">
-                        <!-- Java Coffee Cup SVG -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M4 19c4.5 1 11.5 1 16 0M3 15.5c4.5 1.2 13.5 1.2 18 0M7 8c1-2 4-2 4-4s-3-2-2-4" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M12 8c1-2 4-2 4-4s-3-2-2-4M17 8c1-2 4-2 4-4" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M6 10h12v4a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4v-4z" fill="#fee2e2" stroke="#ea580c" stroke-width="1.5"/>
-                        </svg>
-                    </div>
-                    <div class="mock-tech-header-info">
-                        <div class="mock-tech-name-row">
-                            <h3 class="mock-tech-title">Java</h3>
-                            {% if java_att %}
-                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ java_att.score_percentage }}%</span>
-                            {% else %}
-                                <span class="difficulty-pill pill-medium-blue">Medium</span>
-                            {% endif %}
-                        </div>
-                        <div class="mock-tech-meta">
-                            <span class="meta-users">👥 20 Questions</span>
-                            <span class="meta-dot">•</span>
-                            <span class="meta-time">30 Mins</span>
-                            {% if java_att %}
-                                <span class="meta-dot">•</span>
-                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
-                            {% endif %}
-                        </div>
-                    </div>
+            <!-- 2. CORE CS (5 TOPICS: SQL, OOPs, OS, CN, DSA) -->
+            <div class="mock-category-group" data-cat="core_cs">
+                <div class="mock-cat-group-header">
+                    <div class="mock-cat-badge core_cs-badge">⚙️ Core CS</div>
+                    <span class="mock-cat-count">{{ topics_by_cat.core_cs.topics | length }} Domains</span>
                 </div>
-                <a href="{{ url_for('mock_test_session', topic_key='java') }}" class="btn-start-test" {% if java_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
-                    {{ 'Retake Test 🔄' if java_att else 'Start Test →' }}
-                </a>
+                <div class="mock-tech-grid">
+                    {% for topic in topics_by_cat.core_cs.topics %}
+                        {% set att = mock_stats.topic_attempts.get(topic.key) if mock_stats and mock_stats.topic_attempts else none %}
+                        <div class="mock-tech-card" data-domain="{{ topic.key }}">
+                            <div class="mock-tech-card-top">
+                                <div class="mock-tech-icon-circle {{ topic.icon_class }}">
+                                    {% if topic.key == 'sql' %}
+                                        <!-- Authentic PostgreSQL / SQL Database Logo -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 3.34 2 5v14c0 1.66 4.48 3 10 3s10-1.34 10-3V5c0-1.66-4.48-3-10-3z" fill="#0284c7" opacity="0.15"/><ellipse cx="12" cy="5" rx="10" ry="3" fill="#0284c7"/><path d="M22 12c0 1.66-4.48 3-10 3s-10-1.34-10-3" stroke="#0284c7" stroke-width="2.2"/><path d="M22 17c0 1.66-4.48 3-10 3s-10-1.34-10-3" stroke="#0284c7" stroke-width="2.2"/><path d="M2 5v14c0 1.66 4.48 3 10 3s10-1.34 10-3V5" stroke="#0369a1" stroke-width="2.2"/></svg>
+                                    {% elif topic.key == 'oops' %}
+                                        <!-- Authentic OOP Architecture Diagram -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="#8b5cf6"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="#a78bfa"/><rect x="8.5" y="14" width="7" height="7" rx="1.5" fill="#6d28d9"/><path d="M6.5 10v2a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-2M12 14v-2" stroke="#6d28d9" stroke-width="2" stroke-linecap="round"/></svg>
+                                    {% elif topic.key == 'os' %}
+                                        <!-- Authentic Operating System / CPU Microkernel -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" fill="#0284c7" opacity="0.15"/><rect x="4" y="4" width="16" height="16" rx="3" stroke="#0284c7" stroke-width="2"/><rect x="8" y="8" width="8" height="8" rx="1.5" fill="#0284c7"/><path d="M1 9h3M1 15h3M20 9h3M20 15h3M9 1v3M15 1v3M9 20v3M15 20v3" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/></svg>
+                                    {% elif topic.key == 'cn' %}
+                                        <!-- Authentic Computer Networks Topology -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="3" fill="#0284c7"/><circle cx="5" cy="18" r="3" fill="#3b82f6"/><circle cx="19" cy="18" r="3" fill="#06b6d4"/><path d="M12 8v5M12 13l-5 2M12 13l5 2" stroke="#0284c7" stroke-width="2.2" stroke-linecap="round"/></svg>
+                                    {% elif topic.key == 'problem_solving' %}
+                                        <!-- Authentic LeetCode / DSA Algorithm Logo -->
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M16.102 17.93l-2.697 2.607c-.466.467-1.111.662-1.823.662s-1.357-.195-1.824-.662l-4.332-4.363c-.467-.467-.702-1.15-.702-1.863s.235-1.357.702-1.824l4.319-4.38c.467-.467 1.125-.645 1.837-.645s1.357.195 1.823.662l2.697 2.606c.514.515 1.365.497 1.9-.038.535-.536.553-1.387.039-1.901l-2.609-2.636a5.216 5.216 0 0 0-3.79-1.57c-1.463 0-2.887.57-3.921 1.605l-4.32 4.381c-1.045 1.045-1.62 2.457-1.62 3.922 0 1.464.575 2.876 1.62 3.921l4.332 4.363c1.046 1.045 2.47 1.618 3.934 1.618 1.464 0 2.876-.573 3.922-1.618l2.697-2.607c.514-.515.496-1.366-.04-1.901-.534-.536-1.385-.554-1.9-.039z" fill="#FFA116"/><path d="M10.802 13.567h7.822c.738 0 1.336-.598 1.336-1.336 0-.738-.598-1.336-1.336-1.336h-7.822c-.738 0-1.336.598-1.336 1.336 0 .738.598 1.336 1.336 1.336z" fill="#B3B3B3"/></svg>
+                                    {% endif %}
+                                </div>
+                                <div class="mock-tech-header-info">
+                                    <div class="mock-tech-name-row">
+                                        <h3 class="mock-tech-title">{{ topic.name }}</h3>
+                                        {% if att %}
+                                            <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ att.score_percentage }}%</span>
+                                        {% else %}
+                                            <span class="difficulty-pill pill-{{ topic.difficulty | lower }}">{{ topic.difficulty }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mock-tech-meta">
+                                        <span class="meta-users">👥 {{ topic.questions_count }} Questions</span>
+                                        <span class="meta-dot">•</span>
+                                        <span class="meta-time">{{ topic.duration }}</span>
+                                        {% if att %}
+                                            <span class="meta-dot">•</span>
+                                            <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('mock_test_session', topic_key=topic.key) }}" data-no-spa="true" 
+                               class="btn-start-test" 
+                               {% if att and att.is_within_1h %}
+                                   style="background: linear-gradient(135deg, #059669 0%, #047857 100%); cursor: pointer;" 
+                                   data-rem-sec="{{ att.remaining_seconds }}"
+                               {% else %}
+                                   style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); cursor: pointer;"
+                               {% endif %}>
+                                {{ 'Retake Test 🔄' if (att and att.is_within_1h) else 'Start Test →' }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
-            <!-- Card 3: SQL & Databases -->
-            {% set sql_att = mock_stats.topic_attempts.get('sql') if mock_stats and mock_stats.topic_attempts else none %}
-            <div class="mock-tech-card">
-                <div class="mock-tech-card-top">
-                    <div class="mock-tech-icon-circle sql-bg">
-                        <!-- Database Cylinders SVG -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                        </svg>
-                    </div>
-                    <div class="mock-tech-header-info">
-                        <div class="mock-tech-name-row">
-                            <h3 class="mock-tech-title">SQL & Databases</h3>
-                            {% if sql_att %}
-                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ sql_att.score_percentage }}%</span>
-                            {% else %}
-                                <span class="difficulty-pill pill-medium-amber">Medium</span>
-                            {% endif %}
-                        </div>
-                        <div class="mock-tech-meta">
-                            <span class="meta-users">👥 20 Questions</span>
-                            <span class="meta-dot">•</span>
-                            <span class="meta-time">30 Mins</span>
-                            {% if sql_att %}
-                                <span class="meta-dot">•</span>
-                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
-                            {% endif %}
-                        </div>
-                    </div>
+            <!-- 3. WEB DEVELOPMENT (7 TOPICS: HTML/CSS/JS, React, Node, Flask, Django, REST APIs, Spring Boot) -->
+            <div class="mock-category-group" data-cat="web_dev">
+                <div class="mock-cat-group-header">
+                    <div class="mock-cat-badge web_dev-badge">🌐 Web Development</div>
+                    <span class="mock-cat-count">{{ topics_by_cat.web_dev.topics | length }} Domains</span>
                 </div>
-                <a href="{{ url_for('mock_test_session', topic_key='sql') }}" class="btn-start-test" {% if sql_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
-                    {{ 'Retake Test 🔄' if sql_att else 'Start Test →' }}
-                </a>
+                <div class="mock-tech-grid">
+                    {% for topic in topics_by_cat.web_dev.topics %}
+                        {% set att = mock_stats.topic_attempts.get(topic.key) if mock_stats and mock_stats.topic_attempts else none %}
+                        <div class="mock-tech-card" data-domain="{{ topic.key }}">
+                            <div class="mock-tech-card-top">
+                                <div class="mock-tech-icon-circle {{ topic.icon_class }}">
+                                    {% if topic.key == 'web_dev' %}
+                                        <!-- Official HTML5 Shield Logo -->
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 2l1.8 20.2L12 24l7.2-1.8L21 2H3z" fill="#E44D26"/><path d="M12 3.8v18.4l5.6-1.4 1.5-17H12z" fill="#F16529"/><path d="M12 7.7H7.4l.2 2.4h4.4v2.4H7.8l.2 2.4h4v2.4l-3.3.9-.2-1.2H6.9l.4 3 4.7 1.3V7.7zm0 0" fill="#EBEBEB"/><path d="M12 7.7h4.6l-.4 4.8H12v-2.4h2.2l.2-2.4H12V7.7zm0 7.2v-2.4h4.2l-.4 4.8-3.8 1v-2.4l2.1-.6.2-2.8H12z" fill="#FFFFFF"/></svg>
+                                    {% elif topic.key == 'react' %}
+                                        <!-- Official React Atom Logo -->
+                                        <svg width="26" height="26" viewBox="-11.5 -10.23174 23 20.46348"><circle cx="0" cy="0" r="2.05" fill="#61DAFB"/><g stroke="#61DAFB" stroke-width="1.2" fill="none"><ellipse rx="11" ry="4.2"/><ellipse rx="11" ry="4.2" transform="rotate(60)"/><ellipse rx="11" ry="4.2" transform="rotate(120)"/></g></svg>
+                                    {% elif topic.key == 'nodejs' %}
+                                        <!-- Official Node.js Hexagon Logo -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24"><path fill="#339933" d="M12 1.6l8.8 5.1v10.6L12 22.4l-8.8-5.1V6.7L12 1.6z"/><path fill="#ffffff" d="M12 3.8l6.8 3.9v7.8L12 19.4l-6.8-3.9V7.7L12 3.8z"/><path fill="#339933" d="M14.5 13.5c-.2 1.2-1.2 2-2.5 2s-2.5-.9-2.5-2.2c0-1.5 1.1-2 2.8-2.3 1.2-.2 1.8-.4 1.8-.9 0-.5-.4-.8-1.1-.8-.8 0-1.2.4-1.3 1H10c.1-1.3 1.1-2 2.4-2 1.4 0 2.4.8 2.4 2v3.2zm-1.6-.3v-1.1c-1 .2-1.8.5-1.8 1.2 0 .6.4.9 1 .9.5 0 .8-.4.8-1z"/></svg>
+                                    {% elif topic.key == 'flask' %}
+                                        <!-- Official Flask Logo -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M9 2h6v2h-1v4.5l5.5 10c.8 1.4-.2 3.5-1.8 3.5H6.3c-1.6 0-2.6-2.1-1.8-3.5L10 8.5V4H9V2z" fill="#000000" opacity="0.1"/><path d="M9 2h6M10 2v6.5L4.5 18.5C3.7 19.9 4.7 22 6.3 22h11.4c1.6 0 2.6-2.1 1.8-3.5L14 8.5V2" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 16h10" stroke="#0f172a" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                    {% elif topic.key == 'django' %}
+                                        <!-- Official Django Logo -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#092E20"/><path d="M13.2 5.5h2.1v9.8c-.5.1-1.3.2-2.1.2-3 0-4.6-1.5-4.6-4.2 0-2.8 1.8-4.5 4.6-4.5v1.9c-1.4 0-2.2.8-2.2 2.5 0 1.6.8 2.4 2.2 2.4.4 0 .7 0 1-.1V5.5zm4.8 3.4h2.1v9.8c-.6.2-1.5.3-2.1.3-1.6 0-2.3-.5-2.3-1.8V8.9h2.3v7.3c.3.1.6.1.8.1.5 0 .7-.2.7-.8V8.9h-1.5V7h3v1.9z" fill="#44B78B"/></svg>
+                                    {% elif topic.key == 'rest_api' %}
+                                        <!-- Official REST API Logo -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="3" stroke="#6366f1" stroke-width="2"/><path d="M6 10h2.5a1.5 1.5 0 0 1 0 3H6m0-3v4m0-1h2.5l1.5 2M13 10v4m-2-4h4M18 10h-2.5v4h2.5m-2.5-2h2" stroke="#6366f1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    {% elif topic.key == 'spring_boot' %}
+                                        <!-- Official Spring Boot Logo -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12c0 3.8 2.2 7.1 5.4 8.7L19.7 8.4C18.1 4.6 15.3 2 12 2zm8.6 8.7L8.3 23c1.2.4 2.4.6 3.7.6 5.5 0 10-4.5 10-10 0-.8-.1-1.6-.3-2.3l-1.1-.6z" fill="#6DB33F"/><path d="M9.5 16.5c-1.5 0-2.7-1.2-2.7-2.7s1.2-2.7 2.7-2.7 2.7 1.2 2.7 2.7-1.2 2.7-2.7 2.7z" fill="#ffffff"/></svg>
+                                    {% endif %}
+                                </div>
+                                <div class="mock-tech-header-info">
+                                    <div class="mock-tech-name-row">
+                                        <h3 class="mock-tech-title">{{ topic.name }}</h3>
+                                        {% if att %}
+                                            <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ att.score_percentage }}%</span>
+                                        {% else %}
+                                            <span class="difficulty-pill pill-{{ topic.difficulty | lower }}">{{ topic.difficulty }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mock-tech-meta">
+                                        <span class="meta-users">👥 {{ topic.questions_count }} Questions</span>
+                                        <span class="meta-dot">•</span>
+                                        <span class="meta-time">{{ topic.duration }}</span>
+                                        {% if att %}
+                                            <span class="meta-dot">•</span>
+                                            <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('mock_test_session', topic_key=topic.key) }}" data-no-spa="true" 
+                               class="btn-start-test" 
+                               {% if att and att.is_within_1h %}
+                                   style="background: linear-gradient(135deg, #059669 0%, #047857 100%); cursor: pointer;" 
+                                   data-rem-sec="{{ att.remaining_seconds }}"
+                               {% else %}
+                                   style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); cursor: pointer;"
+                               {% endif %}>
+                                {{ 'Retake Test 🔄' if (att and att.is_within_1h) else 'Start Test →' }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
-            <!-- Card 4: OOPs Concepts -->
-            {% set oops_att = mock_stats.topic_attempts.get('oops') if mock_stats and mock_stats.topic_attempts else none %}
-            <div class="mock-tech-card">
-                <div class="mock-tech-card-top">
-                    <div class="mock-tech-icon-circle oops-bg">
-                        <!-- 3D Cube / Object SVG -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                    </div>
-                    <div class="mock-tech-header-info">
-                        <div class="mock-tech-name-row">
-                            <h3 class="mock-tech-title">OOPs Concepts</h3>
-                            {% if oops_att %}
-                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ oops_att.score_percentage }}%</span>
-                            {% else %}
-                                <span class="difficulty-pill pill-easy">Easy</span>
-                            {% endif %}
-                        </div>
-                        <div class="mock-tech-meta">
-                            <span class="meta-users">👥 20 Questions</span>
-                            <span class="meta-dot">•</span>
-                            <span class="meta-time">30 Mins</span>
-                            {% if oops_att %}
-                                <span class="meta-dot">•</span>
-                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
-                            {% endif %}
-                        </div>
-                    </div>
+            <!-- 4. EMERGING TECHNOLOGIES (4 TOPICS: ML, AI, Cloud & AWS, DevOps) -->
+            <div class="mock-category-group" data-cat="emerging">
+                <div class="mock-cat-group-header">
+                    <div class="mock-cat-badge emerging-badge">🚀 Emerging Technologies</div>
+                    <span class="mock-cat-count">{{ topics_by_cat.emerging.topics | length }} Domains</span>
                 </div>
-                <a href="{{ url_for('mock_test_session', topic_key='oops') }}" class="btn-start-test" {% if oops_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
-                    {{ 'Retake Test 🔄' if oops_att else 'Start Test →' }}
-                </a>
-            </div>
-
-            <!-- Card 5: AWS Cloud -->
-            {% set aws_att = mock_stats.topic_attempts.get('aws') if mock_stats and mock_stats.topic_attempts else none %}
-            <div class="mock-tech-card">
-                <div class="mock-tech-card-top">
-                    <div class="mock-tech-icon-circle aws-bg">
-                        <!-- AWS Logo / Cloud SVG -->
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-                            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" fill="#fff7ed" stroke="#ea580c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                            <text x="12" y="15" font-size="7" font-weight="900" fill="#ea580c" text-anchor="middle" font-family="sans-serif">aws</text>
-                        </svg>
-                    </div>
-                    <div class="mock-tech-header-info">
-                        <div class="mock-tech-name-row">
-                            <h3 class="mock-tech-title">AWS Cloud</h3>
-                            {% if aws_att %}
-                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ aws_att.score_percentage }}%</span>
-                            {% else %}
-                                <span class="difficulty-pill pill-medium-amber">Medium</span>
-                            {% endif %}
+                <div class="mock-tech-grid">
+                    {% for topic in topics_by_cat.emerging.topics %}
+                        {% set att = mock_stats.topic_attempts.get(topic.key) if mock_stats and mock_stats.topic_attempts else none %}
+                        <div class="mock-tech-card" data-domain="{{ topic.key }}">
+                            <div class="mock-tech-card-top">
+                                <div class="mock-tech-icon-circle {{ topic.icon_class }}">
+                                    {% if topic.key == 'ml' %}
+                                        <!-- Authentic Machine Learning Neural Network -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="6" r="2.5" fill="#f59e0b"/><circle cx="5" cy="18" r="2.5" fill="#f59e0b"/><circle cx="12" cy="4" r="2.5" fill="#8b5cf6"/><circle cx="12" cy="12" r="2.5" fill="#8b5cf6"/><circle cx="12" cy="20" r="2.5" fill="#8b5cf6"/><circle cx="19" cy="8" r="2.5" fill="#10b981"/><circle cx="19" cy="16" r="2.5" fill="#10b981"/><line x1="7.5" y1="6" x2="9.5" y2="4" stroke="#94a3b8" stroke-width="1.5"/><line x1="7.5" y1="6" x2="9.5" y2="12" stroke="#94a3b8" stroke-width="1.5"/><line x1="7.5" y1="18" x2="9.5" y2="12" stroke="#94a3b8" stroke-width="1.5"/><line x1="7.5" y1="18" x2="9.5" y2="20" stroke="#94a3b8" stroke-width="1.5"/><line x1="14.5" y1="4" x2="16.5" y2="8" stroke="#94a3b8" stroke-width="1.5"/><line x1="14.5" y1="12" x2="16.5" y2="8" stroke="#94a3b8" stroke-width="1.5"/><line x1="14.5" y1="12" x2="16.5" y2="16" stroke="#94a3b8" stroke-width="1.5"/><line x1="14.5" y1="20" x2="16.5" y2="16" stroke="#94a3b8" stroke-width="1.5"/></svg>
+                                    {% elif topic.key == 'ai' %}
+                                        <!-- Authentic Artificial Intelligence Sparkle -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.4 8.6L21 11L14.4 13.4L12 20L9.6 13.4L3 11L9.6 8.6L12 2Z" fill="#a855f7"/><path d="M19 16L20.2 19.3L23.5 20.5L20.2 21.7L19 25L17.8 21.7L14.5 20.5L17.8 19.3L19 16Z" fill="#ec4899" transform="scale(0.7) translate(8, -4)"/></svg>
+                                    {% elif topic.key == 'aws' %}
+                                        <!-- Authentic AWS Cloud Logo -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#232F3E"/><path d="M6.2 14.5c2.8 1.5 6.3 1.6 9.4.4.2-.1.3.1.1.3-3.3 1.8-7.2 1.6-9.9-.4-.2-.2 0-.4.4-.3z" fill="#FF9900"/><path d="M16.1 13.7c-.2-.3-1.3-.1-1.8.1-.1.1-.1.2 0 .2.5.3 1.1.2 1.5.1.2 0 .4-.2.3-.4z" fill="#FF9900"/><text x="12" y="10.5" font-size="7.5" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="sans-serif">AWS</text></svg>
+                                    {% elif topic.key == 'devops' %}
+                                        <!-- Authentic DevOps Infinity Loop Logo -->
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8 8a4 4 0 1 0 0 8c2.2 0 3.2-1.3 4-2.7.8 1.4 1.8 2.7 4 2.7a4 4 0 1 0 0-8c-2.2 0-3.2 1.3-4 2.7C11.2 9.3 10.2 8 8 8z" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="12" r="1.5" fill="#3b82f6"/><circle cx="16" cy="12" r="1.5" fill="#06b6d4"/></svg>
+                                    {% endif %}
+                                </div>
+                                <div class="mock-tech-header-info">
+                                    <div class="mock-tech-name-row">
+                                        <h3 class="mock-tech-title">{{ topic.name }}</h3>
+                                        {% if att %}
+                                            <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ att.score_percentage }}%</span>
+                                        {% else %}
+                                            <span class="difficulty-pill pill-{{ topic.difficulty | lower }}">{{ topic.difficulty }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mock-tech-meta">
+                                        <span class="meta-users">👥 {{ topic.questions_count }} Questions</span>
+                                        <span class="meta-dot">•</span>
+                                        <span class="meta-time">{{ topic.duration }}</span>
+                                        {% if att %}
+                                            <span class="meta-dot">•</span>
+                                            <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('mock_test_session', topic_key=topic.key) }}" data-no-spa="true" 
+                               class="btn-start-test" 
+                               {% if att and att.is_within_1h %}
+                                   style="background: linear-gradient(135deg, #059669 0%, #047857 100%); cursor: pointer;" 
+                                   data-rem-sec="{{ att.remaining_seconds }}"
+                               {% else %}
+                                   style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); cursor: pointer;"
+                               {% endif %}>
+                                {{ 'Retake Test 🔄' if (att and att.is_within_1h) else 'Start Test →' }}
+                            </a>
                         </div>
-                        <div class="mock-tech-meta">
-                            <span class="meta-users">👥 15 Questions</span>
-                            <span class="meta-dot">•</span>
-                            <span class="meta-time">20 Mins</span>
-                            {% if aws_att %}
-                                <span class="meta-dot">•</span>
-                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
-                            {% endif %}
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
-                <a href="{{ url_for('mock_test_session', topic_key='aws') }}" class="btn-start-test" {% if aws_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
-                    {{ 'Retake Test 🔄' if aws_att else 'Start Test →' }}
-                </a>
-            </div>
-
-            <!-- Card 6: Problem Solving & DSA -->
-            {% set dsa_att = mock_stats.topic_attempts.get('problem_solving') if mock_stats and mock_stats.topic_attempts else none %}
-            <div class="mock-tech-card">
-                <div class="mock-tech-card-top">
-                    <div class="mock-tech-icon-circle dsa-bg">
-                        <!-- Code Brackets </> SVG -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="16 18 22 12 16 6"></polyline>
-                            <polyline points="8 6 2 12 8 18"></polyline>
-                            <line x1="14" y1="4" x2="10" y2="20"></line>
-                        </svg>
-                    </div>
-                    <div class="mock-tech-header-info">
-                        <div class="mock-tech-name-row">
-                            <h3 class="mock-tech-title">Problem Solving & DSA</h3>
-                            {% if dsa_att %}
-                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ dsa_att.score_percentage }}%</span>
-                            {% else %}
-                                <span class="difficulty-pill pill-hard">Hard</span>
-                            {% endif %}
-                        </div>
-                        <div class="mock-tech-meta">
-                            <span class="meta-users">👥 25 Questions</span>
-                            <span class="meta-dot">•</span>
-                            <span class="meta-time">35 Mins</span>
-                            {% if dsa_att %}
-                                <span class="meta-dot">•</span>
-                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <a href="{{ url_for('mock_test_session', topic_key='problem_solving') }}" class="btn-start-test" {% if dsa_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
-                    {{ 'Retake Test 🔄' if dsa_att else 'Start Test →' }}
-                </a>
-            </div>
-
-            <!-- Card 7: C Programming -->
-            {% set c_att = mock_stats.topic_attempts.get('c') if mock_stats and mock_stats.topic_attempts else none %}
-            <div class="mock-tech-card">
-                <div class="mock-tech-card-top">
-                    <div class="mock-tech-icon-circle c-bg">
-                        <!-- Hexagon C Logo SVG -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" fill="#1e3a8a"/>
-                            <text x="12" y="16" font-size="12" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="sans-serif">C</text>
-                        </svg>
-                    </div>
-                    <div class="mock-tech-header-info">
-                        <div class="mock-tech-name-row">
-                            <h3 class="mock-tech-title">C Programming</h3>
-                            {% if c_att %}
-                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ c_att.score_percentage }}%</span>
-                            {% else %}
-                                <span class="difficulty-pill pill-easy">Easy</span>
-                            {% endif %}
-                        </div>
-                        <div class="mock-tech-meta">
-                            <span class="meta-users">👥 20 Questions</span>
-                            <span class="meta-dot">•</span>
-                            <span class="meta-time">30 Mins</span>
-                            {% if c_att %}
-                                <span class="meta-dot">•</span>
-                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <a href="{{ url_for('mock_test_session', topic_key='c') }}" class="btn-start-test" {% if c_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
-                    {{ 'Retake Test 🔄' if c_att else 'Start Test →' }}
-                </a>
-            </div>
-
-            <!-- Card 8: C++ & STL -->
-            {% set cpp_att = mock_stats.topic_attempts.get('cpp') if mock_stats and mock_stats.topic_attempts else none %}
-            <div class="mock-tech-card">
-                <div class="mock-tech-card-top">
-                    <div class="mock-tech-icon-circle cpp-bg">
-                        <!-- Hexagon C++ Logo SVG -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" fill="#0284c7"/>
-                            <text x="12" y="15.5" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="sans-serif">C++</text>
-                        </svg>
-                    </div>
-                    <div class="mock-tech-header-info">
-                        <div class="mock-tech-name-row">
-                            <h3 class="mock-tech-title">C++ & STL</h3>
-                            {% if cpp_att %}
-                                <span class="difficulty-pill" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-weight: 800;">✓ {{ cpp_att.score_percentage }}%</span>
-                            {% else %}
-                                <span class="difficulty-pill pill-medium-amber">Medium</span>
-                            {% endif %}
-                        </div>
-                        <div class="mock-tech-meta">
-                            <span class="meta-users">👥 20 Questions</span>
-                            <span class="meta-dot">•</span>
-                            <span class="meta-time">30 Mins</span>
-                            {% if cpp_att %}
-                                <span class="meta-dot">•</span>
-                                <span class="meta-time" style="color: #10b981; font-weight: 700;">Completed</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <a href="{{ url_for('mock_test_session', topic_key='cpp') }}" class="btn-start-test" {% if cpp_att %}style="background: linear-gradient(135deg, #059669 0%, #047857 100%);"{% endif %}>
-                    {{ 'Retake Test 🔄' if cpp_att else 'Start Test →' }}
-                </a>
             </div>
 
         </div>
@@ -590,7 +541,7 @@
                                 <span style="font-weight: 800; font-size: 0.88rem; padding: 0.25rem 0.65rem; border-radius: 8px; {% if test.score >= 75 %}background: #d1fae5; color: #047857; border: 1px solid #6ee7b7;{% elif test.score >= 50 %}background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe;{% else %}background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5;{% endif %}">
                                     {{ test.score }}%
                                 </span>
-                                <a href="{{ url_for('mock_test_session', topic_key=test.topic_key) }}" style="font-size: 0.78rem; font-weight: 700; color: #6366f1; text-decoration: none;">
+                                <a href="{{ url_for('mock_test_session', topic_key=test.topic_key) }}" data-no-spa="true" style="font-size: 0.78rem; font-weight: 700; color: #6366f1; text-decoration: none;">
                                     Retake 🔄
                                 </a>
                             </div>
@@ -601,7 +552,7 @@
                     <div style="text-align: center; padding: 1.75rem 1rem; color: var(--text-muted);">
                         <div style="font-size: 2.2rem; margin-bottom: 0.5rem; opacity: 0.7;">📝</div>
                         <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">No Mock Tests Completed Yet</div>
-                        <p style="font-size: 0.82rem; margin: 0; max-width: 320px; margin: 0 auto;">Select any of the 8 technical domains above and complete your first mock interview assessment!</p>
+                        <p style="font-size: 0.82rem; margin: 0; max-width: 320px; margin: 0 auto;">Select any of the 20 technical domains above and complete your first mock interview assessment!</p>
                     </div>
                 {% endif %}
             </div>
@@ -636,7 +587,7 @@
                 <div style="margin-top: 0.5rem;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-main);">
                         <span>Mock Readiness Progress</span>
-                        <span>{{ mock_stats.tests_completed if mock_stats else 0 }} / 8 Topics Covered</span>
+                        <span>{{ mock_stats.tests_completed if mock_stats else 0 }} / 20 Domains Covered</span>
                     </div>
                     <div style="height: 8px; background: rgba(0,0,0,0.06); border-radius: 9999px; overflow: hidden;">
                         <div style="height: 100%; width: {{ mock_stats.overall_progress if mock_stats else 0 }}%; background: linear-gradient(90deg, #6366f1 0%, #10b981 100%); border-radius: 9999px; transition: width 0.6s ease;"></div>
@@ -784,28 +735,16 @@
 
                     <!-- Angled 3D Dartboard Disk -->
                     <g filter="url(#targetShadow)" transform="translate(10, 10)">
-                        <!-- Outer Rim -->
                         <ellipse cx="70" cy="65" rx="58" ry="46" fill="#f3e8ff" stroke="#c084fc" stroke-width="4"/>
-                        <!-- Ring 2 -->
                         <ellipse cx="70" cy="65" rx="46" ry="36" fill="#ffffff" stroke="#a855f7" stroke-width="4"/>
-                        <!-- Ring 3 -->
                         <ellipse cx="70" cy="65" rx="34" ry="26" fill="#f3e8ff" stroke="#c084fc" stroke-width="3"/>
-                        <!-- Ring 4 -->
                         <ellipse cx="70" cy="65" rx="22" ry="16" fill="#ffffff" stroke="#9333ea" stroke-width="3"/>
-                        <!-- Bullseye Center -->
                         <ellipse cx="70" cy="65" rx="10" ry="8" fill="url(#targetGrad2)"/>
-
-                        <!-- Arrow hitting Bullseye -->
                         <g transform="translate(70, 65) rotate(-35)">
-                            <!-- Arrow shaft -->
                             <line x1="0" y1="0" x2="-45" y2="-45" stroke="#f43f5e" stroke-width="3.5" stroke-linecap="round"/>
-                            <!-- Arrow fletching/feathers -->
                             <path d="M-45 -45 L-55 -40 L-48 -48 L-52 -55 Z" fill="#fb7185"/>
-                            <!-- Arrowhead at center -->
                             <circle cx="0" cy="0" r="3" fill="#be123c"/>
                         </g>
-
-                        <!-- Sparkle at hit point -->
                         <path d="M82 52 L84 46 L86 52 L92 54 L86 56 L84 62 L82 56 L76 54 Z" fill="#fbbf24"/>
                     </g>
                 </svg>
@@ -845,4 +784,146 @@
     </div>
 
 </div>
+
+<!-- CATEGORY FILTER JAVASCRIPT & STYLES -->
+<script>
+function filterTechCategory(cat, btn) {
+    document.querySelectorAll('.mock-cat-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    
+    const groups = document.querySelectorAll('.mock-category-group');
+    groups.forEach(group => {
+        if (cat === 'all' || group.getAttribute('data-cat') === cat) {
+            group.style.display = 'block';
+        } else {
+            group.style.display = 'none';
+        }
+    });
+}
+
+function initMockRetakeTimers() {
+    if (window._mockRetakeInterval) {
+        clearInterval(window._mockRetakeInterval);
+    }
+
+    window._mockRetakeInterval = setInterval(() => {
+        const timerBtns = document.querySelectorAll('.btn-start-test[data-rem-sec]');
+        if (!timerBtns || timerBtns.length === 0) {
+            clearInterval(window._mockRetakeInterval);
+            return;
+        }
+
+        timerBtns.forEach(btn => {
+            let sec = parseInt(btn.getAttribute('data-rem-sec') || '0', 10);
+            if (sec > 0) {
+                sec--;
+                btn.setAttribute('data-rem-sec', sec);
+            } else {
+                // 1 hour has elapsed: Revert button to Blue Start Test
+                btn.style.background = 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)';
+                btn.innerHTML = 'Start Test →';
+                btn.removeAttribute('data-rem-sec');
+            }
+        });
+    }, 1000);
+}
+
+// Initialize countdown on page load
+initMockRetakeTimers();
+</script>
+
+<style>
+/* MOCK INTERVIEW CATEGORY FILTER RIBBON & GROUPS */
+.mock-cat-filter-ribbon {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.mock-cat-filter-ribbon::-webkit-scrollbar {
+    height: 4px;
+}
+.mock-cat-filter-ribbon::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.mock-cat-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 1.15rem;
+    border-radius: 9999px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mock-cat-btn:hover {
+    border-color: #94a3b8;
+    color: #0f172a;
+    background: #f8fafc;
+}
+.mock-cat-btn.active {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff !important;
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+.mock-category-group {
+    margin-bottom: 2rem;
+}
+.mock-cat-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1.5px solid #f1f5f9;
+}
+.mock-cat-badge {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.mock-cat-count {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 0.2rem 0.65rem;
+    border-radius: 9999px;
+}
+
+/* CUSTOM TOPIC ICON CIRCLE COLORS */
+.python-bg { background: #eff6ff; color: #3b82f6; }
+.java-bg { background: #fff7ed; color: #ea580c; }
+.c-bg { background: #eff6ff; color: #1e3a8a; }
+.cpp-bg { background: #f0f9ff; color: #0284c7; }
+.js-bg { background: #fefce8; color: #ca8a04; }
+.ts-bg { background: #eff6ff; color: #2563eb; }
+.go-bg { background: #ecfeff; color: #0891b2; }
+.csharp-bg { background: #faf5ff; color: #7c3aed; }
+.ruby-bg { background: #fff1f2; color: #e11d48; }
+.os-bg { background: #e0f2fe; color: #0284c7; }
+.cn-bg { background: #e0f2fe; color: #0369a1; }
+.web-bg { background: #ffe4e6; color: #e11d48; }
+.react-bg { background: #e0f2fe; color: #0284c7; }
+.nodejs-bg { background: #dcfce7; color: #16a34a; }
+.flask-bg { background: #f1f5f9; color: #334155; }
+.django-bg { background: #dcfce7; color: #047857; }
+.rest-bg { background: #e0e7ff; color: #4f46e5; }
+.spring-bg { background: #dcfce7; color: #15803d; }
+.ml-bg { background: #f3e8ff; color: #9333ea; }
+.ai-bg { background: #fce7f3; color: #db2777; }
+.devops-bg { background: #eff6ff; color: #2563eb; }
+</style>
 {% endblock %}

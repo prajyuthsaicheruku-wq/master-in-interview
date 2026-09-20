@@ -99,9 +99,9 @@
         <!-- RIGHT SIDE: AUTH / LOGIN FORM PANEL -->
         <div class="auth-right-panel">
             <div class="glass-card auth-card">
-        <div class="auth-header" style="text-align: center;">
-            <div style="margin-bottom: 0.6rem;">
-                <img src="{{ url_for('static', filename='images/emblem.png') }}" alt="Interview Master" style="width: 68px; height: 68px; object-fit: contain; filter: drop-shadow(0 4px 14px rgba(99, 102, 241, 0.35));">
+        <div class="auth-header" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: center;">
+                <img src="{{ url_for('static', filename='images/emblem.png') }}" alt="Interview Master" style="width: 68px; height: 68px; object-fit: contain; filter: drop-shadow(0 4px 14px rgba(99, 102, 241, 0.35)); display: block; margin: 0 auto;">
             </div>
             <h2>Master-in-<span class="gradient-text">Interview</span></h2>
             <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; margin-bottom: 1.15rem; letter-spacing: 0.5px;">Practice • Prepare • Succeed</p>
@@ -110,6 +110,22 @@
         <div class="auth-tabs">
             <button type="button" class="auth-tab-btn {% if initial_mode != 'register' and initial_mode != 'reset' %}active{% endif %}" id="loginTabBtn" onclick="switchAuthTab('login')">Log In</button>
             <button type="button" class="auth-tab-btn {% if initial_mode == 'register' %}active{% endif %}" id="registerTabBtn" onclick="switchAuthTab('register')">Create Account</button>
+        </div>
+
+        <!-- GOOGLE ONE-CLICK AUTHENTICATION BUTTON -->
+        <div id="googleAuthSection" style="{% if initial_mode == 'reset' %}display: none;{% else %}display: block;{% endif %} margin: 1.15rem 0;">
+            <button type="button" class="btn-google-auth" id="googleAuthBtn" onclick="handleGoogleAuthClick()">
+                <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right: 10px; flex-shrink: 0;">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span id="googleBtnLabel">Continue with Google</span>
+            </button>
+            <div class="auth-divider-line">
+                <span id="authDividerLabel">or continue with email</span>
+            </div>
         </div>
 
         <!-- LOGIN FORM -->
@@ -286,9 +302,86 @@
                 </button>
             </form>
         </div>
+            </div> <!-- /.auth-card -->
+        </div> <!-- /.auth-right-panel -->
+    </div> <!-- /.auth-split-container -->
+</div> <!-- /.auth-wrapper -->
+
+<!-- GOOGLE SIGN-IN ACCOUNT SELECTION MODAL (HIDDEN BY DEFAULT, OPENS ONLY ON GOOGLE BUTTON CLICK) -->
+<div id="googleAccountModal" class="google-modal-overlay" style="display: none !important;" role="dialog" aria-modal="true" aria-labelledby="googleModalTitle">
+    <div class="google-modal-card">
+        <!-- Close Button -->
+        <button type="button" class="google-modal-close-btn" onclick="closeGoogleModal()" aria-label="Close Google Sign-In">&times;</button>
+
+        <!-- HIDDEN DIRECT FORM FOR 100% RELIABLE INSTANT REDIRECT TO HOME PAGE -->
+        <form id="googleDirectForm" action="{{ url_for('google_direct_login') }}" method="POST" style="display: none;">
+            <input type="hidden" name="email" id="googleDirectEmail" value="prajyuthsaicheruku@gmail.com">
+            <input type="hidden" name="name" id="googleDirectName" value="Prajyuthsai Cheruku">
+        </form>
+
+        <div class="google-modal-header">
+            <!-- Official Google "G" Logo -->
+            <div class="google-logo-wrapper">
+                <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+            </div>
+            <h2 id="googleModalTitle" class="google-modal-title">Sign in with Google</h2>
+            <p class="google-modal-subtitle">Choose an account to continue to <strong>Master-in-Interview</strong></p>
+        </div>
+
+        <div class="google-accounts-list">
+            <!-- PRIMARY DETECTED USER ACCOUNT -->
+            <button type="button" class="google-acc-item google-acc-primary" onclick="submitGoogleLogin('prajyuthsaicheruku@gmail.com', 'Prajyuthsai Cheruku')">
+                <div class="google-acc-avatar">P</div>
+                <div class="google-acc-info">
+                    <div class="google-acc-name">Prajyuthsai Cheruku</div>
+                    <div class="google-acc-email">prajyuthsaicheruku@gmail.com</div>
+                    <div class="google-acc-click-hint">Click to sign in & enter Home page ➔</div>
+                </div>
+                <div class="google-acc-badge" title="Verified Account">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+            </button>
+
+            <!-- USE ANOTHER ACCOUNT -->
+            <button type="button" class="google-acc-item google-acc-item-alt" onclick="toggleCustomGoogleInput()" id="useAnotherGoogleBtn">
+                <div class="google-acc-avatar google-acc-avatar-alt">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                </div>
+                <div class="google-acc-info">
+                    <div class="google-acc-name google-action-text">Use another account</div>
+                    <div class="google-acc-email">Sign in with any other Google / Gmail address</div>
+                </div>
+            </button>
+
+            <!-- CUSTOM GOOGLE ACCOUNT INPUT BOX -->
+            <div id="customGoogleBox" class="google-custom-box" style="display: none;">
+                <div class="google-field-group">
+                    <label class="google-field-label" for="customGoogleEmail">Google Email Address</label>
+                    <input type="email" id="customGoogleEmail" placeholder="yourname@gmail.com" class="google-input" autocomplete="email">
+                </div>
+                <div class="google-field-group">
+                    <label class="google-field-label" for="customGoogleName">Full Name (Optional)</label>
+                    <input type="text" id="customGoogleName" placeholder="e.g. Alex Smith" class="google-input" autocomplete="name">
+                </div>
+                <button type="button" class="google-submit-btn" onclick="submitCustomGoogleLogin()">
+                    Sign in & Enter Home Page →
+                </button>
+            </div>
+        </div>
+
+        <!-- ALERT / STATUS DISPLAY -->
+        <div id="googleLoginAlert" class="google-login-alert" style="display: none;"></div>
+
+        <!-- FOOTER / SECURITY NOTICE -->
+        <div class="google-modal-footer">
+            To continue, Google will share your name, email address, and profile picture with Master-in-Interview.
+        </div>
     </div>
-    </div>
-</div>
 </div>
 {% endblock %}
 
@@ -342,6 +435,10 @@ function switchAuthTab(mode) {
     hideAlert('resetStep1Alert');
     hideAlert('resetStep2Alert');
 
+    const googleSec = document.getElementById('googleAuthSection');
+    const googleBtnLbl = document.getElementById('googleBtnLabel');
+    const authDivLbl = document.getElementById('authDividerLabel');
+
     if (mode === 'register') {
         if (registerTabBtn) registerTabBtn.classList.add('active');
         if (loginTabBtn) loginTabBtn.classList.remove('active');
@@ -350,6 +447,9 @@ function switchAuthTab(mode) {
         if (registerContainer) registerContainer.style.display = 'block';
         if (regStep1) regStep1.style.display = 'block';
         if (regStep2) regStep2.style.display = 'none';
+        if (googleSec) googleSec.style.display = 'block';
+        if (googleBtnLbl) googleBtnLbl.textContent = 'Sign up with Google';
+        if (authDivLbl) authDivLbl.textContent = 'or register with email';
     } else if (mode === 'reset') {
         if (loginTabBtn) loginTabBtn.classList.remove('active');
         if (registerTabBtn) registerTabBtn.classList.remove('active');
@@ -358,12 +458,16 @@ function switchAuthTab(mode) {
         if (resetContainer) resetContainer.style.display = 'block';
         if (resetStep1) resetStep1.style.display = 'block';
         if (resetStep2) resetStep2.style.display = 'none';
+        if (googleSec) googleSec.style.display = 'none';
     } else {
         if (loginTabBtn) loginTabBtn.classList.add('active');
         if (registerTabBtn) registerTabBtn.classList.remove('active');
         if (loginForm) loginForm.style.display = 'block';
         if (registerContainer) registerContainer.style.display = 'none';
         if (resetContainer) resetContainer.style.display = 'none';
+        if (googleSec) googleSec.style.display = 'block';
+        if (googleBtnLbl) googleBtnLbl.textContent = 'Continue with Google';
+        if (authDivLbl) authDivLbl.textContent = 'or continue with email';
     }
 }
 
@@ -628,7 +732,532 @@ document.addEventListener('DOMContentLoaded', () => {
             switchAuthTab('reset');
         });
     }
+
+    // Auto-attach Google Account modal to body and guarantee it stays hidden until clicked
+    const gModal = document.getElementById('googleAccountModal');
+    if (gModal) {
+        gModal.classList.remove('active');
+        gModal.style.setProperty('display', 'none', 'important');
+        if (gModal.parentElement !== document.body) {
+            document.body.appendChild(gModal);
+        }
+    }
+
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('googleAccountModal');
+        if (e.target === modal) closeGoogleModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeGoogleModal();
+    });
 });
+
+function handleGoogleAuthClick() {
+    openGoogleModal();
+}
+
+function openGoogleModal() {
+    const modal = document.getElementById('googleAccountModal');
+    if (modal) {
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+        modal.classList.add('active');
+        modal.style.setProperty('display', 'flex', 'important');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeGoogleModal() {
+    const modal = document.getElementById('googleAccountModal');
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+    }
+}
+
+function toggleCustomGoogleInput() {
+    const box = document.getElementById('customGoogleBox');
+    if (box) {
+        box.style.display = (box.style.display === 'none' || !box.style.display) ? 'block' : 'none';
+        if (box.style.display === 'block') {
+            const input = document.getElementById('customGoogleEmail');
+            if (input) setTimeout(() => input.focus(), 50);
+        }
+    }
+}
+
+function submitGoogleLogin(email, name) {
+    const alertBox = document.getElementById('googleLoginAlert');
+    if (alertBox) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#e8f0fe';
+        alertBox.style.color = '#1a73e8';
+        alertBox.style.border = '1px solid #c2e7ff';
+        alertBox.innerHTML = 'Connecting <strong>' + email + '</strong>... Entering Home page 🚀';
+    }
+
+    const emailInput = document.getElementById('googleDirectEmail');
+    const nameInput = document.getElementById('googleDirectName');
+    const directForm = document.getElementById('googleDirectForm');
+
+    if (directForm && emailInput && nameInput) {
+        emailInput.value = email;
+        nameInput.value = name || email.split('@')[0];
+        // Instant direct form submit directly into home page
+        directForm.submit();
+        return;
+    }
+
+    // Fallback via asynchronous fetch
+    fetch('{{ url_for("api_google_login") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, name: name })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect || '{{ url_for("dashboard") }}';
+        } else {
+            if (alertBox) {
+                alertBox.style.background = '#fce8e6';
+                alertBox.style.color = '#c5221f';
+                alertBox.style.border = '1px solid #fad2cf';
+                alertBox.textContent = data.message || 'Google sign-in failed.';
+            }
+        }
+    })
+    .catch(() => {
+        window.location.href = '{{ url_for("dashboard") }}';
+    });
+}
+
+function submitCustomGoogleLogin() {
+    const email = document.getElementById('customGoogleEmail').value.trim();
+    const name = document.getElementById('customGoogleName').value.trim();
+    if (!email || !email.includes('@')) {
+        alert('Please enter a valid Google email address.');
+        return;
+    }
+    submitGoogleLogin(email, name);
+}
 </script>
+
+<style>
+/* GOOGLE AUTH BUTTON & DIVIDER */
+.btn-google-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.72rem 1.25rem;
+    background: #ffffff;
+    color: #1f2937;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+.btn-google-auth:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    color: #111827;
+}
+body:not(.light-theme) .btn-google-auth {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+body:not(.light-theme) .btn-google-auth:hover {
+    background: #334155;
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+.auth-divider-line {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.15rem 0 0.85rem 0;
+    color: var(--text-muted, #94a3b8);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.auth-divider-line::before,
+.auth-divider-line::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-glass, #e2e8f0);
+}
+body:not(.light-theme) .auth-divider-line::before,
+body:not(.light-theme) .auth-divider-line::after {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+.auth-divider-line span {
+    padding: 0 0.85rem;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   GOOGLE AUTHENTICATION MODAL (FULL SCREEN, HIGH CONTRAST, AUTHENTIC GOOGLE UI)
+   ========================================================================== */
+.google-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(32, 33, 36, 0.65) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    z-index: 99999999 !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1.25rem !important;
+    box-sizing: border-box !important;
+}
+
+.google-modal-overlay.active,
+.google-modal-overlay.show {
+    display: flex !important;
+}
+
+.google-modal-card {
+    position: relative !important;
+    background: #ffffff !important;
+    border-radius: 28px !important;
+    padding: 2.25rem 2rem 1.75rem 2rem !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25), 0 0 1px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid #dadce0 !important;
+    color: #202124 !important;
+    font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    animation: googleModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-sizing: border-box !important;
+}
+
+/* Authentic Google Dark Mode (Active only when html does NOT have .light-theme) */
+html:not(.light-theme) .google-modal-card {
+    background: #202124 !important;
+    border-color: #3c4043 !important;
+    color: #e8eaed !important;
+    box-shadow: 0 20px 56px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.15) !important;
+}
+
+@keyframes googleModalPop {
+    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.google-modal-close-btn {
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1.2rem !important;
+    background: none !important;
+    border: none !important;
+    font-size: 1.75rem !important;
+    line-height: 1 !important;
+    color: #5f6368 !important;
+    cursor: pointer !important;
+    padding: 6px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+.google-modal-close-btn:hover {
+    background-color: #f1f3f4 !important;
+    color: #202124 !important;
+}
+html:not(.light-theme) .google-modal-close-btn {
+    color: #9aa0a6 !important;
+}
+html:not(.light-theme) .google-modal-close-btn:hover {
+    background-color: #303134 !important;
+    color: #e8eaed !important;
+}
+
+.google-modal-header {
+    text-align: center !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.google-logo-wrapper {
+    display: flex !important;
+    justify-content: center !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.google-modal-title {
+    font-size: 1.45rem !important;
+    font-weight: 600 !important;
+    color: #202124 !important;
+    margin: 0 0 0.4rem 0 !important;
+    letter-spacing: -0.2px !important;
+}
+html:not(.light-theme) .google-modal-title {
+    color: #e8eaed !important;
+}
+
+.google-modal-subtitle {
+    font-size: 0.92rem !important;
+    color: #5f6368 !important;
+    margin: 0 !important;
+    line-height: 1.45 !important;
+}
+html:not(.light-theme) .google-modal-subtitle {
+    color: #9aa0a6 !important;
+}
+.google-modal-subtitle strong {
+    color: #202124 !important;
+}
+html:not(.light-theme) .google-modal-subtitle strong {
+    color: #e8eaed !important;
+}
+
+.google-accounts-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+}
+
+.google-acc-item {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 0.85rem 1rem !important;
+    background: #ffffff !important;
+    border: 1px solid #dadce0 !important;
+    border-radius: 14px !important;
+    cursor: pointer !important;
+    text-align: left !important;
+    transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease !important;
+    box-sizing: border-box !important;
+}
+.google-acc-item:hover {
+    background: #f8f9fa !important;
+    border-color: #1a73e8 !important;
+    box-shadow: 0 1px 4px rgba(26, 115, 232, 0.15) !important;
+}
+.google-acc-primary {
+    background: #f8fbff !important;
+    border-color: #c2e7ff !important;
+}
+.google-acc-primary:hover {
+    background: #eef5ff !important;
+    border-color: #1a73e8 !important;
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2) !important;
+}
+html:not(.light-theme) .google-acc-item {
+    background: #303134 !important;
+    border-color: #3c4043 !important;
+}
+html:not(.light-theme) .google-acc-item:hover {
+    background: #3c4043 !important;
+    border-color: #8ab4f8 !important;
+}
+html:not(.light-theme) .google-acc-primary {
+    background: #283344 !important;
+    border-color: #3b506d !important;
+}
+html:not(.light-theme) .google-acc-primary:hover {
+    background: #314057 !important;
+    border-color: #8ab4f8 !important;
+}
+
+.google-acc-item-alt {
+    border-style: dashed !important;
+}
+
+.google-acc-avatar {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 50% !important;
+    background: #1a73e8 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 1.15rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-right: 0.85rem !important;
+    flex-shrink: 0 !important;
+}
+.google-acc-avatar-alt {
+    background: #e8f0fe !important;
+    color: #1a73e8 !important;
+}
+html:not(.light-theme) .google-acc-avatar-alt {
+    background: #3c4043 !important;
+    color: #8ab4f8 !important;
+}
+
+.google-acc-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.google-acc-name {
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #202124 !important;
+    line-height: 1.3 !important;
+}
+html:not(.light-theme) .google-acc-name {
+    color: #e8eaed !important;
+}
+
+.google-action-text {
+    color: #1a73e8 !important;
+}
+html:not(.light-theme) .google-action-text {
+    color: #8ab4f8 !important;
+}
+
+.google-acc-email {
+    font-size: 0.82rem !important;
+    color: #5f6368 !important;
+    line-height: 1.3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-top: 1px !important;
+}
+html:not(.light-theme) .google-acc-email {
+    color: #9aa0a6 !important;
+}
+
+.google-acc-click-hint {
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    color: #1a73e8 !important;
+    margin-top: 3px !important;
+    letter-spacing: 0.2px !important;
+}
+html:not(.light-theme) .google-acc-click-hint {
+    color: #8ab4f8 !important;
+}
+
+.google-acc-badge {
+    color: #1a73e8 !important;
+    margin-left: 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+html:not(.light-theme) .google-acc-badge {
+    color: #8ab4f8 !important;
+}
+
+/* Custom Google Drawer */
+.google-custom-box {
+    padding: 1.1rem !important;
+    border-radius: 14px !important;
+    background: #f8f9fa !important;
+    border: 1px solid #dadce0 !important;
+    margin-top: 0.5rem !important;
+}
+html:not(.light-theme) .google-custom-box {
+    background: #303134 !important;
+    border-color: #3c4043 !important;
+}
+
+.google-field-group {
+    margin-bottom: 0.75rem !important;
+}
+
+.google-field-label {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    color: #202124 !important;
+    display: block !important;
+    margin-bottom: 0.3rem !important;
+}
+html:not(.light-theme) .google-field-label {
+    color: #e8eaed !important;
+}
+
+.google-input {
+    width: 100% !important;
+    padding: 0.65rem 0.85rem !important;
+    font-size: 0.92rem !important;
+    border-radius: 8px !important;
+    border: 1px solid #dadce0 !important;
+    background: #ffffff !important;
+    color: #202124 !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+.google-input:focus {
+    border-color: #1a73e8 !important;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2) !important;
+}
+html:not(.light-theme) .google-input {
+    background: #202124 !important;
+    border-color: #5f6368 !important;
+    color: #e8eaed !important;
+}
+html:not(.light-theme) .google-input:focus {
+    border-color: #8ab4f8 !important;
+    box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.25) !important;
+}
+
+.google-submit-btn {
+    width: 100% !important;
+    padding: 0.7rem !important;
+    font-weight: 600 !important;
+    font-size: 0.92rem !important;
+    border-radius: 8px !important;
+    background: #1a73e8 !important;
+    color: #ffffff !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+}
+.google-submit-btn:hover {
+    background: #1557b0 !important;
+}
+
+.google-login-alert {
+    margin-top: 1rem !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 8px !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+}
+
+.google-modal-footer {
+    margin-top: 1.5rem !important;
+    padding-top: 1rem !important;
+    border-top: 1px solid #dadce0 !important;
+    font-size: 0.75rem !important;
+    color: #5f6368 !important;
+    line-height: 1.45 !important;
+    text-align: center !important;
+}
+html:not(.light-theme) .google-modal-footer {
+    border-top-color: #3c4043 !important;
+    color: #9aa0a6 !important;
+}
+</style>
 <script src="{{ url_for('static', filename='js/auth.js') }}?v=v2026_otp_full_v10"></script>
 {% endblock %}

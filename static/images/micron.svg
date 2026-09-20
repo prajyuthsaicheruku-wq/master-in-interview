@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="20" fill="#005EB8"/>
+  <g transform="translate(15, 25)">
+    <!-- Micron Arch -->
+    <path d="M12 25 C12 8 28 8 36 22 C44 8 60 8 60 25 L60 40 L48 40 L48 25 C48 18 42 18 36 26 L36 40 L24 40 L24 25 C24 18 18 18 12 25 Z" fill="#FFFFFF"/>
+  </g>
+  <text x="50" y="82" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="12" fill="#FFFFFF" letter-spacing="0.5">Micron</text>
+</svg>

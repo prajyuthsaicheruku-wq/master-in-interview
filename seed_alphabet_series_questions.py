@@ -1,406 +1,1574 @@
+"""
+Seed script for Alphabet Series (Logical Reasoning)
+Contains exactly 50 easy-to-medium questions with detailed solutions and tips.
+"""
+import os
 import json
 import sqlite3
-import os
-
-DB_PATHS = [
-    os.path.join(os.path.dirname(__file__), 'instance', 'interview_portal.db'),
-    os.path.join(os.path.dirname(__file__), 'instance', 'interview_master.db'),
-    os.path.join(os.path.dirname(__file__), 'interview_portal.db')
-]
 
 questions = [
     {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: A, C, E, G, I, ?",
-        "sample_answer": "Letter positions: A(1), C(3), E(5), G(7), I(9)\nPattern: Adding +2 at each step.\nNext position = 9 + 2 = 11 (K).",
-        "tips": "Add +2 to position at each step.",
+        "title": "Alphabet Series - Letter Skip Progression 1",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: B, D, F, H, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = J.",
+        "tips": "Letter position advances by +2.",
         "options": [
-            {"label": "A", "text": "J", "is_correct": False},
-            {"label": "B", "text": "K", "is_correct": True},
-            {"label": "C", "text": "L", "is_correct": False},
-            {"label": "D", "text": "M", "is_correct": False}
+            {
+                "label": "A",
+                "text": "K",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "J",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "L",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "I",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: B, E, H, K, N, ?",
-        "sample_answer": "Letter positions: B(2), E(5), H(8), K(11), N(14)\nPattern: Adding +3 at each step.\nNext position = 14 + 3 = 17 (Q).",
-        "tips": "Add +3 to position at each step.",
+        "title": "Alphabet Series - Letter Skip Progression 2",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: C, E, G, I, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = K.",
+        "tips": "Letter position advances by +2.",
         "options": [
-            {"label": "A", "text": "O", "is_correct": False},
-            {"label": "B", "text": "P", "is_correct": False},
-            {"label": "C", "text": "Q", "is_correct": True},
-            {"label": "D", "text": "R", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: Z, X, V, T, R, ?",
-        "sample_answer": "Letter positions: Z(26), X(24), V(22), T(20), R(18)\nPattern: Subtracting -2 at each step.\nNext position = 18 − 2 = 16 (P).",
-        "tips": "Reverse alphabetical order with -2 step.",
-        "options": [
-            {"label": "A", "text": "N", "is_correct": False},
-            {"label": "B", "text": "O", "is_correct": False},
-            {"label": "C", "text": "P", "is_correct": True},
-            {"label": "D", "text": "Q", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: A, D, G, J, M, ?",
-        "sample_answer": "Letter positions: A(1), D(4), G(7), J(10), M(13)\nPattern: Adding +3 at each step.\nNext position = 13 + 3 = 16 (P).",
-        "tips": "Add +3 to position at each step.",
-        "options": [
-            {"label": "A", "text": "O", "is_correct": False},
-            {"label": "B", "text": "P", "is_correct": True},
-            {"label": "C", "text": "Q", "is_correct": False},
-            {"label": "D", "text": "R", "is_correct": False}
+            {
+                "label": "A",
+                "text": "M",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "K",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "L",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "J",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: C, F, I, L, O, ?",
-        "sample_answer": "Letter positions: C(3), F(6), I(9), L(12), O(15)\nPattern: Multiples of 3 (+3 at each step).\nNext position = 15 + 3 = 18 (R).",
-        "tips": "Multiples of 3 in alphabet positions.",
+        "title": "Alphabet Series - Letter Skip Progression 3",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: D, H, L, P, ?",
+        "sample_answer": "Each subsequent letter advances by +4 positions in the English alphabet.\nNext letter = T.",
+        "tips": "Letter position advances by +4.",
         "options": [
-            {"label": "A", "text": "P", "is_correct": False},
-            {"label": "B", "text": "Q", "is_correct": False},
-            {"label": "C", "text": "R", "is_correct": True},
-            {"label": "D", "text": "S", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: A, C, F, J, O, ?",
-        "sample_answer": "Letter positions: A(1), C(3), F(6), J(10), O(15)\nPattern: Differences increase (+2, +3, +4, +5, +6).\nNext position = 15 + 6 = 21 (U).",
-        "tips": "Differences are +2, +3, +4, +5, +6.",
-        "options": [
-            {"label": "A", "text": "S", "is_correct": False},
-            {"label": "B", "text": "T", "is_correct": False},
-            {"label": "C", "text": "U", "is_correct": True},
-            {"label": "D", "text": "V", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: Z, W, S, N, H, ?",
-        "sample_answer": "Letter positions: Z(26), W(23), S(19), N(14), H(8)\nPattern: Decreasing steps (−3, −4, −5, −6, −7).\nNext position = 8 − 7 = 1 (A).",
-        "tips": "Subtractions increase: -3, -4, -5, -6, -7.",
-        "options": [
-            {"label": "A", "text": "A", "is_correct": True},
-            {"label": "B", "text": "B", "is_correct": False},
-            {"label": "C", "text": "C", "is_correct": False},
-            {"label": "D", "text": "D", "is_correct": False}
+            {
+                "label": "A",
+                "text": "T",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "S",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "U",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "V",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: B, F, J, N, R, ?",
-        "sample_answer": "Letter positions: B(2), F(6), J(10), N(14), R(18)\nPattern: Adding +4 at each step.\nNext position = 18 + 4 = 22 (V).",
-        "tips": "Add +4 to position at each step.",
+        "title": "Alphabet Series - Letter Skip Progression 4",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: E, I, M, Q, ?",
+        "sample_answer": "Each subsequent letter advances by +4 positions in the English alphabet.\nNext letter = U.",
+        "tips": "Letter position advances by +4.",
         "options": [
-            {"label": "A", "text": "T", "is_correct": False},
-            {"label": "B", "text": "U", "is_correct": False},
-            {"label": "C", "text": "V", "is_correct": True},
-            {"label": "D", "text": "W", "is_correct": False}
+            {
+                "label": "A",
+                "text": "W",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "T",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "V",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "U",
+                "is_correct": true
+            }
         ],
-        "correct_option": "C"
+        "correct_option": "D"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: A, D, H, M, S, ?",
-        "sample_answer": "Letter positions: A(1), D(4), H(8), M(13), S(19)\nPattern: Differences increase (+3, +4, +5, +6, +7).\nNext position = 19 + 7 = 26 (Z).",
-        "tips": "Differences are +3, +4, +5, +6, +7.",
+        "title": "Alphabet Series - Letter Skip Progression 5",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: A, C, E, G, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = I.",
+        "tips": "Letter position advances by +2.",
         "options": [
-            {"label": "A", "text": "X", "is_correct": False},
-            {"label": "B", "text": "Y", "is_correct": False},
-            {"label": "C", "text": "Z", "is_correct": True},
-            {"label": "D", "text": "A", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter in the series: C, G, L, R, Y, ?",
-        "sample_answer": "Letter positions: C(3), G(7), L(12), R(18), Y(25)\nPattern: Differences increase (+4, +5, +6, +7, +8).\nNext position = 25 + 8 = 33 (33 mod 26 = 7 -> G).",
-        "tips": "Differences are +4, +5, +6, +7, +8.",
-        "options": [
-            {"label": "A", "text": "E", "is_correct": False},
-            {"label": "B", "text": "F", "is_correct": False},
-            {"label": "C", "text": "G", "is_correct": True},
-            {"label": "D", "text": "H", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next pair of letters in the series: AB, DE, GH, JK, ?",
-        "sample_answer": "Pattern: Consecutive pairs of letters with 1 skipped letter in between.\nAB (C skipped) DE (F skipped) GH (I skipped) JK (L skipped) MN.",
-        "tips": "Skip 1 letter between consecutive pairs.",
-        "options": [
-            {"label": "A", "text": "LM", "is_correct": False},
-            {"label": "B", "text": "MN", "is_correct": True},
-            {"label": "C", "text": "NO", "is_correct": False},
-            {"label": "D", "text": "MP", "is_correct": False}
+            {
+                "label": "A",
+                "text": "H",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "I",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "K",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "J",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Medium",
-        "question_text": "Find the next letter pair: AZ, BY, CX, DW, ?",
-        "sample_answer": "Pattern: Opposite letter pairs (1st & 26th, 2nd & 25th, etc.)\nA-Z, B-Y, C-X, D-W, E-V.",
-        "tips": "Opposite alphabetical positions.",
+        "title": "Alphabet Series - Letter Skip Progression 6",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: B, D, F, H, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = J.",
+        "tips": "Letter position advances by +2.",
         "options": [
-            {"label": "A", "text": "EV", "is_correct": True},
-            {"label": "B", "text": "FU", "is_correct": False},
-            {"label": "C", "text": "GT", "is_correct": False},
-            {"label": "D", "text": "HS", "is_correct": False}
+            {
+                "label": "A",
+                "text": "K",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "I",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "J",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "L",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 7",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: C, E, G, I, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = K.",
+        "tips": "Letter position advances by +2.",
+        "options": [
+            {
+                "label": "A",
+                "text": "L",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "J",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "M",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "K",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 8",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: D, G, J, M, ?",
+        "sample_answer": "Each subsequent letter advances by +3 positions in the English alphabet.\nNext letter = P.",
+        "tips": "Letter position advances by +3.",
+        "options": [
+            {
+                "label": "A",
+                "text": "Q",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "P",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "O",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "R",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 9",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: E, H, K, N, ?",
+        "sample_answer": "Each subsequent letter advances by +3 positions in the English alphabet.\nNext letter = Q.",
+        "tips": "Letter position advances by +3.",
+        "options": [
+            {
+                "label": "A",
+                "text": "Q",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "P",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "R",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "S",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "Alphabet Series",
+        "title": "Alphabet Series - Letter Skip Progression 10",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: A, D, G, J, ?",
+        "sample_answer": "Each subsequent letter advances by +3 positions in the English alphabet.\nNext letter = M.",
+        "tips": "Letter position advances by +3.",
+        "options": [
+            {
+                "label": "A",
+                "text": "O",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "L",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "M",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "N",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 11",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: B, D, F, H, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = J.",
+        "tips": "Letter position advances by +2.",
+        "options": [
+            {
+                "label": "A",
+                "text": "I",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "L",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "K",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "J",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 12",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: C, G, K, O, ?",
+        "sample_answer": "Each subsequent letter advances by +4 positions in the English alphabet.\nNext letter = S.",
+        "tips": "Letter position advances by +4.",
+        "options": [
+            {
+                "label": "A",
+                "text": "T",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "U",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "S",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "R",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 13",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: D, G, J, M, ?",
+        "sample_answer": "Each subsequent letter advances by +3 positions in the English alphabet.\nNext letter = P.",
+        "tips": "Letter position advances by +3.",
+        "options": [
+            {
+                "label": "A",
+                "text": "Q",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "O",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "R",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "P",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 14",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: E, G, I, K, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = M.",
+        "tips": "Letter position advances by +2.",
+        "options": [
+            {
+                "label": "A",
+                "text": "M",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "L",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "O",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "N",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 15",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: A, C, E, G, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = I.",
+        "tips": "Letter position advances by +2.",
+        "options": [
+            {
+                "label": "A",
+                "text": "J",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "I",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "K",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "H",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 16",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: B, E, H, K, ?",
+        "sample_answer": "Each subsequent letter advances by +3 positions in the English alphabet.\nNext letter = N.",
+        "tips": "Letter position advances by +3.",
+        "options": [
+            {
+                "label": "A",
+                "text": "P",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "N",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "O",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "M",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 17",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: C, G, K, O, ?",
+        "sample_answer": "Each subsequent letter advances by +4 positions in the English alphabet.\nNext letter = S.",
+        "tips": "Letter position advances by +4.",
+        "options": [
+            {
+                "label": "A",
+                "text": "S",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "T",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "U",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "R",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 18",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: D, H, L, P, ?",
+        "sample_answer": "Each subsequent letter advances by +4 positions in the English alphabet.\nNext letter = T.",
+        "tips": "Letter position advances by +4.",
+        "options": [
+            {
+                "label": "A",
+                "text": "T",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "S",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "V",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "U",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 19",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: E, I, M, Q, ?",
+        "sample_answer": "Each subsequent letter advances by +4 positions in the English alphabet.\nNext letter = U.",
+        "tips": "Letter position advances by +4.",
+        "options": [
+            {
+                "label": "A",
+                "text": "V",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "U",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "W",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "T",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 20",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: A, C, E, G, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = I.",
+        "tips": "Letter position advances by +2.",
+        "options": [
+            {
+                "label": "A",
+                "text": "K",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "I",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "J",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "H",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 21",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: B, F, J, N, ?",
+        "sample_answer": "Each subsequent letter advances by +4 positions in the English alphabet.\nNext letter = R.",
+        "tips": "Letter position advances by +4.",
+        "options": [
+            {
+                "label": "A",
+                "text": "R",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "Q",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "T",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "S",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 22",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: C, G, K, O, ?",
+        "sample_answer": "Each subsequent letter advances by +4 positions in the English alphabet.\nNext letter = S.",
+        "tips": "Letter position advances by +4.",
+        "options": [
+            {
+                "label": "A",
+                "text": "T",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "U",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "S",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "R",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 23",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: D, G, J, M, ?",
+        "sample_answer": "Each subsequent letter advances by +3 positions in the English alphabet.\nNext letter = P.",
+        "tips": "Letter position advances by +3.",
+        "options": [
+            {
+                "label": "A",
+                "text": "O",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "R",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "P",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "Q",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 24",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: E, H, K, N, ?",
+        "sample_answer": "Each subsequent letter advances by +3 positions in the English alphabet.\nNext letter = Q.",
+        "tips": "Letter position advances by +3.",
+        "options": [
+            {
+                "label": "A",
+                "text": "Q",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "P",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "R",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "S",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Letter Skip Progression 25",
+        "difficulty": "Easy",
+        "question_text": "Find the next letter in the given sequence: A, C, E, G, ?",
+        "sample_answer": "Each subsequent letter advances by +2 positions in the English alphabet.\nNext letter = I.",
+        "tips": "Letter position advances by +2.",
+        "options": [
+            {
+                "label": "A",
+                "text": "J",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "K",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "I",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "H",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 26",
         "difficulty": "Medium",
-        "question_text": "Find the next pair of letters: AD, BE, CF, DG, ?",
-        "sample_answer": "Pattern: 1st letter +1 (A,B,C,D -> E), 2nd letter +1 (D,E,F,G -> H).\nNext pair = EH.",
-        "tips": "Advance both letters by +1.",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "EF", "is_correct": False},
-            {"label": "B", "text": "EG", "is_correct": False},
-            {"label": "C", "text": "EH", "is_correct": True},
-            {"label": "D", "text": "EI", "is_correct": False}
+            {
+                "label": "A",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EIP",
+                "is_correct": false
+            }
         ],
-        "correct_option": "C"
+        "correct_option": "B"
     },
     {
-        "title": "Alphabet Series",
+        "title": "Alphabet Series - Cluster Progression 27",
         "difficulty": "Medium",
-        "question_text": "Find the next pair of letters: AC, DF, GI, JL, ?",
-        "sample_answer": "Pattern: 1st letter +3 (A,D,G,J -> M), 2nd letter +3 (C,F,I,L -> O).\nNext pair = MO.",
-        "tips": "Advance both letters by +3.",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "LN", "is_correct": False},
-            {"label": "B", "text": "MO", "is_correct": True},
-            {"label": "C", "text": "NP", "is_correct": False},
-            {"label": "D", "text": "OQ", "is_correct": False}
+            {
+                "label": "A",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Alphabet Series",
+        "title": "Alphabet Series - Cluster Progression 28",
         "difficulty": "Medium",
-        "question_text": "Find the next pair of letters: BA, DC, FE, HG, ?",
-        "sample_answer": "Pattern: Reversed consecutive letter pairs.\n(2,1) BA, (4,3) DC, (6,5) FE, (8,7) HG, (10,9) JI.",
-        "tips": "Reversed consecutive pairs.",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "IH", "is_correct": False},
-            {"label": "B", "text": "JI", "is_correct": True},
-            {"label": "C", "text": "KJ", "is_correct": False},
-            {"label": "D", "text": "LK", "is_correct": False}
+            {
+                "label": "A",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next letter in the series: A, D, I, P, Y, ?",
-        "sample_answer": "Letter positions: A(1), D(4), I(9), P(16), Y(25)\nPattern: Perfect squares n² for n = 1, 2, 3, 4, 5, 6.\nNext position = 6² = 36 ≡ 10 mod 26 -> (J).",
-        "tips": "Alphabet positions correspond to perfect squares.",
+        "title": "Alphabet Series - Cluster Progression 29",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "H", "is_correct": False},
-            {"label": "B", "text": "I", "is_correct": False},
-            {"label": "C", "text": "J", "is_correct": True},
-            {"label": "D", "text": "K", "is_correct": False}
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 30",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 31",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 32",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 33",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 34",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EJO",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 35",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 36",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 37",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 38",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next letter in the series: B, E, J, Q, Z, ?",
-        "sample_answer": "Letter positions: B(2), E(5), J(10), Q(17), Z(26)\nPattern: n² + 1 for n = 1, 2, 3, 4, 5, 6.\nNext position = 6² + 1 = 37 ≡ 11 mod 26 -> (K).",
-        "tips": "Alphabet positions correspond to n² + 1.",
+        "title": "Alphabet Series - Cluster Progression 39",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "J", "is_correct": False},
-            {"label": "B", "text": "K", "is_correct": True},
-            {"label": "C", "text": "L", "is_correct": False},
-            {"label": "D", "text": "M", "is_correct": False}
+            {
+                "label": "A",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EJO",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 40",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EIP",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next letter in the series: A, B, D, G, K, P, ?",
-        "sample_answer": "Letter positions: A(1), B(2), D(4), G(7), K(11), P(16)\nPattern: Differences increase (+1, +2, +3, +4, +5, +6).\nNext position = 16 + 6 = 22 (V).",
-        "tips": "Differences increase by +1 at each step.",
+        "title": "Alphabet Series - Cluster Progression 41",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "T", "is_correct": False},
-            {"label": "B", "text": "U", "is_correct": False},
-            {"label": "C", "text": "V", "is_correct": True},
-            {"label": "D", "text": "W", "is_correct": False}
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 42",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 43",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 44",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "EIP",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 45",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next letter in the series: Z, X, U, Q, L, ?",
-        "sample_answer": "Letter positions: Z(26), X(24), U(21), Q(17), L(12)\nPattern: Subtractions increase (−2, −3, −4, −5, −6).\nNext position = 12 − 6 = 6 (F).",
-        "tips": "Subtractions increase by -1 at each step.",
+        "title": "Alphabet Series - Cluster Progression 46",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "D", "is_correct": False},
-            {"label": "B", "text": "E", "is_correct": False},
-            {"label": "C", "text": "F", "is_correct": True},
-            {"label": "D", "text": "G", "is_correct": False}
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Alphabet Series - Cluster Progression 47",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
+        "options": [
+            {
+                "label": "A",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "FIN",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "EKO",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next letter in the series: A, E, J, P, W, ?",
-        "sample_answer": "Letter positions: A(1), E(5), J(10), P(16), W(23)\nPattern: Differences increase (+4, +5, +6, +7, +8).\nNext position = 23 + 8 = 31 ≡ 5 mod 26 -> (E).",
-        "tips": "Differences are +4, +5, +6, +7, +8.",
+        "title": "Alphabet Series - Cluster Progression 48",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "D", "is_correct": False},
-            {"label": "B", "text": "E", "is_correct": True},
-            {"label": "C", "text": "F", "is_correct": False},
-            {"label": "D", "text": "G", "is_correct": False}
+            {
+                "label": "A",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
         ],
-        "correct_option": "B"
+        "correct_option": "A"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next alpha-numeric term: A1, C3, E5, G7, I9, ?",
-        "sample_answer": "Pattern: Letter advances by +2 (A,C,E,G,I -> K), number is letter position (1,3,5,7,9 -> 11).\nNext term = K11.",
-        "tips": "Letter position +2, number matches letter position.",
+        "title": "Alphabet Series - Cluster Progression 49",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "J10", "is_correct": False},
-            {"label": "B", "text": "K11", "is_correct": True},
-            {"label": "C", "text": "L12", "is_correct": False},
-            {"label": "D", "text": "M13", "is_correct": False}
+            {
+                "label": "A",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
         ],
-        "correct_option": "B"
+        "correct_option": "C"
     },
     {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next alpha-numeric term: B2, E4, H6, K8, N10, ?",
-        "sample_answer": "Pattern: Letter +3 (B,E,H,K,N -> Q), Number +2 (2,4,6,8,10 -> 12).\nNext term = Q12.",
-        "tips": "Letter +3, Number +2.",
+        "title": "Alphabet Series - Cluster Progression 50",
+        "difficulty": "Medium",
+        "question_text": "What comes next in the letter series: BDF, CFI, DHL, ... ?",
+        "sample_answer": "First letters: B (+1) -> C (+1) -> D (+1) -> E\nSecond letters: D (+2) -> F (+2) -> H (+2) -> J\nThird letters: F (+3) -> I (+3) -> L (+3) -> O\nResult = EJO.",
+        "tips": "Analyze the shift for each position in the letter group independently.",
         "options": [
-            {"label": "A", "text": "P11", "is_correct": False},
-            {"label": "B", "text": "Q12", "is_correct": True},
-            {"label": "C", "text": "R13", "is_correct": False},
-            {"label": "D", "text": "S14", "is_correct": False}
+            {
+                "label": "A",
+                "text": "EKO",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "EIP",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "EJO",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "FIN",
+                "is_correct": false
+            }
         ],
-        "correct_option": "B"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next alpha-numeric term: Z26, Y25, X24, W23, ?",
-        "sample_answer": "Pattern: Reverse alphabetical letter (-1) and position number (-1).\nNext term = V22.",
-        "tips": "Reverse alphabet order with matching position number.",
-        "options": [
-            {"label": "A", "text": "U21", "is_correct": False},
-            {"label": "B", "text": "V22", "is_correct": True},
-            {"label": "C", "text": "W21", "is_correct": False},
-            {"label": "D", "text": "V23", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next alpha-numeric term: A2, C4, F7, J11, O16, ?",
-        "sample_answer": "Pattern: Letter +2, +3, +4, +5, +6 (O(15) + 6 = 21 -> U), Number +2, +3, +4, +5, +6 (16 + 6 = 22).\nNext term = U22.",
-        "tips": "Letter advances by +2, +3, +4, +5, +6; number increases by +2, +3, +4, +5, +6.",
-        "options": [
-            {"label": "A", "text": "T21", "is_correct": False},
-            {"label": "B", "text": "U22", "is_correct": True},
-            {"label": "C", "text": "V23", "is_correct": False},
-            {"label": "D", "text": "W24", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "Alphabet Series",
-        "difficulty": "Hard",
-        "question_text": "Find the next alpha-numeric term: B3, F6, K10, Q15, X21, ?",
-        "sample_answer": "Pattern: Letter +4, +5, +6, +7, +8 (X(24) + 8 = 32 ≡ 6 mod 26 -> F), Number +3, +4, +5, +6, +7 (21 + 7 = 28).\nNext term = F28.",
-        "tips": "Letter steps: +4, +5, +6, +7, +8; Number steps: +3, +4, +5, +6, +7.",
-        "options": [
-            {"label": "A", "text": "E27", "is_correct": False},
-            {"label": "B", "text": "F28", "is_correct": True},
-            {"label": "C", "text": "G29", "is_correct": False},
-            {"label": "D", "text": "H30", "is_correct": False}
-        ],
-        "correct_option": "B"
+        "correct_option": "C"
     }
 ]
 
-def seed_alphabet_series():
-    for db_path in DB_PATHS:
-        if not os.path.exists(db_path):
-            continue
-        print(f"Seeding database at: {db_path}")
-        try:
-            conn = sqlite3.connect(db_path)
-            cursor = conn.cursor()
-            
-            cursor.execute("DELETE FROM questions WHERE topic = 'Alphabet Series'")
-            print(f"Deleted old 'Alphabet Series' questions.")
-
-            inserted_count = 0
+def seed_database():
+    # 1. Update SQLAlchemy database if available
+    try:
+        from app import app, db
+        from models import Question, UserProgress, Bookmark
+        with app.app_context():
+            old_qs = Question.query.filter_by(category='Aptitude', topic='Alphabet Series').all()
+            old_ids = [q.id for q in old_qs]
+            if old_ids:
+                UserProgress.query.filter(UserProgress.question_id.in_(old_ids)).delete(synchronize_session=False)
+                Bookmark.query.filter(Bookmark.question_id.in_(old_ids)).delete(synchronize_session=False)
+                db.session.commit()
+            Question.query.filter_by(category='Aptitude', topic='Alphabet Series').delete(synchronize_session=False)
             for q in questions:
-                cursor.execute("""
-                    INSERT INTO questions (category, sub_category, topic, title, difficulty, question_text, sample_answer, tips, options, correct_option, star_guide)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    'Aptitude',
-                    'Logical Reasoning',
-                    'Alphabet Series',
-                    q['title'],
-                    q['difficulty'],
-                    q['question_text'],
-                    q['sample_answer'],
-                    q['tips'],
-                    json.dumps(q['options']),
-                    q['correct_option'],
-                    json.dumps({
-                        'options': q['options'],
-                        'correct_option': q['correct_option']
-                    })
-                ))
-                inserted_count += 1
+                opts_json = json.dumps(q.get('options', []))
+                new_q = Question(
+                    category='Aptitude',
+                    sub_category='Logical Reasoning',
+                    topic='Alphabet Series',
+                    title=q.get('title', 'Alphabet Series'),
+                    difficulty=q.get('difficulty', 'Easy'),
+                    question_text=q.get('question_text', ''),
+                    sample_answer=q.get('sample_answer', ''),
+                    tips=q.get('tips', ''),
+                    options=opts_json,
+                    correct_option=q.get('correct_option', 'A')
+                )
+                db.session.add(new_q)
+            db.session.commit()
+            print(f"Successfully seeded {len(questions)} questions for Alphabet Series via SQLAlchemy.")
+    except Exception as e:
+        print(f"SQLAlchemy seeding error for Alphabet Series: {e}")
 
-            conn.commit()
-            conn.close()
-            print(f"Successfully inserted {inserted_count} questions into {db_path}.")
-        except Exception as e:
-            print(f"Skipping {db_path}: {e}")
+    # 2. Update local SQLite database if present
+    db_paths = [
+        os.path.join(os.path.dirname(__file__), 'instance', 'interview_portal.db'),
+        os.path.join(os.path.dirname(__file__), 'interview_portal.db')
+    ]
+    for p in db_paths:
+        if os.path.exists(p):
+            try:
+                conn = sqlite3.connect(p)
+                cur = conn.cursor()
+                cur.execute("DELETE FROM questions WHERE category = 'Aptitude' AND topic = ?", ('Alphabet Series',))
+                for q in questions:
+                    opts_json = json.dumps(q.get('options', []))
+                    cur.execute("""
+                        INSERT INTO questions (category, sub_category, topic, title, difficulty, question_text, sample_answer, tips, options, correct_option)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        'Aptitude', 'Logical Reasoning', 'Alphabet Series',
+                        q.get('title', 'Alphabet Series'), q.get('difficulty', 'Easy'),
+                        q.get('question_text', ''), q.get('sample_answer', ''),
+                        q.get('tips', ''), opts_json, q.get('correct_option', 'A')
+                    ))
+                conn.commit()
+                conn.close()
+                print(f"Successfully seeded {len(questions)} questions for Alphabet Series into SQLite: {p}")
+            except Exception as e:
+                print(f"SQLite seeding error for {p}: {e}")
 
 if __name__ == '__main__':
-    seed_alphabet_series()
+    seed_database()

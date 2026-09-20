@@ -3,7 +3,7 @@
 {% block title %}Interview Master | Aptitude Practice & Study Portal{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 1280px; padding: 1rem 0 3rem;">
+<div class="container aptitude-main-wrapper">
 
     <!-- 1. PAGE TITLE & SUBTITLE -->
     <div class="aptitude-page-header">
@@ -205,170 +205,205 @@
 
         </div>
 
-        <!-- C. QUICK ACTIONS (4 CARDS ROW) -->
-            <div class="quick-actions-section">
-                <h3 class="quick-actions-title">Quick Actions</h3>
-                <div class="quick-actions-grid">
-                    <div onclick="openQuickTestModal()" class="quick-act-card" style="cursor: pointer;">
-                        <div class="quick-act-icon icon-mint">⚡</div>
-                        <div class="quick-act-info">
-                            <span class="quick-act-name">Take a Quick Test</span>
-                            <span class="quick-act-sub">10 Random Questions</span>
-                        </div>
-                    </div>
+        <!-- C. QUICK ACTIONS (FAST ACCESS HUB) -->
+        <div class="quick-actions-section">
+            <div class="quick-actions-header">
+                <div class="quick-actions-title-row">
+                    <span class="quick-actions-tag">⚡ FAST ACCESS</span>
+                    <h3 class="quick-actions-title">Quick Actions</h3>
+                </div>
+                <p class="quick-actions-sub">Practice 10-question adaptive assessments, focus on weak areas, or view previous attempts.</p>
+            </div>
 
-                    <div onclick="scrollToStudyTopics()" class="quick-act-card" style="cursor: pointer;">
-                        <div class="quick-act-icon icon-lavender">📋</div>
-                        <div class="quick-act-info">
-                            <span class="quick-act-name">Topic-wise Practice</span>
-                            <span class="quick-act-sub">Select a Topic</span>
-                        </div>
+            <div class="quick-actions-grid">
+                <div onclick="openQuickTestModal()" class="quick-act-card" style="cursor: pointer;">
+                    <div class="quick-act-icon icon-mint">⚡</div>
+                    <div class="quick-act-info">
+                        <span class="quick-act-name">Quick Test</span>
+                        <span class="quick-act-sub">10 Random Questions</span>
                     </div>
+                    <span class="quick-act-arrow">→</span>
+                </div>
 
-                    <div onclick="scrollToRecentTests()" class="quick-act-card" style="cursor: pointer;">
-                        <div class="quick-act-icon icon-blue">🔄</div>
-                        <div class="quick-act-info">
-                            <span class="quick-act-name">Previous Attempts</span>
-                            <span class="quick-act-sub">View Test History</span>
-                        </div>
+                <div onclick="scrollToStudyTopics()" class="quick-act-card" style="cursor: pointer;">
+                    <div class="quick-act-icon icon-lavender">📋</div>
+                    <div class="quick-act-info">
+                        <span class="quick-act-name">Topic Practice</span>
+                        <span class="quick-act-sub">Select a Topic</span>
                     </div>
+                    <span class="quick-act-arrow">→</span>
+                </div>
 
-                    <div onclick="openWeakArea()" class="quick-act-card" style="cursor: pointer;">
-                        <div class="quick-act-icon icon-coral">🎯</div>
-                        <div class="quick-act-info">
-                            <span class="quick-act-name">Weak Areas</span>
-                            <span class="quick-act-sub">Focus & Improve</span>
-                        </div>
+                <div onclick="scrollToRecentTests()" class="quick-act-card" style="cursor: pointer;">
+                    <div class="quick-act-icon icon-blue">🔄</div>
+                    <div class="quick-act-info">
+                        <span class="quick-act-name">Past Attempts</span>
+                        <span class="quick-act-sub">View Test History</span>
+                    </div>
+                    <span class="quick-act-arrow">→</span>
+                </div>
+
+                <div onclick="openWeakArea()" class="quick-act-card" style="cursor: pointer;">
+                    <div class="quick-act-icon icon-coral">🎯</div>
+                    <div class="quick-act-info">
+                        <span class="quick-act-name">Weak Areas</span>
+                        <span class="quick-act-sub">Focus & Boost Score</span>
+                    </div>
+                    <span class="quick-act-arrow">→</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- D. STUDY TOPICS SECTION -->
+        <div class="study-topics-section" id="studyTopicsSection">
+            <div class="study-topics-header">
+                <div class="study-topics-heading-col">
+                    <span class="study-topics-tag">📚 CURATED MODULES</span>
+                    <h3 class="study-topics-title">Study Topics</h3>
+                    <p class="study-topics-sub">Master concepts topic-by-topic with verified step-by-step solutions.</p>
+                </div>
+                <div class="study-topics-filter-col">
+                    <div class="category-select-pill">
+                        <span class="filter-lead-icon">🔍</span>
+                        <select onchange="filterTopicCategory(this.value)" class="widget-filter-select" id="topicCategorySelect" aria-label="Filter study topics">
+                            <option value="All">All Categories (5 Core Topics)</option>
+                            <option value="Number & Arithmetic">🔢 Number & Arithmetic (8 Files)</option>
+                            <option value="Commercial Mathematics">💰 Commercial Mathematics (4 Files)</option>
+                            <option value="Time-Based Problems">⏱️ Time-Based Problems (5 Files)</option>
+                            <option value="Logical Reasoning">🧠 Logical Reasoning (5 Files)</option>
+                            <option value="Verbal Ability">📚 Verbal Ability (5 Files)</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <!-- C. STUDY TOPICS SECTION -->
-            <div class="study-topics-section" id="studyTopicsSection">
-                <div class="study-topics-header">
-                    <div>
-                        <h3 class="study-topics-title">Study Topics</h3>
-                        <p class="study-topics-sub">Choose a topic to practice and master it step by step.</p>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <select onchange="filterTopicCategory(this.value)" class="widget-filter-select" style="padding: 0.35rem 0.75rem; font-size: 0.82rem; cursor: pointer;">
-                            <option value="All">🌪️ All Categories</option>
-                            <option value="Number & Arithmetic">Number & Arithmetic</option>
-                            <option value="Commercial Mathematics">Commercial Mathematics</option>
-                            <option value="Time-Based Problems">Time-Based Problems</option>
-                            <option value="Logical Reasoning">Logical Reasoning</option>
-                            <option value="Verbal Ability">Verbal Ability</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- 5 CORE STUDY TOPIC CATEGORY CARDS -->
-                <div class="topics-8-grid">
-                    <!-- 1. Number & Arithmetic -->
-                    {% set p1 = topic_progress.get('Number & Arithmetic', 0) if topic_progress else 0 %}
-                    <div class="topic-dash-card" data-category="Number & Arithmetic">
-                        <div class="topic-dash-head">
-                            <div class="topic-icon-box" style="background: #dcfce7; color: #15803d; font-size: 1.3rem;">🔢</div>
-                            <div class="topic-dash-meta">
-                                <div class="topic-dash-name">1. Number & Arithmetic</div>
-                                <div class="topic-dash-files">8 Topics • 240 Solved Questions</div>
-                            </div>
+            <!-- 5 CORE STUDY TOPIC CATEGORY CARDS -->
+            <div class="topics-8-grid">
+                <!-- 1. Number & Arithmetic -->
+                {% set p1 = topic_progress.get('Number & Arithmetic', 0) if topic_progress else 0 %}
+                <div class="topic-dash-card" data-category="Number & Arithmetic">
+                    <div class="topic-dash-card-top">
+                        <div class="topic-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">🔢</div>
+                        <div class="topic-dash-meta">
+                            <div class="topic-dash-name">1. Number & Arithmetic</div>
+                            <div class="topic-dash-files">8 Topics • 240 Solved Questions</div>
                         </div>
-                        <div class="topic-progress-wrap">
-                            <div class="topic-progress-track">
-                                <div id="topic-prog-fill-1" class="topic-progress-fill" style="width: {{ p1 }}%; background: #10b981;"></div>
-                            </div>
+                    </div>
+                    <div class="topic-progress-wrap">
+                        <div class="topic-progress-header-row">
+                            <span class="topic-progress-title">Completion</span>
                             <span id="topic-prog-lbl-1" class="topic-progress-label">{{ p1 }}%</span>
                         </div>
-                        <button type="button" onclick="openTopicStudy('Number_System')" class="topic-dash-btn">
-                            Practice Topics →
-                        </button>
-                    </div>
-
-                    <!-- 2. Commercial Mathematics -->
-                    {% set p2 = topic_progress.get('Commercial Mathematics', 0) if topic_progress else 0 %}
-                    <div class="topic-dash-card" data-category="Commercial Mathematics">
-                        <div class="topic-dash-head">
-                            <div class="topic-icon-box" style="background: #fef3c7; color: #d97706; font-size: 1.3rem;">💰</div>
-                            <div class="topic-dash-meta">
-                                <div class="topic-dash-name">2. Commercial Mathematics</div>
-                                <div class="topic-dash-files">4 Topics • 120 Solved Questions</div>
-                            </div>
+                        <div class="topic-progress-track">
+                            <div id="topic-prog-fill-1" class="topic-progress-fill" style="width: {{ p1 }}%; background: #10b981;"></div>
                         </div>
-                        <div class="topic-progress-wrap">
-                            <div class="topic-progress-track">
-                                <div id="topic-prog-fill-2" class="topic-progress-fill" style="width: {{ p2 }}%; background: #f59e0b;"></div>
-                            </div>
+                    </div>
+                    <button type="button" onclick="openTopicStudy('Number_System')" class="topic-dash-btn">
+                        <span>Practice Topics</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+
+                <!-- 2. Commercial Mathematics -->
+                {% set p2 = topic_progress.get('Commercial Mathematics', 0) if topic_progress else 0 %}
+                <div class="topic-dash-card" data-category="Commercial Mathematics">
+                    <div class="topic-dash-card-top">
+                        <div class="topic-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">💰</div>
+                        <div class="topic-dash-meta">
+                            <div class="topic-dash-name">2. Commercial Mathematics</div>
+                            <div class="topic-dash-files">4 Topics • 120 Solved Questions</div>
+                        </div>
+                    </div>
+                    <div class="topic-progress-wrap">
+                        <div class="topic-progress-header-row">
+                            <span class="topic-progress-title">Completion</span>
                             <span id="topic-prog-lbl-2" class="topic-progress-label">{{ p2 }}%</span>
                         </div>
-                        <button type="button" onclick="openTopicStudy('Profit_and_Loss')" class="topic-dash-btn">
-                            Practice Topics →
-                        </button>
-                    </div>
-
-                    <!-- 3. Time-Based Problems -->
-                    {% set p3 = topic_progress.get('Time-Based Problems', 0) if topic_progress else 0 %}
-                    <div class="topic-dash-card" data-category="Time-Based Problems">
-                        <div class="topic-dash-head">
-                            <div class="topic-icon-box" style="background: #ffedd5; color: #ea580c; font-size: 1.3rem;">⏱️</div>
-                            <div class="topic-dash-meta">
-                                <div class="topic-dash-name">3. Time-Based Problems</div>
-                                <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
-                            </div>
+                        <div class="topic-progress-track">
+                            <div id="topic-prog-fill-2" class="topic-progress-fill" style="width: {{ p2 }}%; background: #f59e0b;"></div>
                         </div>
-                        <div class="topic-progress-wrap">
-                            <div class="topic-progress-track">
-                                <div id="topic-prog-fill-3" class="topic-progress-fill" style="width: {{ p3 }}%; background: #ea580c;"></div>
-                            </div>
+                    </div>
+                    <button type="button" onclick="openTopicStudy('Profit_and_Loss')" class="topic-dash-btn">
+                        <span>Practice Topics</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+
+                <!-- 3. Time-Based Problems -->
+                {% set p3 = topic_progress.get('Time-Based Problems', 0) if topic_progress else 0 %}
+                <div class="topic-dash-card" data-category="Time-Based Problems">
+                    <div class="topic-dash-card-top">
+                        <div class="topic-icon-box" style="background: rgba(234, 88, 12, 0.15); color: #ea580c;">⏱️</div>
+                        <div class="topic-dash-meta">
+                            <div class="topic-dash-name">3. Time-Based Problems</div>
+                            <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
+                        </div>
+                    </div>
+                    <div class="topic-progress-wrap">
+                        <div class="topic-progress-header-row">
+                            <span class="topic-progress-title">Completion</span>
                             <span id="topic-prog-lbl-3" class="topic-progress-label">{{ p3 }}%</span>
                         </div>
-                        <button type="button" onclick="openTopicStudy('Time_and_Work')" class="topic-dash-btn">
-                            Practice Topics →
-                        </button>
-                    </div>
-
-                    <!-- 4. Logical Reasoning -->
-                    {% set p4 = topic_progress.get('Logical Reasoning', 0) if topic_progress else 0 %}
-                    <div class="topic-dash-card" data-category="Logical Reasoning">
-                        <div class="topic-dash-head">
-                            <div class="topic-icon-box" style="background: #ede9fe; color: #7c3aed; font-size: 1.3rem;">🧠</div>
-                            <div class="topic-dash-meta">
-                                <div class="topic-dash-name">4. Logical Reasoning</div>
-                                <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
-                            </div>
+                        <div class="topic-progress-track">
+                            <div id="topic-prog-fill-3" class="topic-progress-fill" style="width: {{ p3 }}%; background: #ea580c;"></div>
                         </div>
-                        <div class="topic-progress-wrap">
-                            <div class="topic-progress-track">
-                                <div id="topic-prog-fill-4" class="topic-progress-fill" style="width: {{ p4 }}%; background: #7c3aed;"></div>
-                            </div>
+                    </div>
+                    <button type="button" onclick="openTopicStudy('Time_and_Work')" class="topic-dash-btn">
+                        <span>Practice Topics</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+
+                <!-- 4. Logical Reasoning -->
+                {% set p4 = topic_progress.get('Logical Reasoning', 0) if topic_progress else 0 %}
+                <div class="topic-dash-card" data-category="Logical Reasoning">
+                    <div class="topic-dash-card-top">
+                        <div class="topic-icon-box" style="background: rgba(124, 58, 237, 0.15); color: #8b5cf6;">🧠</div>
+                        <div class="topic-dash-meta">
+                            <div class="topic-dash-name">4. Logical Reasoning</div>
+                            <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
+                        </div>
+                    </div>
+                    <div class="topic-progress-wrap">
+                        <div class="topic-progress-header-row">
+                            <span class="topic-progress-title">Completion</span>
                             <span id="topic-prog-lbl-4" class="topic-progress-label">{{ p4 }}%</span>
                         </div>
-                        <button type="button" onclick="openTopicStudy('Number_Series')" class="topic-dash-btn">
-                            Practice Topics →
-                        </button>
-                    </div>
-
-                    <!-- 5. Verbal Ability -->
-                    {% set p5 = topic_progress.get('Verbal Ability', 0) if topic_progress else 0 %}
-                    <div class="topic-dash-card" data-category="Verbal Ability">
-                        <div class="topic-dash-head">
-                            <div class="topic-icon-box" style="background: #e0f2fe; color: #0284c7; font-size: 1.3rem;">📚</div>
-                            <div class="topic-dash-meta">
-                                <div class="topic-dash-name">5. Verbal Ability</div>
-                                <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
-                            </div>
+                        <div class="topic-progress-track">
+                            <div id="topic-prog-fill-4" class="topic-progress-fill" style="width: {{ p4 }}%; background: #8b5cf6;"></div>
                         </div>
-                        <div class="topic-progress-wrap">
-                            <div class="topic-progress-track">
-                                <div id="topic-prog-fill-5" class="topic-progress-fill" style="width: {{ p5 }}%; background: #0284c7;"></div>
-                            </div>
+                    </div>
+                    <button type="button" onclick="openTopicStudy('Number_Series')" class="topic-dash-btn">
+                        <span>Practice Topics</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+
+                <!-- 5. Verbal Ability -->
+                {% set p5 = topic_progress.get('Verbal Ability', 0) if topic_progress else 0 %}
+                <div class="topic-dash-card" data-category="Verbal Ability">
+                    <div class="topic-dash-card-top">
+                        <div class="topic-icon-box" style="background: rgba(2, 132, 199, 0.15); color: #0284c7;">📚</div>
+                        <div class="topic-dash-meta">
+                            <div class="topic-dash-name">5. Verbal Ability</div>
+                            <div class="topic-dash-files">5 Topics • 150 Solved Questions</div>
+                        </div>
+                    </div>
+                    <div class="topic-progress-wrap">
+                        <div class="topic-progress-header-row">
+                            <span class="topic-progress-title">Completion</span>
                             <span id="topic-prog-lbl-5" class="topic-progress-label">{{ p5 }}%</span>
                         </div>
-                        <button type="button" onclick="openTopicStudy('Reading_Comprehension')" class="topic-dash-btn">
-                            Practice Topics →
-                        </button>
+                        <div class="topic-progress-track">
+                            <div id="topic-prog-fill-5" class="topic-progress-fill" style="width: {{ p5 }}%; background: #0284c7;"></div>
+                        </div>
                     </div>
+                    <button type="button" onclick="openTopicStudy('Reading_Comprehension')" class="topic-dash-btn">
+                        <span>Practice Topics</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
                 </div>
+            </div>
 
                 <!-- ALL 27 TOPICS EXPANDABLE ACCORDION CONTAINER -->
                 <div id="expandedTopicsSection" style="display: none; margin-top: 1.5rem;">
@@ -429,10 +464,15 @@
         <div id="doc-panel-{{ file_slug }}" class="aptitude-doc-panel" style="display: none; max-width: 960px; margin: 0 auto;">
             
             <!-- STICKY TOP NAVIGATION BAR -->
-            <div class="aptitude-doc-sticky-bar">
-                <button type="button" onclick="closeTopicStudy()" class="btn btn-primary btn-sm" style="font-weight: 800; border-radius: 9999px; display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.2rem; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
-                    ⬅ Back to Aptitude Dashboard
-                </button>
+            <div class="aptitude-doc-sticky-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-sm" style="font-weight: 800; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1.25rem; font-size: 0.88rem; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35); text-decoration: none;">
+                        🏠 Back to Home Page
+                    </a>
+                    <button type="button" onclick="closeTopicStudy()" class="btn btn-outline btn-sm" style="font-weight: 700; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.05rem; font-size: 0.85rem; border-color: #cbd5e1; color: var(--text-main); background: var(--bg-card);">
+                        ← Aptitude Dashboard
+                    </button>
+                </div>
 
                 <div class="aptitude-doc-breadcrumb">
                     <span>📂 Aptitude</span>
@@ -538,6 +578,25 @@
                                         <span class="opt-status-icon"></span>
                                     </div>
                                 {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- DYNAMIC POST-ATTEMPT HOME ACTION BANNER -->
+                        <div id="post-attempt-banner-{{ q.id }}" class="post-attempt-banner" style="display: none; margin-top: 1rem; padding: 0.85rem 1.15rem; border-radius: 12px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(2, 132, 199, 0.08) 100%); border: 1.5px solid rgba(79, 70, 229, 0.3); justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1.25rem;">🎉</span>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">Attempt Completed & Saved!</div>
+                                    <div style="font-size: 0.78rem; color: var(--text-muted);">Ready to return to your dashboard or explore more questions.</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-sm" style="font-weight: 800; border-radius: 8px; padding: 0.5rem 1.25rem; font-size: 0.85rem; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                                    🏠 Return to Home Page
+                                </a>
+                                <button type="button" onclick="closeTopicStudy()" class="btn btn-outline btn-sm" style="font-weight: 700; border-radius: 8px; padding: 0.5rem 0.9rem; font-size: 0.82rem; border-color: #cbd5e1; color: var(--text-main);">
+                                    All Topics →
+                                </button>
                             </div>
                         </div>
 
@@ -670,8 +729,11 @@
                 </div>
             </div>
 
-            <div id="qTestFinishBtns" style="display: none; width: 100%; justify-content: flex-end;">
-                <button type="button" onclick="closeQuickTestModal()" class="btn btn-primary" style="border-radius: 10px; font-weight: 800; padding: 0.6rem 1.5rem; font-size: 0.9rem;">
+            <div id="qTestFinishBtns" style="display: none; width: 100%; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary" style="border-radius: 10px; font-weight: 800; padding: 0.6rem 1.5rem; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
+                    🏠 Return to Home Page
+                </a>
+                <button type="button" onclick="closeQuickTestModal()" class="btn btn-outline" style="border-radius: 10px; font-weight: 700; padding: 0.6rem 1.25rem; font-size: 0.9rem; border-color: #cbd5e1; color: var(--text-main);">
                     🎉 Back to Aptitude Dashboard
                 </button>
             </div>
@@ -789,6 +851,12 @@ async function selectPracticeOption(element, isCorrect, label, feedbackId, quest
         if (badgeStatus) {
             badgeStatus.outerHTML = `<span id="badge-status-${questionId}" style="font-size: 0.75rem; font-weight: 800; background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 9999px; border: 1px solid rgba(239, 68, 68, 0.3);">⚠️ Needs Practice</span>`;
         }
+    }
+
+    // Reveal post-attempt action banner with Return to Home Page button
+    const postBanner = document.getElementById('post-attempt-banner-' + questionId);
+    if (postBanner) {
+        postBanner.style.display = 'flex';
     }
 
     // Persist attempt to backend & update live dashboard metrics
@@ -1155,5 +1223,61 @@ async function submitQuickTest() {
         console.error('Error submitting test:', e);
     }
 }
+
+/* Auto-open topic study sheet or question if passed in query params */
+function initAptitudeFromURL() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const studyParam = urlParams.get('study') || urlParams.get('topic');
+        const qParam = urlParams.get('q');
+
+        let opened = false;
+        if (studyParam) {
+            const slug = studyParam.replace(/\s+/g, '_').replace(/&/g, 'and');
+            const target = document.getElementById('doc-panel-' + slug);
+            if (target) {
+                openTopicStudy(slug);
+                opened = true;
+            }
+        }
+
+        if (!opened && qParam) {
+            const allPanels = document.querySelectorAll('.aptitude-doc-panel');
+            const qClean = qParam.toLowerCase().trim();
+            for (const panel of allPanels) {
+                if (panel.innerText.toLowerCase().includes(qClean)) {
+                    const slug = panel.id.replace('doc-panel-', '');
+                    openTopicStudy(slug);
+                    opened = true;
+                    break;
+                }
+            }
+        }
+
+        if (qParam) {
+            setTimeout(() => {
+                const qCards = document.querySelectorAll('.aptitude-q-card');
+                const qClean = qParam.toLowerCase().trim();
+                for (const card of qCards) {
+                    if (card.innerText.toLowerCase().includes(qClean)) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.style.borderColor = 'var(--primary)';
+                        card.style.boxShadow = '0 0 25px rgba(99, 102, 241, 0.45)';
+                        break;
+                    }
+                }
+            }, 300);
+        }
+    } catch (err) {
+        console.warn('initAptitudeFromURL error:', err);
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAptitudeFromURL);
+} else {
+    initAptitudeFromURL();
+}
+document.addEventListener('portal:navigated', initAptitudeFromURL);
 </script>
 {% endblock %}

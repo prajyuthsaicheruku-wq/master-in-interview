@@ -124,7 +124,12 @@
         <p class="pro-qotd-snippet">{{ question_of_the_day.question_text | truncate(180) }}</p>
         <div class="pro-qotd-foot">
             <span class="pro-cat-tag">Category: {{ question_of_the_day.category }}</span>
-            <a href="{{ url_for('questions', q=question_of_the_day.title) }}" class="btn btn-primary btn-sm">Solve Now →</a>
+            {% if question_of_the_day.category == 'Aptitude' %}
+                {% set topic_slug = (question_of_the_day.topic or 'Number System') | replace(' ', '_') | replace('&', 'and') %}
+                <a href="{{ url_for('aptitude', study=topic_slug, q=question_of_the_day.title, from='home') }}" class="btn btn-primary btn-sm">Solve Now →</a>
+            {% else %}
+                <a href="{{ url_for('questions', q=question_of_the_day.title, from='home') }}" class="btn btn-primary btn-sm">Solve Now →</a>
+            {% endif %}
         </div>
     </div>
     {% endif %}

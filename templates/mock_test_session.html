@@ -12,14 +12,10 @@
         display: none !important;
     }
 
-    body.in-test-mode,
-    body {
-        padding-top: 0 !important;
-        padding-left: 0 !important;
-        margin: 0 !important;
-        background-color: #f8fafc !important;
+    .test-wrapper-container {
         min-height: 100vh;
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        background-color: #f8fafc;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
     /* Strict Anti-Copy Text Protection */
@@ -263,10 +259,15 @@
             <!-- STUDENT PROFILE CARD -->
             <div style="padding: 0.85rem 1.1rem; border-radius: 14px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
                 
-                <!-- Back to Topics button (hidden during test, displayed after submitting test) -->
-                <a href="{{ url_for('mock_interview') }}" id="backToTopicsBtn" class="btn btn-outline btn-sm" style="display: none; width: 100%; border-radius: 8px; font-weight: 700; color: #475569; border-color: #cbd5e1; padding: 0.4rem; margin-bottom: 0.6rem; justify-content: center; font-size: 0.82rem;">
-                    ← Back to Topics
-                </a>
+                <!-- Back to Home and Topics buttons (hidden during test, displayed after submitting test) -->
+                <div id="postSubmitNavBtns" style="display: none; flex-direction: column; gap: 0.45rem; margin-bottom: 0.75rem;">
+                    <a href="{{ url_for('dashboard') }}" data-no-spa="true" class="btn btn-primary btn-sm" style="width: 100%; border-radius: 8px; font-weight: 800; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff !important; padding: 0.5rem 0.75rem; justify-content: center; font-size: 0.85rem; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25); text-decoration: none;">
+                        🏠 Back to Home Page
+                    </a>
+                    <a href="{{ url_for('mock_interview') }}" data-no-spa="true" class="btn btn-outline btn-sm" style="width: 100%; border-radius: 8px; font-weight: 700; color: #475569; border-color: #cbd5e1; padding: 0.4rem; justify-content: center; font-size: 0.82rem; text-decoration: none;">
+                        ← Back to All Topics
+                    </a>
+                </div>
 
                 <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.55rem;">
                     <div style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);">
@@ -316,13 +317,16 @@
 
                 <div style="font-size: 0.72rem; color: #64748b; display: flex; flex-direction: column; gap: 0.25rem; padding-top: 0.5rem; border-top: 1px dashed #e2e8f0;">
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <span style="width: 8px; height: 8px; border-radius: 50%; background: #4f46e5; display: inline-block;"></span> Active Question
+                        <span style="width: 10px; height: 10px; border-radius: 50%; border: 2px solid #4f46e5; background: rgba(99, 102, 241, 0.2); display: inline-block;"></span> Active Question
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Answered
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Answered (Green)
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <span style="width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; display: inline-block;"></span> Unanswered
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span> Skipped (Yellow)
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; display: inline-block;"></span> Not Visited
                     </div>
                 </div>
             </div>
@@ -504,6 +508,11 @@
         <button type="button" id="submitBtn" onclick="confirmSubmitTest()" class="btn btn-outline" style="font-weight: 800; border-radius: 10px; background: #ffffff !important; color: #0f172a !important; border: 1.5px solid #0f172a !important; padding: 0.55rem 1.65rem; font-size: 0.9rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
             🚀 Submit Assessment
         </button>
+
+        <!-- RETURN TO HOME BUTTON (SHOWN AFTER SUBMITTING) -->
+        <a href="{{ url_for('dashboard') }}" id="postSubmitHomeBtn" data-no-spa="true" class="btn btn-primary" style="display: none; font-weight: 800; border-radius: 10px; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff !important; padding: 0.55rem 1.5rem; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); text-decoration: none; align-items: center; gap: 0.45rem;">
+            🏠 Return to Home Page
+        </a>
     </div>
 
 </div>
@@ -528,6 +537,8 @@
                 Submit
             </button>
         </div>
+    </div>
+</div>
 
 <!-- TAB SWITCH VIOLATION WARNING & AUTO-EXIT MODAL -->
 <div id="tabSwitchWarningModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); z-index: 999999; justify-content: center; align-items: center; padding: 1.5rem;">
@@ -547,12 +558,15 @@
         <p style="font-size: 0.95rem; color: #475569; line-height: 1.6; margin-bottom: 1.65rem;">
             You moved to another browser tab or window during an active test session. To preserve exam integrity, <strong>your test paper has been automatically submitted and terminated</strong>.
             <br><br>
-            Please click <strong style="color: #e11d48;">"OK"</strong> below to return to the Mock Interview Hub.
+            Please click <strong style="color: #4f46e5;">"Return to Home Page"</strong> below.
         </p>
         
-        <div>
-            <button type="button" onclick="redirectAfterViolation()" class="btn btn-primary" style="font-weight: 800; border-radius: 12px; background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); color: #ffffff !important; padding: 0.85rem 2rem; font-size: 0.98rem; width: 100%; box-shadow: 0 4px 16px rgba(225, 29, 72, 0.4); border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.4px;">
-                OK - Return to Mock Interview Section
+        <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+            <a href="{{ url_for('dashboard') }}" data-no-spa="true" class="btn btn-primary" style="font-weight: 800; border-radius: 12px; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff !important; padding: 0.85rem 2rem; font-size: 0.98rem; width: 100%; box-shadow: 0 4px 16px rgba(79, 70, 229, 0.4); border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.4px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                🏠 Return to Home Page
+            </a>
+            <button type="button" onclick="redirectAfterViolation()" class="btn btn-outline" style="font-weight: 700; border-radius: 12px; border-color: #fda4af; color: #9f1239; padding: 0.65rem 1.5rem; font-size: 0.88rem; width: 100%; background: #fff1f2;">
+                Back to Mock Interview Section
             </button>
         </div>
     </div>
@@ -655,15 +669,18 @@
         </div>
 
         <!-- FOOTER BUTTONS -->
-        <div style="display: flex; gap: 1rem; justify-content: center; padding-top: 1rem; border-top: 1px solid #f1f5f9; flex-wrap: wrap;">
-            <button type="button" onclick="closeResultsModalAndReview()" class="btn btn-primary" style="font-weight: 800; border-radius: 12px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff !important; padding: 0.75rem 1.75rem; font-size: 0.92rem; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);">
-                🔍 Review Evaluated Questions & Solutions
+        <div style="display: flex; gap: 0.85rem; justify-content: center; padding-top: 1.25rem; border-top: 1px solid #f1f5f9; flex-wrap: wrap;">
+            <a href="{{ url_for('dashboard') }}" data-no-spa="true" class="btn btn-primary" style="font-weight: 800; border-radius: 12px; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff !important; padding: 0.75rem 1.75rem; font-size: 0.95rem; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                🏠 Return to Home Page
+            </a>
+            <button type="button" onclick="closeResultsModalAndReview()" class="btn btn-primary" style="font-weight: 800; border-radius: 12px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff !important; padding: 0.75rem 1.5rem; font-size: 0.92rem; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);">
+                🔍 Review Questions & Solutions
             </button>
-            <button type="button" onclick="window.location.reload();" class="btn btn-primary" style="font-weight: 800; border-radius: 12px; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff !important; padding: 0.75rem 1.75rem; font-size: 0.92rem; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);">
+            <button type="button" onclick="window.location.reload();" class="btn btn-outline" style="font-weight: 800; border-radius: 12px; padding: 0.75rem 1.35rem; border-color: #cbd5e1; color: #334155; font-size: 0.92rem; background: #ffffff;">
                 🔄 Retake Assessment
             </button>
-            <a href="{{ url_for('mock_interview') }}" class="btn btn-outline" style="font-weight: 800; border-radius: 12px; padding: 0.75rem 1.5rem; border-color: #cbd5e1; color: #334155; font-size: 0.92rem; text-decoration: none;">
-                ← Back to All Topics
+            <a href="{{ url_for('mock_interview') }}" data-no-spa="true" class="btn btn-outline" style="font-weight: 700; border-radius: 12px; padding: 0.75rem 1.35rem; border-color: #cbd5e1; color: #64748b; font-size: 0.92rem; text-decoration: none; background: #ffffff;">
+                ← All Topics
             </a>
         </div>
 
@@ -674,6 +691,7 @@
     let currentQuestionIndex = 1;
     const totalQuestions = {{ questions | length }};
     const answeredState = {};
+    const skippedState = {};
     const starterCodes = {};
     const questionsData = {{ questions | tojson | safe }};
 
@@ -913,23 +931,36 @@
             
             const btn = document.getElementById(`palette-btn-${i}`);
             if (btn) {
-                if (i === currentQuestionIndex) {
-                    btn.style.border = '2px solid #4f46e5';
-                    btn.style.background = 'rgba(99, 102, 241, 0.15)';
-                    btn.style.color = '#4f46e5';
+                const isCurrent = (i === currentQuestionIndex);
+                const isAnswered = Boolean(answeredState[i]);
+                const isSkipped = Boolean(skippedState[i]);
+
+                if (isAnswered) {
+                    btn.style.background = '#10b981';
+                    btn.style.color = '#ffffff';
+                    btn.style.borderColor = '#059669';
                     btn.style.fontWeight = '800';
-                    btn.style.boxShadow = '0 0 0 2px rgba(79, 70, 229, 0.2)';
-                } else if (answeredState[i]) {
-                    btn.style.border = '1.5px solid #10b981';
-                    btn.style.background = '#d1fae5';
-                    btn.style.color = '#047857';
+                } else if (isSkipped) {
+                    btn.style.background = '#f59e0b';
+                    btn.style.color = '#ffffff';
+                    btn.style.borderColor = '#d97706';
                     btn.style.fontWeight = '800';
-                    btn.style.boxShadow = 'none';
                 } else {
-                    btn.style.border = '1.5px solid #cbd5e1';
                     btn.style.background = '#f8fafc';
                     btn.style.color = '#475569';
+                    btn.style.borderColor = '#cbd5e1';
                     btn.style.fontWeight = '700';
+                }
+
+                if (isCurrent) {
+                    btn.style.boxShadow = '0 0 0 3px #4f46e5, 0 2px 6px rgba(79, 70, 229, 0.4)';
+                    btn.style.borderColor = '#4f46e5';
+                    if (!isAnswered && !isSkipped) {
+                        btn.style.background = 'rgba(99, 102, 241, 0.15)';
+                        btn.style.color = '#4f46e5';
+                        btn.style.fontWeight = '800';
+                    }
+                } else {
                     btn.style.boxShadow = 'none';
                 }
             }
@@ -944,10 +975,11 @@
         }
 
         const count = Object.keys(answeredState).length;
+        const skipCount = Object.keys(skippedState).length;
         document.getElementById('answeredCountBadge').innerText = `${count} / ${totalQuestions} Answered`;
     }
 
-    function markAnswered(qIdx) {
+    function markAnswered(qIdx, wasExplicitAction = false) {
         let val = null;
         const radios = document.getElementsByName(`answer_q_${qIdx}`);
         if (radios && radios.length > 0) {
@@ -971,8 +1003,12 @@
 
         if (val) {
             answeredState[qIdx] = val;
+            delete skippedState[qIdx];
         } else {
             delete answeredState[qIdx];
+            if (wasExplicitAction) {
+                skippedState[qIdx] = true;
+            }
         }
 
         updateWizardUI();
@@ -995,7 +1031,7 @@
     }
 
     function saveAndNextQuestion() {
-        markAnswered(currentQuestionIndex);
+        markAnswered(currentQuestionIndex, true);
         if (currentQuestionIndex < totalQuestions) {
             currentQuestionIndex++;
             updateWizardUI();
@@ -1039,18 +1075,21 @@
         clearInterval(timerInterval);
         stopWebcamFeed();
 
-        // Reveal sidebar menu and back button after submitting test
+        // Reveal navigation buttons after submitting test
         document.body.classList.remove('in-test-mode');
-        document.body.classList.add('has-perm-sidebar');
-        const backBtn = document.getElementById('backToTopicsBtn');
-        if (backBtn) {
-            backBtn.style.display = 'inline-flex';
+        const postSubmitNavBtns = document.getElementById('postSubmitNavBtns');
+        if (postSubmitNavBtns) {
+            postSubmitNavBtns.style.display = 'flex';
         }
 
-        // 1. HIDE SUBMIT BUTTON AFTER SUBMISSION
+        // 1. HIDE SUBMIT BUTTON AND SHOW RETURN TO HOME BUTTON AFTER SUBMISSION
         const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.style.display = 'none';
+        }
+        const postSubmitHomeBtn = document.getElementById('postSubmitHomeBtn');
+        if (postSubmitHomeBtn) {
+            postSubmitHomeBtn.style.display = 'inline-flex';
         }
 
         // 2. TRANSFORM SAVE & NEXT BUTTON TO NEXT BUTTON

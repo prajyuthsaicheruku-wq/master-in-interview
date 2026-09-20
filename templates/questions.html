@@ -560,7 +560,75 @@
                     {{ q.question_text | clean_qtext }}
                 </div>
 
-                <!-- INTERACTIVE CODE WORKSPACE -->
+                {% if q.category == 'Aptitude' or (q.options and q.options | length > 0) %}
+                <!-- APTITUDE MULTIPLE CHOICE PRACTICE OPTIONS -->
+                <div style="margin-bottom: 1.25rem;">
+                    <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.65rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                        <span>🎯 Select Your Practice Answer:</span>
+                        <span id="opt-feedback-qlist-{{ q.id }}" style="font-size: 0.82rem; font-weight: 800;"></span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+                        {% if q.options %}
+                            {% for opt in q.options %}
+                            <div onclick="selectPracticeOption(this, {{ 'true' if opt.is_correct else 'false' }}, '{{ opt.label }}', 'opt-feedback-qlist-{{ q.id }}')" class="practice-opt-card">
+                                <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                    <span class="practice-opt-label">{{ opt.label }}</span>
+                                    <span class="practice-opt-text">{{ opt.text }}</span>
+                                </div>
+                                <span class="opt-status-icon" style="font-size: 0.85rem; font-weight: 800;"></span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div onclick="selectPracticeOption(this, false, 'A', 'opt-feedback-qlist-{{ q.id }}')" class="practice-opt-card">
+                                <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                    <span class="practice-opt-label">A</span>
+                                    <span class="practice-opt-text">Option A</span>
+                                </div>
+                                <span class="opt-status-icon"></span>
+                            </div>
+                            <div onclick="selectPracticeOption(this, true, 'B', 'opt-feedback-qlist-{{ q.id }}')" class="practice-opt-card">
+                                <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                    <span class="practice-opt-label">B</span>
+                                    <span class="practice-opt-text">Option B</span>
+                                </div>
+                                <span class="opt-status-icon"></span>
+                            </div>
+                            <div onclick="selectPracticeOption(this, false, 'C', 'opt-feedback-qlist-{{ q.id }}')" class="practice-opt-card">
+                                <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                    <span class="practice-opt-label">C</span>
+                                    <span class="practice-opt-text">Option C</span>
+                                </div>
+                                <span class="opt-status-icon"></span>
+                            </div>
+                            <div onclick="selectPracticeOption(this, false, 'D', 'opt-feedback-qlist-{{ q.id }}')" class="practice-opt-card">
+                                <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                    <span class="practice-opt-label">D</span>
+                                    <span class="practice-opt-text">Option D</span>
+                                </div>
+                                <span class="opt-status-icon"></span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if q.tips %}
+                    <div class="aptitude-tips-box" style="margin-top: 1rem; margin-bottom: 0.5rem;">
+                        <strong>💡 Shortcut Formula / Exam Tip:</strong> {{ q.tips }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% elif q.category == 'Behavioral' %}
+                <!-- BEHAVIORAL INTERVIEW SCENARIO FRAMEWORK -->
+                <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem;">
+                    <div style="font-size: 0.88rem; font-weight: 800; color: #818cf8; margin-bottom: 0.35rem;">
+                        💬 Recommended Response Framework (STAR Method):
+                    </div>
+                    <div style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5;">
+                        Structure your response by describing the <strong>Situation</strong>, the <strong>Task</strong> you faced, the specific <strong>Actions</strong> you took, and the measurable <strong>Results</strong> achieved.
+                    </div>
+                </div>
+                {% else %}
+                <!-- INTERACTIVE CODE WORKSPACE (FOR TECHNICAL / CODING QUESTIONS) -->
                 <div class="code-workspace-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
                         <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">💻 Code Workspace & Test Runner:</span>
@@ -596,11 +664,24 @@ def solution():
                         <pre id="console_text_card_{{ q.id }}" style="margin: 0; white-space: pre-wrap; word-break: break-word; color: #38bdf8; font-size: 0.84rem; line-height: 1.5;"></pre>
                     </div>
                 </div>
+                {% endif %}
 
-                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 0.75rem;">
-                    <button type="button" class="btn btn-outline btn-sm toggle-answer-btn" data-target="sol_box_q_{{ q.id }}">
-                        💡 Reveal Solution & Explanation
-                    </button>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 0.75rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-outline btn-sm toggle-answer-btn" data-target="sol_box_q_{{ q.id }}">
+                            💡 Reveal Solution & Explanation
+                        </button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline btn-sm" style="font-weight: 700; font-size: 0.82rem; border-color: #cbd5e1; color: var(--text-main);">
+                            🏠 Back to Home
+                        </a>
+                    </div>
+                    {% if q.category == 'Aptitude' %}
+                        {% set topic_slug = (q.topic or 'Number System') | replace(' ', '_') | replace('&', 'and') %}
+                        <a href="{{ url_for('aptitude', study=topic_slug, q=q.title) }}" class="btn btn-primary btn-sm" style="font-weight: 700; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                            <span>📖 Open in Aptitude Portal</span>
+                            <span>→</span>
+                        </a>
+                    {% endif %}
                 </div>
 
                 <div id="sol_box_q_{{ q.id }}" class="answer-box" style="display: none; margin-top: 1rem; background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; padding: 1rem; border-radius: 8px;">

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="20" fill="#CC0000"/>
+  <!-- TI Monogram in Texas State Outline -->
+  <g transform="translate(18, 14) scale(0.64)">
+    <!-- Texas shape approximation -->
+    <path d="M15 15 L55 15 L55 35 L85 35 L85 65 L60 85 L35 85 L25 55 L15 50 Z" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+    <text x="48" y="58" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="28" fill="#FFFFFF">ti</text>
+  </g>
+  <text x="50" y="85" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="9" fill="#FFFFFF" letter-spacing="0.5">TEXAS INSTRUMENTS</text>
+</svg>

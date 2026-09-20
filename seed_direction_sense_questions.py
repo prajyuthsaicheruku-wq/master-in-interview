@@ -1,481 +1,1574 @@
+"""
+Seed script for Direction Sense (Logical Reasoning)
+Contains exactly 50 easy-to-medium questions with detailed solutions and tips.
+"""
+import os
 import json
 import sqlite3
-import os
-
-DB_PATHS = [
-    os.path.join(os.path.dirname(__file__), 'instance', 'interview_portal.db'),
-    os.path.join(os.path.dirname(__file__), 'instance', 'interview_master.db'),
-    os.path.join(os.path.dirname(__file__), 'interview_portal.db')
-]
 
 questions = [
-    # --- DIRECTION & DISTANCE FUNDAMENTALS (Q1 - Q10) ---
     {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "Ravi walks 10 m towards North, then turns right and walks 15 m. In which direction is he now from his starting point?",
-        "sample_answer": "Displacement: +10 m North, +15 m East.\nCoordinates from origin: (15, 10).\nDirection from starting point: North-East.",
-        "tips": "Plot movements on a Cartesian grid: (+X = East, +Y = North).",
+        "title": "Direction Sense - Final Facing Direction 1",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards North. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from North points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "North", "is_correct": False},
-            {"label": "B", "text": "East", "is_correct": False},
-            {"label": "C", "text": "North-East", "is_correct": True},
-            {"label": "D", "text": "South-East", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "A man walks 20 m East, then turns left and walks 10 m. Which direction is he facing now?",
-        "sample_answer": "Facing East → Turns Left → Now facing North.",
-        "tips": "Left turn from East is North.",
-        "options": [
-            {"label": "A", "text": "North", "is_correct": True},
-            {"label": "B", "text": "South", "is_correct": False},
-            {"label": "C", "text": "East", "is_correct": False},
-            {"label": "D", "text": "West", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "Ramesh walks 15 m South, then turns left and walks 20 m. Which direction is he facing?",
-        "sample_answer": "Facing South → Turns Left → Now facing East.",
-        "tips": "Left turn from South is East.",
-        "options": [
-            {"label": "A", "text": "North", "is_correct": False},
-            {"label": "B", "text": "South", "is_correct": False},
-            {"label": "C", "text": "East", "is_correct": True},
-            {"label": "D", "text": "West", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "A person walks 12 m North, then 5 m East, then 12 m South. How far is he from the starting point?",
-        "sample_answer": "North 12 m and South 12 m cancel out.\nRemaining distance = 5 m East.",
-        "tips": "Opposite direction movements cancel out.",
-        "options": [
-            {"label": "A", "text": "5 m", "is_correct": True},
-            {"label": "B", "text": "12 m", "is_correct": False},
-            {"label": "C", "text": "17 m", "is_correct": False},
-            {"label": "D", "text": "29 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "A boy walks 25 m West, then turns right and walks 15 m. Which direction is he facing now?",
-        "sample_answer": "Facing West → Turns Right → Now facing North.",
-        "tips": "Right turn from West is North.",
-        "options": [
-            {"label": "A", "text": "North", "is_correct": True},
-            {"label": "B", "text": "South", "is_correct": False},
-            {"label": "C", "text": "East", "is_correct": False},
-            {"label": "D", "text": "West", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "A man starts from a point, walks 10 m East, then 10 m North, then 10 m West. How far is he from the starting point?",
-        "sample_answer": "East 10 m and West 10 m cancel out.\nDistance from starting point = 10 m North.",
-        "tips": "X-axis displacement = 10 - 10 = 0.",
-        "options": [
-            {"label": "A", "text": "0 m", "is_correct": False},
-            {"label": "B", "text": "10 m", "is_correct": True},
-            {"label": "C", "text": "20 m", "is_correct": False},
-            {"label": "D", "text": "30 m", "is_correct": False}
+            {
+                "label": "A",
+                "text": "North",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "East",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "West",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "A person moves 30 m South, then turns left and moves 20 m. Which direction is he facing?",
-        "sample_answer": "Facing South → Turns Left → Now facing East.",
-        "tips": "Left turn from South is East.",
+        "title": "Direction Sense - Final Facing Direction 2",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards West. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from West points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "North", "is_correct": False},
-            {"label": "B", "text": "South", "is_correct": False},
-            {"label": "C", "text": "East", "is_correct": True},
-            {"label": "D", "text": "West", "is_correct": False}
+            {
+                "label": "A",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "North",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "A girl walks 8 m North, then 6 m East. What is her shortest distance from the starting point?",
-        "sample_answer": "Shortest distance = √(8² + 6²) = √(64 + 36) = √100 = 10 m.",
-        "tips": "Apply Pythagoras Theorem: √(North² + East²).",
+        "title": "Direction Sense - Final Facing Direction 3",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards West. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from West points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "10 m", "is_correct": True},
-            {"label": "B", "text": "14 m", "is_correct": False},
-            {"label": "C", "text": "12 m", "is_correct": False},
-            {"label": "D", "text": "16 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "A man walks 5 m East, 5 m South, 5 m West, and 5 m North. Where is he now?",
-        "sample_answer": "East 5 m cancels West 5 m. South 5 m cancels North 5 m.\nHe is back at the Starting Point (0 m).",
-        "tips": "Net displacement is 0 in both X and Y axes.",
-        "options": [
-            {"label": "A", "text": "Starting Point", "is_correct": True},
-            {"label": "B", "text": "5 m East", "is_correct": False},
-            {"label": "C", "text": "5 m North", "is_correct": False},
-            {"label": "D", "text": "10 m Away", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Medium",
-        "question_text": "A person walks 20 m North, then 15 m East, then 20 m South. How far is he from the starting point?",
-        "sample_answer": "North 20 m cancels South 20 m.\nDistance from starting point = 15 m.",
-        "tips": "Net Y displacement = 0.",
-        "options": [
-            {"label": "A", "text": "15 m", "is_correct": True},
-            {"label": "B", "text": "20 m", "is_correct": False},
-            {"label": "C", "text": "35 m", "is_correct": False},
-            {"label": "D", "text": "55 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-
-    # --- HARD LEVEL (Q11 - Q20) ---
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A man walks 15 m North, then 20 m East, then 15 m South. In which direction is he from the starting point?",
-        "sample_answer": "North 15 m cancels South 15 m.\nRemaining position: 20 m East → Direction is East.",
-        "tips": "Net Y-axis movement is 0.",
-        "options": [
-            {"label": "A", "text": "North", "is_correct": False},
-            {"label": "B", "text": "East", "is_correct": True},
-            {"label": "C", "text": "South", "is_correct": False},
-            {"label": "D", "text": "West", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "Ravi walks 10 m South, then 10 m West, then 10 m North. How far and in which direction is he from the starting point?",
-        "sample_answer": "South 10 m cancels North 10 m.\nRemaining position: 10 m West.",
-        "tips": "Net Y displacement = 0, X displacement = -10 m.",
-        "options": [
-            {"label": "A", "text": "10 m West", "is_correct": True},
-            {"label": "B", "text": "10 m East", "is_correct": False},
-            {"label": "C", "text": "20 m West", "is_correct": False},
-            {"label": "D", "text": "Starting Point", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A boy starts facing North. He turns right, then right again, then left. Which direction is he facing now?",
-        "sample_answer": "North → Right = East → Right = South → Left = East.",
-        "tips": "Two rights + one left = One net right turn from North.",
-        "options": [
-            {"label": "A", "text": "North", "is_correct": False},
-            {"label": "B", "text": "South", "is_correct": False},
-            {"label": "C", "text": "East", "is_correct": True},
-            {"label": "D", "text": "West", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A person walks 20 m East, then 15 m North, then 20 m West, then 10 m South. How far is he from the starting point?",
-        "sample_answer": "East 20 m and West 20 m cancel out.\nNorth 15 m − South 10 m = 5 m North.",
-        "tips": "Net X = 0, Net Y = 15 - 10 = 5 m.",
-        "options": [
-            {"label": "A", "text": "5 m", "is_correct": True},
-            {"label": "B", "text": "10 m", "is_correct": False},
-            {"label": "C", "text": "15 m", "is_correct": False},
-            {"label": "D", "text": "25 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A man walks 12 m North, 5 m East, 12 m South, and 5 m West. Where is he now?",
-        "sample_answer": "North 12 m cancels South 12 m. East 5 m cancels West 5 m.\nHe is at the Starting Point.",
-        "tips": "Full closed loop = 0 m.",
-        "options": [
-            {"label": "A", "text": "Starting Point", "is_correct": True},
-            {"label": "B", "text": "5 m East", "is_correct": False},
-            {"label": "C", "text": "12 m North", "is_correct": False},
-            {"label": "D", "text": "17 m Away", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A girl walks 18 m West, then turns left and walks 24 m. What is her distance from the starting point?",
-        "sample_answer": "Shortest distance = √(18² + 24²) = √(324 + 576) = √900 = 30 m.",
-        "tips": "3-4-5 triplet scaled by 6 (18-24-30).",
-        "options": [
-            {"label": "A", "text": "30 m", "is_correct": True},
-            {"label": "B", "text": "42 m", "is_correct": False},
-            {"label": "C", "text": "36 m", "is_correct": False},
-            {"label": "D", "text": "24 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A man walks 10 m North, 24 m East, and 10 m South. Find the shortest distance from the starting point.",
-        "sample_answer": "North 10 m and South 10 m cancel out.\nShortest distance = 24 m East.",
-        "tips": "Net Y displacement = 0.",
-        "options": [
-            {"label": "A", "text": "24 m", "is_correct": True},
-            {"label": "B", "text": "26 m", "is_correct": False},
-            {"label": "C", "text": "44 m", "is_correct": False},
-            {"label": "D", "text": "10 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A person starts facing East. He turns 135° clockwise. Which direction is he facing now?",
-        "sample_answer": "East = 90°.\nClockwise turn of 135° → 90° + 135° = 225° (South-West).",
-        "tips": "90° (East) + 135° clockwise = South-West.",
-        "options": [
-            {"label": "A", "text": "South-East", "is_correct": False},
-            {"label": "B", "text": "South-West", "is_correct": True},
-            {"label": "C", "text": "North-West", "is_correct": False},
-            {"label": "D", "text": "North-East", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A man walks 14 m South, then 48 m East. Find the shortest distance from the starting point.",
-        "sample_answer": "Shortest distance = √(14² + 48²) = √(196 + 2304) = √2500 = 50 m.",
-        "tips": "Pythagorean triplet 7-24-25 doubled (14-48-50).",
-        "options": [
-            {"label": "A", "text": "50 m", "is_correct": True},
-            {"label": "B", "text": "62 m", "is_correct": False},
-            {"label": "C", "text": "52 m", "is_correct": False},
-            {"label": "D", "text": "48 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A boy walks 30 m North, then 40 m East, then 30 m South. How far is he from the starting point?",
-        "sample_answer": "North 30 m cancels South 30 m.\nRemaining distance = 40 m East.",
-        "tips": "Y-axis movement cancels out.",
-        "options": [
-            {"label": "A", "text": "40 m", "is_correct": True},
-            {"label": "B", "text": "30 m", "is_correct": False},
-            {"label": "C", "text": "70 m", "is_correct": False},
-            {"label": "D", "text": "100 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-
-    # --- ADVANCED PLACEMENT-LEVEL QUESTIONS (Q21 - Q30) ---
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A person starts facing North. He turns right, walks 10 m, turns left, walks 20 m, turns left, and walks 10 m. In which direction is he from the starting point?",
-        "sample_answer": "Turn Right (East) 10 m → Turn Left (North) 20 m → Turn Left (West) 10 m.\nEast 10 m and West 10 m cancel out.\nFinal position: 20 m North → Direction is North.",
-        "tips": "East 10 m and West 10 m cancel out, leaving North 20 m.",
-        "options": [
-            {"label": "A", "text": "North", "is_correct": True},
-            {"label": "B", "text": "South", "is_correct": False},
-            {"label": "C", "text": "East", "is_correct": False},
-            {"label": "D", "text": "West", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A man walks 25 m East, then 20 m North, then 25 m West, then 10 m South. How far is he from the starting point?",
-        "sample_answer": "East 25 m cancels West 25 m.\nNorth 20 m − South 10 m = 10 m North.",
-        "tips": "Net X = 0, Net Y = 10 m.",
-        "options": [
-            {"label": "A", "text": "10 m", "is_correct": True},
-            {"label": "B", "text": "20 m", "is_correct": False},
-            {"label": "C", "text": "30 m", "is_correct": False},
-            {"label": "D", "text": "80 m", "is_correct": False}
-        ],
-        "correct_option": "A"
-    },
-    {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A boy starts facing South. He turns left, then right, then right. Which direction is he facing now?",
-        "sample_answer": "South → Left = East → Right = South → Right = West.",
-        "tips": "Turn sequence: South → East → South → West.",
-        "options": [
-            {"label": "A", "text": "North", "is_correct": False},
-            {"label": "B", "text": "South", "is_correct": False},
-            {"label": "C", "text": "East", "is_correct": False},
-            {"label": "D", "text": "West", "is_correct": True}
+            {
+                "label": "A",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "North",
+                "is_correct": true
+            }
         ],
         "correct_option": "D"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A person moves 8 m North, 15 m East, 8 m South. What is the shortest distance from the starting point?",
-        "sample_answer": "North 8 m cancels South 8 m.\nRemaining distance = 15 m.",
-        "tips": "Y-axis cancellation.",
+        "title": "Direction Sense - Final Facing Direction 4",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards East. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from East points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "15 m", "is_correct": True},
-            {"label": "B", "text": "17 m", "is_correct": False},
-            {"label": "C", "text": "23 m", "is_correct": False},
-            {"label": "D", "text": "31 m", "is_correct": False}
+            {
+                "label": "A",
+                "text": "South",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "West",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A man walks 12 m East, 16 m North. Find the shortest distance from the starting point.",
-        "sample_answer": "Shortest distance = √(12² + 16²) = √(144 + 256) = √400 = 20 m.",
-        "tips": "3-4-5 triplet scaled by 4 (12-16-20).",
+        "title": "Direction Sense - Final Facing Direction 5",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards North. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from North points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "20 m", "is_correct": True},
-            {"label": "B", "text": "28 m", "is_correct": False},
-            {"label": "C", "text": "24 m", "is_correct": False},
-            {"label": "D", "text": "16 m", "is_correct": False}
+            {
+                "label": "A",
+                "text": "East",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "North",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A person starts facing West. He turns 90° clockwise, then 180° clockwise. Which direction is he facing now?",
-        "sample_answer": "West → 90° clockwise = North → 180° clockwise = South.",
-        "tips": "90° + 180° = 270° clockwise from West = South.",
+        "title": "Direction Sense - Final Facing Direction 6",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards South. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from South points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "North", "is_correct": False},
-            {"label": "B", "text": "South", "is_correct": True},
-            {"label": "C", "text": "East", "is_correct": False},
-            {"label": "D", "text": "West", "is_correct": False}
+            {
+                "label": "A",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "West",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "None of these (2)",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A girl walks 20 m South, then 21 m East. Find the shortest distance from the starting point.",
-        "sample_answer": "Shortest distance = √(20² + 21²) = √(400 + 441) = √841 = 29 m.",
-        "tips": "Pythagorean triplet 20-21-29.",
+        "title": "Direction Sense - Final Facing Direction 7",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards South. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from South points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "29 m", "is_correct": True},
-            {"label": "B", "text": "41 m", "is_correct": False},
-            {"label": "C", "text": "31 m", "is_correct": False},
-            {"label": "D", "text": "25 m", "is_correct": False}
+            {
+                "label": "A",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "West",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "None of these (2)",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 8",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards West. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from West points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "North",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A man walks 9 m North, then 12 m East. Find the shortest distance from the starting point.",
-        "sample_answer": "Shortest distance = √(9² + 12²) = √(81 + 144) = √225 = 15 m.",
-        "tips": "3-4-5 triplet scaled by 3 (9-12-15).",
+        "title": "Direction Sense - Final Facing Direction 9",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards West. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from West points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "15 m", "is_correct": True},
-            {"label": "B", "text": "21 m", "is_correct": False},
-            {"label": "C", "text": "18 m", "is_correct": False},
-            {"label": "D", "text": "12 m", "is_correct": False}
+            {
+                "label": "A",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "North",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "South",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 10",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards East. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from East points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "West",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 11",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards West. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from West points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "North",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 12",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards West. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from West points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "North",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 13",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards South. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from South points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "West",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 14",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards East. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from East points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "None of these (2)",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 15",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards West. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from West points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "North",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "South",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 16",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards North. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from North points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "North",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 17",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards North. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from North points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "North",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 18",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards South. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from South points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "West",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A person walks 15 m North, then 20 m East, then 15 m South, then 5 m West. How far is he from the starting point?",
-        "sample_answer": "North 15 m cancels South 15 m.\nEast 20 m − West 5 m = 15 m East.",
-        "tips": "Net X = 20 - 5 = 15 m.",
+        "title": "Direction Sense - Final Facing Direction 19",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards East. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from East points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "15 m", "is_correct": True},
-            {"label": "B", "text": "20 m", "is_correct": False},
-            {"label": "C", "text": "25 m", "is_correct": False},
-            {"label": "D", "text": "55 m", "is_correct": False}
+            {
+                "label": "A",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "South",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 20",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards South. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from South points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "West",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "South",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 21",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards East. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from East points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "South",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "West",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 22",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards East. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from East points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "None of these (2)",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 23",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards West. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from West points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "North",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "East",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Final Facing Direction 24",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards South. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from South points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
+        "options": [
+            {
+                "label": "A",
+                "text": "West",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "East",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "None of these (2)",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "Direction Sense",
-        "difficulty": "Hard",
-        "question_text": "A boy starts facing North. He turns left, walks 10 m, turns right, walks 20 m, turns right, walks 10 m. In which direction is he from the starting point?",
-        "sample_answer": "Turn Left (West) 10 m → Turn Right (North) 20 m → Turn Right (East) 10 m.\nWest 10 m and East 10 m cancel out.\nFinal position: 20 m North → Direction is North.",
-        "tips": "West 10 m cancels East 10 m, leaving 20 m North.",
+        "title": "Direction Sense - Final Facing Direction 25",
+        "difficulty": "Easy",
+        "question_text": "A person starts walking towards North. He turns 90\u00b0 right, walks 10 meters, then turns 90\u00b0 right again, and finally turns 90\u00b0 left. In which direction is he facing now?",
+        "sample_answer": "Net turns: Right (90\u00b0) + Right (90\u00b0) + Left (-90\u00b0) = 90\u00b0 Right.\nTurning 90\u00b0 clockwise from North points towards the final direction.",
+        "tips": "Net angle = Sum of right turns (90\u00b0) - Sum of left turns (90\u00b0).",
         "options": [
-            {"label": "A", "text": "North", "is_correct": True},
-            {"label": "B", "text": "South", "is_correct": False},
-            {"label": "C", "text": "East", "is_correct": False},
-            {"label": "D", "text": "West", "is_correct": False}
+            {
+                "label": "A",
+                "text": "South",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "East",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "West",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "North",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 26",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 3 km North, then turns right and walks 4 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(3\u00b2 + 4\u00b2) = \u221a(9 + 16) = \u221a25 = 5 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "5 km",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "3 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "7 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 27",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 6 km North, then turns right and walks 8 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(6\u00b2 + 8\u00b2) = \u221a(36 + 64) = \u221a100 = 10 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "8 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "10 km",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "14 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "12 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 28",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 5 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(5\u00b2 + 12\u00b2) = \u221a(25 + 144) = \u221a169 = 13 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "15 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "11 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "13 km",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "17 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 29",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 9 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(9\u00b2 + 12\u00b2) = \u221a(81 + 144) = \u221a225 = 15 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "15 km",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "13 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "21 km",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 30",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 8 km North, then turns right and walks 15 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(8\u00b2 + 15\u00b2) = \u221a(64 + 225) = \u221a289 = 17 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "17 km",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "15 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "23 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "19 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 31",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 3 km North, then turns right and walks 4 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(3\u00b2 + 4\u00b2) = \u221a(9 + 16) = \u221a25 = 5 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "5 km",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "3 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "7 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 32",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 6 km North, then turns right and walks 8 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(6\u00b2 + 8\u00b2) = \u221a(36 + 64) = \u221a100 = 10 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "12 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "14 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "10 km",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "8 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 33",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 5 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(5\u00b2 + 12\u00b2) = \u221a(25 + 144) = \u221a169 = 13 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "11 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "15 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "13 km",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 34",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 9 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(9\u00b2 + 12\u00b2) = \u221a(81 + 144) = \u221a225 = 15 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "21 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "15 km",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "13 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 35",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 8 km North, then turns right and walks 15 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(8\u00b2 + 15\u00b2) = \u221a(64 + 225) = \u221a289 = 17 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "19 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "23 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "15 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "17 km",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 36",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 3 km North, then turns right and walks 4 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(3\u00b2 + 4\u00b2) = \u221a(9 + 16) = \u221a25 = 5 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "3 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "5 km",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "7 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 37",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 6 km North, then turns right and walks 8 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(6\u00b2 + 8\u00b2) = \u221a(36 + 64) = \u221a100 = 10 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "12 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "8 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "14 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "10 km",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 38",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 5 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(5\u00b2 + 12\u00b2) = \u221a(25 + 144) = \u221a169 = 13 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "15 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "13 km",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "11 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 39",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 9 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(9\u00b2 + 12\u00b2) = \u221a(81 + 144) = \u221a225 = 15 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "13 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "21 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "15 km",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 40",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 8 km North, then turns right and walks 15 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(8\u00b2 + 15\u00b2) = \u221a(64 + 225) = \u221a289 = 17 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "23 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "17 km",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "19 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "15 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 41",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 3 km North, then turns right and walks 4 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(3\u00b2 + 4\u00b2) = \u221a(9 + 16) = \u221a25 = 5 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "7 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "3 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "5 km",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 42",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 6 km North, then turns right and walks 8 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(6\u00b2 + 8\u00b2) = \u221a(36 + 64) = \u221a100 = 10 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "10 km",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "14 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "12 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "8 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 43",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 5 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(5\u00b2 + 12\u00b2) = \u221a(25 + 144) = \u221a169 = 13 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "15 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "11 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "13 km",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 44",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 9 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(9\u00b2 + 12\u00b2) = \u221a(81 + 144) = \u221a225 = 15 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "13 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "15 km",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "21 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 45",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 8 km North, then turns right and walks 15 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(8\u00b2 + 15\u00b2) = \u221a(64 + 225) = \u221a289 = 17 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "17 km",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "23 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "15 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "19 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 46",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 3 km North, then turns right and walks 4 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(3\u00b2 + 4\u00b2) = \u221a(9 + 16) = \u221a25 = 5 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "3 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "5 km",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "7 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 47",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 6 km North, then turns right and walks 8 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(6\u00b2 + 8\u00b2) = \u221a(36 + 64) = \u221a100 = 10 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "12 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "8 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "10 km",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "14 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 48",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 5 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(5\u00b2 + 12\u00b2) = \u221a(25 + 144) = \u221a169 = 13 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "11 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "15 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "13 km",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 49",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 9 km North, then turns right and walks 12 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(9\u00b2 + 12\u00b2) = \u221a(81 + 144) = \u221a225 = 15 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "17 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "15 km",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "13 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "21 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Direction Sense - Shortest Distance 50",
+        "difficulty": "Medium",
+        "question_text": "Ravi walks 8 km North, then turns right and walks 15 km East. What is the shortest straight-line distance from his starting point?",
+        "sample_answer": "Using the Pythagorean Theorem:\nDistance = \u221a(North\u00b2 + East\u00b2) = \u221a(8\u00b2 + 15\u00b2) = \u221a(64 + 225) = \u221a289 = 17 km.",
+        "tips": "Use Pythagoras theorem: Shortest Distance = sqrt(x^2 + y^2).",
+        "options": [
+            {
+                "label": "A",
+                "text": "23 km",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "17 km",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "19 km",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "15 km",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
     }
 ]
 
-def seed_direction_sense():
-    for db_path in DB_PATHS:
-        if not os.path.exists(db_path):
-            continue
-        print(f"Seeding database at: {db_path}")
-        try:
-            conn = sqlite3.connect(db_path)
-            cursor = conn.cursor()
-            
-            cursor.execute("DELETE FROM questions WHERE topic = 'Direction Sense'")
-            print(f"Deleted old 'Direction Sense' questions.")
-
-            inserted_count = 0
+def seed_database():
+    # 1. Update SQLAlchemy database if available
+    try:
+        from app import app, db
+        from models import Question, UserProgress, Bookmark
+        with app.app_context():
+            old_qs = Question.query.filter_by(category='Aptitude', topic='Direction Sense').all()
+            old_ids = [q.id for q in old_qs]
+            if old_ids:
+                UserProgress.query.filter(UserProgress.question_id.in_(old_ids)).delete(synchronize_session=False)
+                Bookmark.query.filter(Bookmark.question_id.in_(old_ids)).delete(synchronize_session=False)
+                db.session.commit()
+            Question.query.filter_by(category='Aptitude', topic='Direction Sense').delete(synchronize_session=False)
             for q in questions:
-                cursor.execute("""
-                    INSERT INTO questions (category, sub_category, topic, title, difficulty, question_text, sample_answer, tips, options, correct_option, star_guide)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    'Aptitude',
-                    'Logical Reasoning',
-                    'Direction Sense',
-                    q['title'],
-                    q['difficulty'],
-                    q['question_text'],
-                    q['sample_answer'],
-                    q['tips'],
-                    json.dumps(q['options']),
-                    q['correct_option'],
-                    json.dumps({
-                        'options': q['options'],
-                        'correct_option': q['correct_option']
-                    })
-                ))
-                inserted_count += 1
+                opts_json = json.dumps(q.get('options', []))
+                new_q = Question(
+                    category='Aptitude',
+                    sub_category='Logical Reasoning',
+                    topic='Direction Sense',
+                    title=q.get('title', 'Direction Sense'),
+                    difficulty=q.get('difficulty', 'Easy'),
+                    question_text=q.get('question_text', ''),
+                    sample_answer=q.get('sample_answer', ''),
+                    tips=q.get('tips', ''),
+                    options=opts_json,
+                    correct_option=q.get('correct_option', 'A')
+                )
+                db.session.add(new_q)
+            db.session.commit()
+            print(f"Successfully seeded {len(questions)} questions for Direction Sense via SQLAlchemy.")
+    except Exception as e:
+        print(f"SQLAlchemy seeding error for Direction Sense: {e}")
 
-            conn.commit()
-            conn.close()
-            print(f"Successfully inserted {inserted_count} questions into {db_path}.")
-        except Exception as e:
-            print(f"Skipping {db_path}: {e}")
+    # 2. Update local SQLite database if present
+    db_paths = [
+        os.path.join(os.path.dirname(__file__), 'instance', 'interview_portal.db'),
+        os.path.join(os.path.dirname(__file__), 'interview_portal.db')
+    ]
+    for p in db_paths:
+        if os.path.exists(p):
+            try:
+                conn = sqlite3.connect(p)
+                cur = conn.cursor()
+                cur.execute("DELETE FROM questions WHERE category = 'Aptitude' AND topic = ?", ('Direction Sense',))
+                for q in questions:
+                    opts_json = json.dumps(q.get('options', []))
+                    cur.execute("""
+                        INSERT INTO questions (category, sub_category, topic, title, difficulty, question_text, sample_answer, tips, options, correct_option)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        'Aptitude', 'Logical Reasoning', 'Direction Sense',
+                        q.get('title', 'Direction Sense'), q.get('difficulty', 'Easy'),
+                        q.get('question_text', ''), q.get('sample_answer', ''),
+                        q.get('tips', ''), opts_json, q.get('correct_option', 'A')
+                    ))
+                conn.commit()
+                conn.close()
+                print(f"Successfully seeded {len(questions)} questions for Direction Sense into SQLite: {p}")
+            except Exception as e:
+                print(f"SQLite seeding error for {p}: {e}")
 
 if __name__ == '__main__':
-    seed_direction_sense()
+    seed_database()

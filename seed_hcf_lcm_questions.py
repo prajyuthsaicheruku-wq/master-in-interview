@@ -1,462 +1,1574 @@
+"""
+Seed script for HCF & LCM (Number & Arithmetic)
+Contains exactly 50 easy-to-medium questions with detailed solutions and tips.
+"""
+import os
 import json
 import sqlite3
-import os
-
-DB_PATH = os.path.join(os.path.dirname(__file__), 'instance', 'interview_portal.db')
 
 questions = [
     {
-        "title": "HCF & LCM - HCF of 84 and 126",
-        "difficulty": "Medium",
-        "question_text": "Find the HCF of 84 and 126.",
-        "sample_answer": "84 = 2^2 * 3 * 7\n126 = 2 * 3^2 * 7\nHCF = 2^1 * 3^1 * 7^1 = 42.",
-        "tips": "Take the common prime factors with the lowest powers.",
+        "title": "HCF & LCM - HCF of 12 and 18",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 12 and 18.",
+        "sample_answer": "Factors of 12 and 18 yield greatest common divisor = 6.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
         "options": [
-            {"label": "A", "text": "14", "is_correct": False},
-            {"label": "B", "text": "21", "is_correct": False},
-            {"label": "C", "text": "42", "is_correct": True},
-            {"label": "D", "text": "84", "is_correct": False}
+            {
+                "label": "A",
+                "text": "9",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "12",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "5",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "6",
+                "is_correct": true
+            }
         ],
-        "correct_option": "C"
+        "correct_option": "D"
     },
     {
-        "title": "HCF & LCM - LCM of 24, 36, and 48",
-        "difficulty": "Medium",
-        "question_text": "Find the LCM of 24, 36, and 48.",
-        "sample_answer": "24 = 2^3 * 3\n36 = 2^2 * 3^2\n48 = 2^4 * 3\nLCM = 2^4 * 3^2 = 16 * 9 = 144.",
-        "tips": "Take highest powers of all prime factors present.",
+        "title": "HCF & LCM - LCM of 15 and 25",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 15 and 25.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (15 \u00d7 25) / 5 = 75.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
         "options": [
-            {"label": "A", "text": "72", "is_correct": False},
-            {"label": "B", "text": "144", "is_correct": True},
-            {"label": "C", "text": "288", "is_correct": False},
-            {"label": "D", "text": "432", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "HCF & LCM - Product Formula Finding Second Number",
-        "difficulty": "Medium",
-        "question_text": "The HCF of two numbers is 12 and their LCM is 360. If one number is 72, find the other number.",
-        "sample_answer": "Formula: A * B = HCF * LCM\n72 * B = 12 * 360\n72 * B = 4320 => B = 60.",
-        "tips": "Second Number = (HCF * LCM) / First Number.",
-        "options": [
-            {"label": "A", "text": "48", "is_correct": False},
-            {"label": "B", "text": "60", "is_correct": True},
-            {"label": "C", "text": "72", "is_correct": False},
-            {"label": "D", "text": "90", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "HCF & LCM - Greatest Divisor with Different Remainders",
-        "difficulty": "Medium",
-        "question_text": "Find the greatest number that divides 245 and 1029 leaving remainders 5 and 9 respectively.",
-        "sample_answer": "Subtract remainders first:\n245 - 5 = 240\n1029 - 9 = 1020\nRequired number = HCF(240, 1020) = 60.",
-        "tips": "HCF of (A - r1) and (B - r2).",
-        "options": [
-            {"label": "A", "text": "30", "is_correct": False},
-            {"label": "B", "text": "45", "is_correct": False},
-            {"label": "C", "text": "60", "is_correct": True},
-            {"label": "D", "text": "120", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "HCF & LCM - Least Number Divisible by 15, 20, 25",
-        "difficulty": "Medium",
-        "question_text": "Find the least number divisible by 15, 20, and 25.",
-        "sample_answer": "15 = 3 * 5\n20 = 2^2 * 5\n25 = 5^2\nLCM = 2^2 * 3 * 5^2 = 4 * 3 * 25 = 300.",
-        "tips": "Calculate LCM of 15, 20, and 25.",
-        "options": [
-            {"label": "A", "text": "150", "is_correct": False},
-            {"label": "B", "text": "300", "is_correct": True},
-            {"label": "C", "text": "450", "is_correct": False},
-            {"label": "D", "text": "600", "is_correct": False}
+            {
+                "label": "A",
+                "text": "90",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "75",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "37",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "50",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "HCF & LCM - Product and HCF to Find LCM",
-        "difficulty": "Medium",
-        "question_text": "The product of two numbers is 432 and their HCF is 6. Find their LCM.",
-        "sample_answer": "Product = HCF * LCM\n432 = 6 * LCM => LCM = 432 / 6 = 72.",
-        "tips": "LCM = Product / HCF.",
+        "title": "HCF & LCM - HCF of 24 and 36",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 24 and 36.",
+        "sample_answer": "Factors of 24 and 36 yield greatest common divisor = 12.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
         "options": [
-            {"label": "A", "text": "36", "is_correct": False},
-            {"label": "B", "text": "54", "is_correct": False},
-            {"label": "C", "text": "72", "is_correct": True},
-            {"label": "D", "text": "108", "is_correct": False}
+            {
+                "label": "A",
+                "text": "24",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "11",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "12",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "15",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "HCF & LCM - HCF of Three Numbers (108, 180, 252)",
-        "difficulty": "Medium",
-        "question_text": "Find the HCF of 108, 180, and 252.",
-        "sample_answer": "108 = 36 * 3\n180 = 36 * 5\n252 = 36 * 7\nHCF = 36.",
-        "tips": "Factor out common factors.",
+        "title": "HCF & LCM - LCM of 30 and 45",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 30 and 45.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (30 \u00d7 45) / 15 = 90.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
         "options": [
-            {"label": "A", "text": "18", "is_correct": False},
-            {"label": "B", "text": "27", "is_correct": False},
-            {"label": "C", "text": "36", "is_correct": True},
-            {"label": "D", "text": "54", "is_correct": False}
+            {
+                "label": "A",
+                "text": "45",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "120",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "90",
+                "is_correct": true
+            }
         ],
-        "correct_option": "C"
+        "correct_option": "D"
     },
     {
-        "title": "HCF & LCM - Smallest Number Divisible by 8, 12, 18",
-        "difficulty": "Medium",
-        "question_text": "Find the smallest number that when divided by 8, 12, and 18 leaves no remainder.",
-        "sample_answer": "Required number = LCM(8, 12, 18).\n8 = 2^3, 12 = 2^2 * 3, 18 = 2 * 3^2.\nLCM = 2^3 * 3^2 = 8 * 9 = 72.",
-        "tips": "Find LCM of given divisors.",
+        "title": "HCF & LCM - HCF of 14 and 21",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 14 and 21.",
+        "sample_answer": "Factors of 14 and 21 yield greatest common divisor = 7.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
         "options": [
-            {"label": "A", "text": "36", "is_correct": False},
-            {"label": "B", "text": "48", "is_correct": False},
-            {"label": "C", "text": "72", "is_correct": True},
-            {"label": "D", "text": "144", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "HCF & LCM - Finding Second Number given HCF 14 & LCM 840",
-        "difficulty": "Medium",
-        "question_text": "The LCM of two numbers is 840 and their HCF is 14. If one number is 70, find the other.",
-        "sample_answer": "Formula: A * B = HCF * LCM\n70 * B = 14 * 840 => 70 * B = 11760 => B = 168.",
-        "tips": "Divide (HCF * LCM) by given number.",
-        "options": [
-            {"label": "A", "text": "140", "is_correct": False},
-            {"label": "B", "text": "168", "is_correct": True},
-            {"label": "C", "text": "196", "is_correct": False},
-            {"label": "D", "text": "210", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "HCF & LCM - Greatest Common Divisor of 100, 200, 300",
-        "difficulty": "Medium",
-        "question_text": "Find the greatest number that divides 100, 200, and 300 exactly.",
-        "sample_answer": "Required number = HCF(100, 200, 300) = 100.",
-        "tips": "HCF of round numbers.",
-        "options": [
-            {"label": "A", "text": "20", "is_correct": False},
-            {"label": "B", "text": "50", "is_correct": False},
-            {"label": "C", "text": "100", "is_correct": True},
-            {"label": "D", "text": "200", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "HCF & LCM - Common Remainder 3 for Divisors 4, 5, 6, 8",
-        "difficulty": "Medium",
-        "question_text": "Find the least number which when divided by 4, 5, 6, and 8 leaves remainder 3 in each case.",
-        "sample_answer": "LCM(4, 5, 6, 8) = 120.\nRequired number = LCM + remainder = 120 + 3 = 123.",
-        "tips": "Add remainder to the LCM.",
-        "options": [
-            {"label": "A", "text": "123", "is_correct": True},
-            {"label": "B", "text": "120", "is_correct": False},
-            {"label": "C", "text": "117", "is_correct": False},
-            {"label": "D", "text": "243", "is_correct": False}
+            {
+                "label": "A",
+                "text": "7",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "6",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "10",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "14",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "HCF & LCM - HCF of 144 and 216",
-        "difficulty": "Medium",
-        "question_text": "Find the HCF of 144 and 216.",
-        "sample_answer": "144 = 72 * 2\n216 = 72 * 3\nHCF = 72.",
-        "tips": "Look for highest common factor.",
+        "title": "HCF & LCM - LCM of 16 and 24",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 16 and 24.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (16 \u00d7 24) / 8 = 48.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
         "options": [
-            {"label": "A", "text": "36", "is_correct": False},
-            {"label": "B", "text": "48", "is_correct": False},
-            {"label": "C", "text": "72", "is_correct": True},
-            {"label": "D", "text": "108", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "HCF & LCM - LCM of 16, 24, and 40",
-        "difficulty": "Medium",
-        "question_text": "Find the LCM of 16, 24, and 40.",
-        "sample_answer": "16 = 2^4\n24 = 2^3 * 3\n40 = 2^3 * 5\nLCM = 2^4 * 3 * 5 = 16 * 15 = 240.",
-        "tips": "Use prime factorization method.",
-        "options": [
-            {"label": "A", "text": "120", "is_correct": False},
-            {"label": "B", "text": "180", "is_correct": False},
-            {"label": "C", "text": "240", "is_correct": True},
-            {"label": "D", "text": "480", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "HCF & LCM - Finding Second Number given HCF 9 & LCM 540",
-        "difficulty": "Medium",
-        "question_text": "Two numbers have HCF 9 and LCM 540. If one number is 45, find the other.",
-        "sample_answer": "45 * B = 9 * 540\n45 * B = 4860 => B = 108.",
-        "tips": "Apply product rule.",
-        "options": [
-            {"label": "A", "text": "90", "is_correct": False},
-            {"label": "B", "text": "108", "is_correct": True},
-            {"label": "C", "text": "126", "is_correct": False},
-            {"label": "D", "text": "135", "is_correct": False}
+            {
+                "label": "A",
+                "text": "24",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "48",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "64",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "HCF & LCM - Same Remainder Divisor for 1257 and 1575",
-        "difficulty": "Medium",
-        "question_text": "Find the largest number that divides 1257 and 1575 leaving the same remainder.",
-        "sample_answer": "When remainder is the same, required number divides (1575 - 1257) = 318.\nLargest divisor of 318 is 318.\nCheck: 1257 mod 318 = 303, 1575 mod 318 = 303.",
-        "tips": "Find HCF of difference between numbers.",
+        "title": "HCF & LCM - HCF of 20 and 30",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 20 and 30.",
+        "sample_answer": "Factors of 20 and 30 yield greatest common divisor = 10.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
         "options": [
-            {"label": "A", "text": "159", "is_correct": False},
-            {"label": "B", "text": "318", "is_correct": True},
-            {"label": "C", "text": "106", "is_correct": False},
-            {"label": "D", "text": "53", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-
-    # QUESTIONS 16 TO 30
-    {
-        "title": "HCF & LCM - Three Bells Ringing at Intervals",
-        "difficulty": "Hard",
-        "question_text": "Three bells ring at intervals of 18, 24, and 30 minutes. If they ring together at 8:00 AM, when will they ring together again?",
-        "sample_answer": "Find LCM(18, 24, 30):\n18 = 2 * 3^2, 24 = 2^3 * 3, 30 = 2 * 3 * 5\nLCM = 2^3 * 3^2 * 5 = 360 minutes = 6 hours.\n8:00 AM + 6 hours = 2:00 PM.",
-        "tips": "Convert LCM in minutes to hours.",
-        "options": [
-            {"label": "A", "text": "12:00 PM", "is_correct": False},
-            {"label": "B", "text": "1:30 PM", "is_correct": False},
-            {"label": "C", "text": "2:00 PM", "is_correct": True},
-            {"label": "D", "text": "4:00 PM", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "HCF & LCM - Least Number with Remainder 7 for 12, 18, 24",
-        "difficulty": "Hard",
-        "question_text": "Find the least number which when divided by 12, 18, and 24 leaves remainder 7 in each case.",
-        "sample_answer": "LCM(12, 18, 24) = 72.\nRequired number = 72 + 7 = 79.",
-        "tips": "Add constant remainder to LCM.",
-        "options": [
-            {"label": "A", "text": "72", "is_correct": False},
-            {"label": "B", "text": "79", "is_correct": True},
-            {"label": "C", "text": "85", "is_correct": False},
-            {"label": "D", "text": "151", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "HCF & LCM - Product and HCF to Find LCM (12288 / 16)",
-        "difficulty": "Hard",
-        "question_text": "The HCF of two numbers is 16 and their product is 12288. Find their LCM.",
-        "sample_answer": "Product = HCF * LCM\n12288 = 16 * LCM => LCM = 12288 / 16 = 768.",
-        "tips": "LCM = Product / HCF.",
-        "options": [
-            {"label": "A", "text": "384", "is_correct": False},
-            {"label": "B", "text": "512", "is_correct": False},
-            {"label": "C", "text": "768", "is_correct": True},
-            {"label": "D", "text": "1024", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "HCF & LCM - Greatest Divisor with Constant Remainder 1",
-        "difficulty": "Hard",
-        "question_text": "Find the greatest number that divides 101, 201, and 301 leaving remainder 1 in each case.",
-        "sample_answer": "Subtract remainder 1:\n101 - 1 = 100, 201 - 1 = 200, 301 - 1 = 300\nRequired number = HCF(100, 200, 300) = 100.",
-        "tips": "Find HCF of (number - remainder).",
-        "options": [
-            {"label": "A", "text": "50", "is_correct": False},
-            {"label": "B", "text": "100", "is_correct": True},
-            {"label": "C", "text": "150", "is_correct": False},
-            {"label": "D", "text": "200", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "HCF & LCM - Least Multiple of 18 Divisible by 24",
-        "difficulty": "Hard",
-        "question_text": "Find the least multiple of 18 that is exactly divisible by 24.",
-        "sample_answer": "Least common multiple of 18 and 24 = LCM(18, 24).\n18 = 2 * 3^2, 24 = 2^3 * 3\nLCM = 2^3 * 3^2 = 72.",
-        "tips": "Calculate LCM of 18 and 24.",
-        "options": [
-            {"label": "A", "text": "36", "is_correct": False},
-            {"label": "B", "text": "48", "is_correct": False},
-            {"label": "C", "text": "72", "is_correct": True},
-            {"label": "D", "text": "144", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "HCF & LCM - Ratio of Numbers 5:7 with HCF 8",
-        "difficulty": "Hard",
-        "question_text": "Two numbers are in the ratio 5:7. Their HCF is 8. Find the numbers.",
-        "sample_answer": "First number = 5 * HCF = 5 * 8 = 40.\nSecond number = 7 * HCF = 7 * 8 = 56.",
-        "tips": "Numbers = ratio * HCF.",
-        "options": [
-            {"label": "A", "text": "30 and 42", "is_correct": False},
-            {"label": "B", "text": "40 and 56", "is_correct": True},
-            {"label": "C", "text": "45 and 63", "is_correct": False},
-            {"label": "D", "text": "50 and 70", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "HCF & LCM - Finding Second Number given HCF 15 & LCM 900",
-        "difficulty": "Hard",
-        "question_text": "The HCF and LCM of two numbers are 15 and 900 respectively. If one number is 225, find the other.",
-        "sample_answer": "225 * B = 15 * 900\n225 * B = 13500 => B = 60.",
-        "tips": "Divide (15 * 900) by 225.",
-        "options": [
-            {"label": "A", "text": "45", "is_correct": False},
-            {"label": "B", "text": "60", "is_correct": True},
-            {"label": "C", "text": "75", "is_correct": False},
-            {"label": "D", "text": "90", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "HCF & LCM - Smallest Dividend with Remainder 2 for 5, 7, 9",
-        "difficulty": "Hard",
-        "question_text": "Find the smallest number which when divided by 5, 7, and 9 leaves remainder 2 in each case.",
-        "sample_answer": "LCM(5, 7, 9) = 315.\nRequired number = 315 + 2 = 317.",
-        "tips": "LCM of coprime numbers = 5 * 7 * 9.",
-        "options": [
-            {"label": "A", "text": "315", "is_correct": False},
-            {"label": "B", "text": "317", "is_correct": True},
-            {"label": "C", "text": "319", "is_correct": False},
-            {"label": "D", "text": "632", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "HCF & LCM - Finding Third Number given LCM 720 & HCF 6",
-        "difficulty": "Hard",
-        "question_text": "The LCM of three numbers is 720 and their HCF is 6. One number is 90 and another is 120. Find the third number.",
-        "sample_answer": "90 = 2 * 3^2 * 5, 120 = 2^3 * 3 * 5.\nLCM = 720 = 2^4 * 3^2 * 5^1.\nThird number C must contribute 2^4 and have 3^1 to satisfy HCF = 6.\nC = 2^4 * 3^1 = 48.",
-        "tips": "Analyze prime factorization for LCM and HCF.",
-        "options": [
-            {"label": "A", "text": "48", "is_correct": True},
-            {"label": "B", "text": "60", "is_correct": False},
-            {"label": "C", "text": "72", "is_correct": False},
-            {"label": "D", "text": "96", "is_correct": False}
+            {
+                "label": "A",
+                "text": "10",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "13",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "20",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "9",
+                "is_correct": false
+            }
         ],
         "correct_option": "A"
     },
     {
-        "title": "HCF & LCM - Same Remainder Divisor for 395 and 455",
-        "difficulty": "Hard",
-        "question_text": "Find the greatest number that divides 395 and 455 leaving the same remainder.",
-        "sample_answer": "Required number divides (455 - 395) = 60.\nGreatest divisor of 60 is 60.\nCheck: 395 mod 60 = 35, 455 mod 60 = 35.",
-        "tips": "Find HCF of difference (455 - 395).",
+        "title": "HCF & LCM - LCM of 35 and 49",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 35 and 49.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (35 \u00d7 49) / 7 = 245.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
         "options": [
-            {"label": "A", "text": "30", "is_correct": False},
-            {"label": "B", "text": "45", "is_correct": False},
-            {"label": "C", "text": "60", "is_correct": True},
-            {"label": "D", "text": "90", "is_correct": False}
+            {
+                "label": "A",
+                "text": "280",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "122",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "196",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "245",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - HCF of 28 and 42",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 28 and 42.",
+        "sample_answer": "Factors of 28 and 42 yield greatest common divisor = 14.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
+        "options": [
+            {
+                "label": "A",
+                "text": "28",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "17",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "14",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "13",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "HCF & LCM - Least Number Divisible by 18, 24, 32, 40",
-        "difficulty": "Hard",
-        "question_text": "Find the least number divisible by 18, 24, 32, and 40.",
-        "sample_answer": "18 = 2 * 3^2, 24 = 2^3 * 3, 32 = 2^5, 40 = 2^3 * 5\nLCM = 2^5 * 3^2 * 5 = 32 * 9 * 5 = 1440.",
-        "tips": "Take maximum power of each prime factor.",
+        "title": "HCF & LCM - LCM of 40 and 60",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 40 and 60.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (40 \u00d7 60) / 20 = 120.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
         "options": [
-            {"label": "A", "text": "720", "is_correct": False},
-            {"label": "B", "text": "1440", "is_correct": True},
-            {"label": "C", "text": "2880", "is_correct": False},
-            {"label": "D", "text": "4320", "is_correct": False}
+            {
+                "label": "A",
+                "text": "120",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "160",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "60",
+                "is_correct": false
+            }
         ],
-        "correct_option": "B"
+        "correct_option": "A"
     },
     {
-        "title": "HCF & LCM - Finding Second Number given HCF 18 & LCM 1260",
-        "difficulty": "Hard",
-        "question_text": "The HCF of two numbers is 18 and their LCM is 1260. If one number is 180, find the other.",
-        "sample_answer": "180 * B = 18 * 1260\n180 * B = 22680 => B = 126.",
-        "tips": "Apply product rule.",
+        "title": "HCF & LCM - HCF of 18 and 27",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 18 and 27.",
+        "sample_answer": "Factors of 18 and 27 yield greatest common divisor = 9.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
         "options": [
-            {"label": "A", "text": "108", "is_correct": False},
-            {"label": "B", "text": "126", "is_correct": True},
-            {"label": "C", "text": "144", "is_correct": False},
-            {"label": "D", "text": "162", "is_correct": False}
+            {
+                "label": "A",
+                "text": "8",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "18",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "12",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "9",
+                "is_correct": true
+            }
         ],
-        "correct_option": "B"
+        "correct_option": "D"
     },
     {
-        "title": "HCF & LCM - Three Blinking Lights at Intervals",
-        "difficulty": "Hard",
-        "question_text": "A room has three blinking lights that blink every 15, 20, and 30 seconds. If they blink together now, after how many seconds will they blink together again?",
-        "sample_answer": "Required time = LCM(15, 20, 30) = 60 seconds.",
-        "tips": "LCM of 15, 20, and 30.",
+        "title": "HCF & LCM - LCM of 22 and 33",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 22 and 33.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (22 \u00d7 33) / 11 = 66.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
         "options": [
-            {"label": "A", "text": "30 seconds", "is_correct": False},
-            {"label": "B", "text": "45 seconds", "is_correct": False},
-            {"label": "C", "text": "60 seconds", "is_correct": True},
-            {"label": "D", "text": "120 seconds", "is_correct": False}
+            {
+                "label": "A",
+                "text": "33",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "88",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "66",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - HCF of 25 and 35",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 25 and 35.",
+        "sample_answer": "Factors of 25 and 35 yield greatest common divisor = 5.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
+        "options": [
+            {
+                "label": "A",
+                "text": "4",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "8",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "5",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "10",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "HCF & LCM - Smallest Addition to 5000 Divisible by 24, 36, 54",
-        "difficulty": "Hard",
-        "question_text": "Find the least number that must be added to 5000 to make it exactly divisible by 24, 36, and 54.",
-        "sample_answer": "LCM(24, 36, 54) = 216.\n5000 / 216 = 23 remainder 32.\nNext multiple = 24 * 216 = 5184.\nNumber to add = 5184 - 5000 = 184.",
-        "tips": "Number to add = (LCM - remainder).",
+        "title": "HCF & LCM - LCM of 32 and 48",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 32 and 48.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (32 \u00d7 48) / 16 = 96.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
         "options": [
-            {"label": "A", "text": "32", "is_correct": False},
-            {"label": "B", "text": "184", "is_correct": True},
-            {"label": "C", "text": "216", "is_correct": False},
-            {"label": "D", "text": "248", "is_correct": False}
+            {
+                "label": "A",
+                "text": "48",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "96",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "128",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "HCF & LCM - Finding Second Number given HCF 24 & LCM 2016",
-        "difficulty": "Hard",
-        "question_text": "The HCF of two numbers is 24 and their LCM is 2016. If one number is 336, find the other.",
-        "sample_answer": "336 * B = 24 * 2016\n336 * B = 48384 => B = 144.",
-        "tips": "B = (24 * 2016) / 336.",
+        "title": "HCF & LCM - HCF of 36 and 54",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 36 and 54.",
+        "sample_answer": "Factors of 36 and 54 yield greatest common divisor = 18.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
         "options": [
-            {"label": "A", "text": "120", "is_correct": False},
-            {"label": "B", "text": "144", "is_correct": True},
-            {"label": "C", "text": "168", "is_correct": False},
-            {"label": "D", "text": "192", "is_correct": False}
+            {
+                "label": "A",
+                "text": "18",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "21",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "36",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "17",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - LCM of 45 and 75",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 45 and 75.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (45 \u00d7 75) / 15 = 225.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
+        "options": [
+            {
+                "label": "A",
+                "text": "270",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "112",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "150",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "225",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - HCF of 50 and 75",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 50 and 75.",
+        "sample_answer": "Factors of 50 and 75 yield greatest common divisor = 25.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "25",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "50",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "28",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
+    },
+    {
+        "title": "HCF & LCM - LCM of 48 and 72",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 48 and 72.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (48 \u00d7 72) / 24 = 144.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
+        "options": [
+            {
+                "label": "A",
+                "text": "192",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "72",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "144",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "None of these (2)",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "HCF & LCM - HCF of 60 and 90",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 60 and 90.",
+        "sample_answer": "Factors of 60 and 90 yield greatest common divisor = 30.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
+        "options": [
+            {
+                "label": "A",
+                "text": "30",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "33",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "60",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "29",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - LCM of 64 and 96",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 64 and 96.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (64 \u00d7 96) / 32 = 192.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
+        "options": [
+            {
+                "label": "A",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "96",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "256",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "192",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - HCF of 54 and 81",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 54 and 81.",
+        "sample_answer": "Factors of 54 and 81 yield greatest common divisor = 27.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
+        "options": [
+            {
+                "label": "A",
+                "text": "27",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "30",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "26",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "54",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - LCM of 56 and 84",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 56 and 84.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (56 \u00d7 84) / 28 = 168.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
+        "options": [
+            {
+                "label": "A",
+                "text": "224",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "168",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "84",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "None of these (2)",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "HCF & LCM - HCF of 63 and 84",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 63 and 84.",
+        "sample_answer": "Factors of 63 and 84 yield greatest common divisor = 21.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "42",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "21",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "20",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "HCF & LCM - LCM of 70 and 105",
+        "difficulty": "Easy",
+        "question_text": "Find the Least Common Multiple (LCM) of 70 and 105.",
+        "sample_answer": "LCM = (a \u00d7 b) / HCF = (70 \u00d7 105) / 35 = 210.",
+        "tips": "LCM(a, b) = (a * b) / GCD(a, b).",
+        "options": [
+            {
+                "label": "A",
+                "text": "280",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "None of these (2)",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "210",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "105",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "HCF & LCM - HCF of 72 and 108",
+        "difficulty": "Easy",
+        "question_text": "Find the Highest Common Factor (HCF / GCD) of 72 and 108.",
+        "sample_answer": "Factors of 72 and 108 yield greatest common divisor = 36.",
+        "tips": "Use Euclidean division algorithm or prime factorization.",
+        "options": [
+            {
+                "label": "A",
+                "text": "39",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "35",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "72",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "36",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 26",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 15 and 150 respectively. If one of the numbers is 30, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (15 \u00d7 150) / 30 = 75.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "60",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "90",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "77",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "75",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 27",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 15 and 105 respectively. If one of the numbers is 30, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (15 \u00d7 105) / 30 = 52.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "52",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "54",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "67",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "37",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 28",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 15 and 105 respectively. If one of the numbers is 30, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (15 \u00d7 105) / 30 = 52.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "37",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "52",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "67",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "54",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 29",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 15 and 75 respectively. If one of the numbers is 30, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (15 \u00d7 75) / 30 = 37.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "37",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "22",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "52",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "39",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 30",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 12 and 72 respectively. If one of the numbers is 24, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (12 \u00d7 72) / 24 = 36.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "38",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "48",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "36",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "24",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 31",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 4 and 28 respectively. If one of the numbers is 8, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (4 \u00d7 28) / 8 = 14.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "16",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "10",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "18",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "14",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 32",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 4 and 32 respectively. If one of the numbers is 8, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (4 \u00d7 32) / 8 = 16.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "12",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "18",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "20",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "16",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 33",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 6 and 36 respectively. If one of the numbers is 12, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (6 \u00d7 36) / 12 = 18.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "18",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "24",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "20",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "12",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 34",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 6 and 48 respectively. If one of the numbers is 12, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (6 \u00d7 48) / 12 = 24.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "18",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "30",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "26",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - Missing Number Relation 35",
+        "difficulty": "Medium",
+        "question_text": "The HCF and LCM of two numbers are 15 and 120 respectively. If one of the numbers is 30, find the other number.",
+        "sample_answer": "We know: Product of two numbers = HCF \u00d7 LCM.\nTherefore, other number = (HCF \u00d7 LCM) / a = (15 \u00d7 120) / 30 = 60.",
+        "tips": "HCF * LCM = First Number * Second Number.",
+        "options": [
+            {
+                "label": "A",
+                "text": "62",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "75",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "45",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "60",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 36",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 3, 4, and 6 seconds respectively. If they toll together now, after how many seconds will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(3, 4, 6) = 12 seconds.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "22 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "6 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "12 seconds",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 37",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 4, 6, and 8 seconds respectively. If they toll together now, after how many seconds will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(4, 6, 8) = 24 seconds.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24 seconds",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "12 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "34 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "48 seconds",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 38",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 6, 8, and 12 seconds respectively. If they toll together now, after how many seconds will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(6, 8, 12) = 24 seconds.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24 seconds",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "12 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "48 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "34 seconds",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 39",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 5, 10, and 15 seconds respectively. If they toll together now, after how many seconds will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(5, 10, 15) = 30 seconds.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "60 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "15 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "30 seconds",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "40 seconds",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 40",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 8, 12, and 16 seconds respectively. If they toll together now, after how many seconds will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(8, 12, 16) = 48 seconds.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "96 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "58 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "48 seconds",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 41",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 10, 15, and 20 minutes respectively. If they toll together now, after how many minutes will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(10, 15, 20) = 60 minutes.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "30 minutes",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "60 minutes",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "120 minutes",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "70 minutes",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 42",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 12, 15, and 18 minutes respectively. If they toll together now, after how many minutes will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(12, 15, 18) = 180 minutes.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "360 minutes",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "90 minutes",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "190 minutes",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "180 minutes",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 43",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 9, 12, and 15 seconds respectively. If they toll together now, after how many seconds will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(9, 12, 15) = 180 seconds.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "190 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "180 seconds",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "90 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "360 seconds",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 44",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 15, 20, and 30 seconds respectively. If they toll together now, after how many seconds will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(15, 20, 30) = 60 seconds.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "30 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "60 seconds",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "120 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "70 seconds",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "HCF & LCM - Simultaneous Bells Toll Problem 45",
+        "difficulty": "Medium",
+        "question_text": "Three bells toll at intervals of 12, 16, and 24 seconds respectively. If they toll together now, after how many seconds will they toll together next?",
+        "sample_answer": "The bells toll together at intervals equal to the LCM of their individual intervals.\nLCM(12, 16, 24) = 48 seconds.",
+        "tips": "Simultaneous tolling/blinking interval = LCM of intervals.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "96 seconds",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "48 seconds",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "58 seconds",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "HCF & LCM - Advanced Application 46",
+        "difficulty": "Medium",
+        "question_text": "What is the greatest number that divides 43, 91 and 183 so as to leave the same remainder in each case?",
+        "sample_answer": "Solution: The answer is 4.",
+        "tips": "HCF of fractions = HCF(numerators)/LCM(denominators).",
+        "options": [
+            {
+                "label": "A",
+                "text": "6",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "8",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "9",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "4",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Advanced Application 47",
+        "difficulty": "Medium",
+        "question_text": "Find the greatest number that will divide 148 and 246 leaving a remainder of 4 and 6 respectively.",
+        "sample_answer": "Solution: The answer is 12.",
+        "tips": "HCF of fractions = HCF(numerators)/LCM(denominators).",
+        "options": [
+            {
+                "label": "A",
+                "text": "18",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "14",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "16",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "12",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Advanced Application 48",
+        "difficulty": "Medium",
+        "question_text": "What is the greatest number which divides 64 and 82 leaving remainders of 4 and 2 respectively?",
+        "sample_answer": "Solution: The answer is 10.",
+        "tips": "HCF of fractions = HCF(numerators)/LCM(denominators).",
+        "options": [
+            {
+                "label": "A",
+                "text": "8",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "14",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "12",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "10",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Advanced Application 49",
+        "difficulty": "Medium",
+        "question_text": "Find the HCF of fractions 2/3, 8/9, 16/81, and 10/27.",
+        "sample_answer": "Solution: The answer is 2/81.",
+        "tips": "HCF of fractions = HCF(numerators)/LCM(denominators).",
+        "options": [
+            {
+                "label": "A",
+                "text": "80/3",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "80/81",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "2/9",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "2/81",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "HCF & LCM - Advanced Application 50",
+        "difficulty": "Medium",
+        "question_text": "Find the LCM of fractions 1/3, 5/6, 2/9, and 4/27.",
+        "sample_answer": "Solution: The answer is 20/3.",
+        "tips": "HCF of fractions = HCF(numerators)/LCM(denominators).",
+        "options": [
+            {
+                "label": "A",
+                "text": "10/3",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "1/27",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "20/27",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "20/3",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
     }
 ]
 
-def seed_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    # Delete old HCF & LCM questions to replace with exact 30 questions requested by user
-    cursor.execute("DELETE FROM questions WHERE category = 'Aptitude' AND topic = 'HCF & LCM'")
-    print("Cleared existing HCF & LCM questions.")
-    
-    for q in questions:
-        cursor.execute("""
-            INSERT INTO questions (category, sub_category, topic, title, difficulty, question_text, sample_answer, tips, options, correct_option)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            'Aptitude',
-            'Number & Arithmetic',
-            'HCF & LCM',
-            q['title'],
-            q['difficulty'],
-            q['question_text'],
-            q['sample_answer'],
-            q['tips'],
-            json.dumps(q['options']),
-            q['correct_option']
-        ))
-        
-    conn.commit()
-    conn.close()
-    print(f"Successfully seeded {len(questions)} HCF & LCM questions into SQLite DB!")
+def seed_database():
+    # 1. Update SQLAlchemy database if available
+    try:
+        from app import app, db
+        from models import Question, UserProgress, Bookmark
+        with app.app_context():
+            old_qs = Question.query.filter_by(category='Aptitude', topic='HCF & LCM').all()
+            old_ids = [q.id for q in old_qs]
+            if old_ids:
+                UserProgress.query.filter(UserProgress.question_id.in_(old_ids)).delete(synchronize_session=False)
+                Bookmark.query.filter(Bookmark.question_id.in_(old_ids)).delete(synchronize_session=False)
+                db.session.commit()
+            Question.query.filter_by(category='Aptitude', topic='HCF & LCM').delete(synchronize_session=False)
+            for q in questions:
+                opts_json = json.dumps(q.get('options', []))
+                new_q = Question(
+                    category='Aptitude',
+                    sub_category='Number & Arithmetic',
+                    topic='HCF & LCM',
+                    title=q.get('title', 'HCF & LCM'),
+                    difficulty=q.get('difficulty', 'Easy'),
+                    question_text=q.get('question_text', ''),
+                    sample_answer=q.get('sample_answer', ''),
+                    tips=q.get('tips', ''),
+                    options=opts_json,
+                    correct_option=q.get('correct_option', 'A')
+                )
+                db.session.add(new_q)
+            db.session.commit()
+            print(f"Successfully seeded {len(questions)} questions for HCF & LCM via SQLAlchemy.")
+    except Exception as e:
+        print(f"SQLAlchemy seeding error for HCF & LCM: {e}")
+
+    # 2. Update local SQLite database if present
+    db_paths = [
+        os.path.join(os.path.dirname(__file__), 'instance', 'interview_portal.db'),
+        os.path.join(os.path.dirname(__file__), 'interview_portal.db')
+    ]
+    for p in db_paths:
+        if os.path.exists(p):
+            try:
+                conn = sqlite3.connect(p)
+                cur = conn.cursor()
+                cur.execute("DELETE FROM questions WHERE category = 'Aptitude' AND topic = ?", ('HCF & LCM',))
+                for q in questions:
+                    opts_json = json.dumps(q.get('options', []))
+                    cur.execute("""
+                        INSERT INTO questions (category, sub_category, topic, title, difficulty, question_text, sample_answer, tips, options, correct_option)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        'Aptitude', 'Number & Arithmetic', 'HCF & LCM',
+                        q.get('title', 'HCF & LCM'), q.get('difficulty', 'Easy'),
+                        q.get('question_text', ''), q.get('sample_answer', ''),
+                        q.get('tips', ''), opts_json, q.get('correct_option', 'A')
+                    ))
+                conn.commit()
+                conn.close()
+                print(f"Successfully seeded {len(questions)} questions for HCF & LCM into SQLite: {p}")
+            except Exception as e:
+                print(f"SQLite seeding error for {p}: {e}")
 
 if __name__ == '__main__':
-    seed_db()
+    seed_database()

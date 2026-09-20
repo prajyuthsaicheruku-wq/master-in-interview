@@ -1,13 +1,18 @@
 import random
 import os
 import socket
+import re
+import secrets
+import urllib.parse
+import requests
 from datetime import datetime, date, timedelta
 from functools import wraps
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response, send_from_directory, Response
 from models import db, User, Question, UserProgress, Bookmark, AptitudeTestAttempt, MockInterviewAttempt, EmailVerificationOTP
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from email_service import send_brevo_otp_email, send_brevo_password_reset_link_email, send_async_otp_email, send_async_reset_link_email
+from company_data import get_company_full_profile, get_all_companies_hub_data
 load_dotenv()
 
 app = Flask(__name__)
@@ -152,6 +157,68 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+@app.route('/robots.txt')
+def robots_txt():
+    base_url = request.url_root.rstrip('/')
+    content = f"""User-agent: *
+Allow: /
+Allow: /about-us
+Allow: /practice
+Allow: /company/
+Allow: /aptitude
+Allow: /mock-interview
+Allow: /leaderboard
+Disallow: /api/
+Disallow: /reset-password-confirm
+Disallow: /profile/update
+Disallow: /profile/change-password
+
+Sitemap: {base_url}/sitemap.xml
+"""
+    return Response(content, mimetype='text/plain')
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    base_url = request.url_root.rstrip('/')
+    today_str = date.today().isoformat()
+    
+    # Public canonical routes
+    routes = [
+        {'loc': f"{base_url}/", 'priority': '1.0', 'changefreq': 'daily'},
+        {'loc': f"{base_url}/dashboard", 'priority': '0.9', 'changefreq': 'daily'},
+        {'loc': f"{base_url}/practice", 'priority': '0.9', 'changefreq': 'daily'},
+        {'loc': f"{base_url}/aptitude", 'priority': '0.9', 'changefreq': 'weekly'},
+        {'loc': f"{base_url}/mock-interview", 'priority': '0.8', 'changefreq': 'weekly'},
+        {'loc': f"{base_url}/leaderboard", 'priority': '0.8', 'changefreq': 'daily'},
+        {'loc': f"{base_url}/about-us", 'priority': '0.7', 'changefreq': 'monthly'},
+        {'loc': f"{base_url}/auth", 'priority': '0.6', 'changefreq': 'monthly'},
+    ]
+    
+    companies = [
+        'Accenture', 'Amazon', 'Capgemini', 'Cognizant GenC', 'Deloitte NLA',
+        'Google', 'Apple', 'Infosys', 'Meta', 'Microsoft', 'TCS Digital',
+        'Netflix', 'Tech Mahindra', 'Wipro', 'Oracle', 'Adobe'
+    ]
+    for comp in companies:
+        routes.append({
+            'loc': f"{base_url}/company/{comp}",
+            'priority': '0.8',
+            'changefreq': 'weekly'
+        })
+    
+    xml_lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for r in routes:
+        xml_lines.append('  <url>')
+        xml_lines.append(f"    <loc>{r['loc']}</loc>")
+        xml_lines.append(f"    <lastmod>{today_str}</lastmod>")
+        xml_lines.append(f"    <changefreq>{r['changefreq']}</changefreq>")
+        xml_lines.append(f"    <priority>{r['priority']}</priority>")
+        xml_lines.append('  </url>')
+    xml_lines.append('</urlset>')
+    
+    return Response('\n'.join(xml_lines), mimetype='application/xml')
+
 # --- AUTH ROUTES ---
 
 @app.route('/')
@@ -214,6 +281,176 @@ def login():
     
     flash('Invalid credentials. Please check your username/email and password.', 'danger')
     return redirect(url_for('auth_page', mode='login'))
+
+def process_google_user_login(user_info):
+    email = (user_info.get('email') or '').strip().lower()
+    full_name = (user_info.get('name') or user_info.get('full_name') or '').strip()
+    picture = user_info.get('picture', '')
+
+    if not email or '@' not in email:
+        flash('Could not retrieve a valid email address from Google authentication.', 'danger')
+        return redirect(url_for('auth_page', mode='login'))
+
+    user = User.query.filter(db.func.lower(User.email) == email).first()
+    if not user:
+        # Create username from email localpart
+        base_username = re.sub(r'[^a-zA-Z0-9_]', '', email.split('@')[0]) or 'google_user'
+        candidate_username = base_username
+        suffix = 1
+        while User.query.filter(db.func.lower(User.username) == candidate_username.lower()).first():
+            candidate_username = f"{base_username}{suffix}"
+            suffix += 1
+
+        user = User(
+            username=candidate_username,
+            email=email,
+            full_name=full_name or candidate_username.title(),
+            profile_pic=picture or 'avatar_default',
+            location='India',
+            target_role='Software Developer',
+            preferred_domain='Python / Full Stack',
+            target_companies='Deloitte, TCS, Infosys'
+        )
+        user.set_password(secrets.token_urlsafe(16))
+        db.session.add(user)
+        db.session.commit()
+    else:
+        # Update name or photo if existing record has empty or default values
+        updated = False
+        if full_name and (not user.full_name or user.full_name in ['Demo User', '']):
+            user.full_name = full_name
+            updated = True
+        if picture and (not user.profile_pic or user.profile_pic == 'avatar_default'):
+            user.profile_pic = picture
+            updated = True
+        if updated:
+            db.session.commit()
+
+    update_user_streak(user)
+    session.permanent = True
+    session['user_id'] = user.id
+    session['username'] = user.username
+    flash(f'Signed in with Google as {user.email}! Welcome back.', 'success')
+    return redirect(url_for('dashboard'))
+
+@app.route('/auth/google')
+def google_login():
+    client_id = (os.environ.get('GOOGLE_CLIENT_ID') or '').strip()
+    client_secret = (os.environ.get('GOOGLE_CLIENT_SECRET') or '').strip()
+
+    if client_id and client_secret and not client_id.startswith('your_'):
+        state = secrets.token_urlsafe(16)
+        session['google_oauth_state'] = state
+        redirect_uri = url_for('google_callback', _external=True)
+        if request.headers.get('X-Forwarded-Proto') == 'https' or request.is_secure:
+            redirect_uri = redirect_uri.replace('http://', 'https://')
+
+        params = {
+            'client_id': client_id,
+            'redirect_uri': redirect_uri,
+            'response_type': 'code',
+            'scope': 'openid email profile',
+            'state': state,
+            'access_type': 'offline',
+            'prompt': 'select_account'
+        }
+        return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?{urllib.parse.urlencode(params)}")
+    else:
+        return redirect(url_for('auth_page', mode='login'))
+
+@app.route('/auth/google/direct', methods=['POST'])
+def google_direct_login():
+    email = request.form.get('email', '').strip().lower()
+    name = request.form.get('name', '').strip()
+    if not email or '@' not in email:
+        flash('Please provide a valid Google email address.', 'danger')
+        return redirect(url_for('auth_page', mode='login'))
+    
+    user_info = {
+        'email': email,
+        'name': name or email.split('@')[0].replace('.', ' ').title(),
+        'picture': ''
+    }
+    return process_google_user_login(user_info)
+
+@app.route('/auth/google/callback')
+def google_callback():
+    code = request.args.get('code')
+    error = request.args.get('error')
+
+    if error or not code:
+        flash('Google sign-in was canceled or encountered an error.', 'warning')
+        return redirect(url_for('auth_page', mode='login'))
+
+    client_id = (os.environ.get('GOOGLE_CLIENT_ID') or '').strip()
+    client_secret = (os.environ.get('GOOGLE_CLIENT_SECRET') or '').strip()
+    redirect_uri = url_for('google_callback', _external=True)
+    if request.headers.get('X-Forwarded-Proto') == 'https' or request.is_secure:
+        redirect_uri = redirect_uri.replace('http://', 'https://')
+
+    try:
+        token_resp = requests.post('https://oauth2.googleapis.com/token', data={
+            'code': code,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'redirect_uri': redirect_uri,
+            'grant_type': 'authorization_code'
+        }, timeout=10)
+
+        token_data = token_resp.json()
+        access_token = token_data.get('access_token')
+        if not access_token:
+            flash('Failed to authenticate with Google. Please check your credentials.', 'danger')
+            return redirect(url_for('auth_page', mode='login'))
+
+        userinfo_resp = requests.get('https://www.googleapis.com/oauth2/v2/userinfo', headers={
+            'Authorization': f'Bearer {access_token}'
+        }, timeout=10)
+        user_info = userinfo_resp.json()
+        return process_google_user_login(user_info)
+    except Exception as e:
+        app.logger.error(f"Google OAuth Callback Error: {e}")
+        flash(f'Google authentication error: {str(e)}', 'danger')
+        return redirect(url_for('auth_page', mode='login'))
+
+@app.route('/api/auth/google-login', methods=['POST'])
+def api_google_login():
+    try:
+        data = request.get_json(silent=True) or request.form
+        credential = (data.get('credential') or '').strip()
+        email = (data.get('email') or '').strip().lower()
+        name = (data.get('name') or '').strip()
+        picture = data.get('picture', '')
+
+        if credential:
+            # Verify official Google Identity Services ID token via Google's tokeninfo API
+            try:
+                verify_resp = requests.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={credential}", timeout=8)
+                if verify_resp.ok:
+                    token_info = verify_resp.json()
+                    email = token_info.get('email', '').strip().lower()
+                    name = token_info.get('name', '').strip() or name
+                    picture = token_info.get('picture', '') or picture
+            except Exception as v_err:
+                app.logger.warning(f"Google tokeninfo verify warning: {v_err}")
+
+        if not email or '@' not in email:
+            return jsonify({'success': False, 'message': 'Please provide a valid Google email address.'}), 400
+
+        user_info = {
+            'email': email,
+            'name': name or email.split('@')[0].replace('.', ' ').title(),
+            'picture': picture
+        }
+        process_google_user_login(user_info)
+        return jsonify({
+            'success': True,
+            'redirect': url_for('dashboard'),
+            'message': f'Signed in as {email}'
+        })
+    except Exception as e:
+        app.logger.error(f"Error in api_google_login: {e}")
+        return jsonify({'success': False, 'message': f'Google login failed: {str(e)}'}), 500
 
 @app.route('/api/auth/send-register-otp', methods=['POST'])
 def send_register_otp():
@@ -1357,781 +1594,43 @@ def questions():
 def company_detail(company_name):
     user_id = session['user_id']
     comp_clean = company_name.replace('%20', ' ').strip()
-    c_lower = comp_clean.lower()
     
-    # --------------------------------------------------------------------------
-    # DYNAMIC COMPANY PATTERN REGISTRY (Standardized 35 Questions / 90 Mins / 80 Marks)
-    # --------------------------------------------------------------------------
-    standard_exam_pattern = [
-        {'section': 'Section 1: Online Assessment (Quantitative aptitude, logical reasoning, verbal ability, written communication)', 'questions': '50 Qs', 'time': '50 Mins', 'icon': '🧠', 'color': '#fbbf24'},
-        {'section': 'Section 2: Coding Assessment (Programming, problem solving, DSA, coding questions)', 'questions': '2 Qs', 'time': '45 Mins', 'icon': '💻', 'color': '#38bdf8'},
-        {'section': 'Technical Interview (Programming, DSA, OOP, DBMS, SQL, OS, projects, technical fundamentals)', 'questions': '5 Qs', 'time': '40 Mins', 'icon': '⚡', 'color': '#f43f5e'},
-    ]
-
-    standard_table_rounds = [
-        {
-            'round_name': 'Round 1: Online Aptitude Assessment',
-            'sections': [
-                {'name': 'Quantitative aptitude, logical reasoning, verbal ability, analytical reasoning'}
-            ]
-        },
-        {
-            'round_name': 'Round 2: Technical Assessment',
-            'sections': [
-                {'name': 'Pseudocode, programming, computer fundamentals, DBMS, OOP, technical MCQs'}
-            ]
-        },
-        {
-            'round_name': 'Round 3: Coding Assessment',
-            'sections': [
-                {'name': 'Programming problems, DSA, problem-solving and coding efficiency'}
-            ]
-        },
-        {
-            'round_name': 'Round 4: Technical Interview',
-            'sections': [
-                {'name': 'Programming, OOP, DBMS/SQL, OS, CN, projects and technical fundamentals'}
-            ]
-        },
-        {
-            'round_name': 'Round 5: HR Interview',
-            'sections': [
-                {'name': 'Self-introduction, project, strengths/weaknesses, relocation, career goals and company-related questions'}
-            ]
-        }
-    ]
-
-    selection_stages = [
-        {'step': 1, 'title': 'Round 1: Online Aptitude Assessment', 'desc': 'Quantitative aptitude, logical reasoning, verbal ability, analytical reasoning', 'icon': '📊'},
-        {'step': 2, 'title': 'Round 2: Technical Assessment', 'desc': 'Pseudocode, programming, computer fundamentals, DBMS, OOP, technical MCQs', 'icon': '💻'},
-        {'step': 3, 'title': 'Round 3: Coding Assessment', 'desc': 'Programming problems, DSA, problem-solving and coding efficiency', 'icon': '⚡'},
-        {'step': 4, 'title': 'Round 4: Technical Interview', 'desc': 'Programming, OOP, DBMS/SQL, OS, CN, projects and technical fundamentals', 'icon': '🔍'},
-        {'step': 5, 'title': 'Round 5: HR Interview', 'desc': 'Self-introduction, project, strengths/weaknesses, relocation, career goals and company-related questions', 'icon': '🤝'}
-    ]
-
-    table_headers = ['Round', 'What is tested']
-
-    if 'accenture' in c_lower:
-        total_qs = 92
-        total_mins = 135
-        exam_pattern = standard_exam_pattern
-        table_rounds = standard_table_rounds
-        past_papers = [
-            {
-                'year': '2025 Official Assessment Paper',
-                'title': f'{comp_clean} Cognitive & Technical Assessment Model 1',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Given a binary string input, evaluate logical AND, OR, XOR operations sequentially.',
-                'sample_quant': 'In a sequence 12, 23, 45, 89, X, find the value of X.',
-                'sample_tech': 'Determine the output of a C function performing left bitwise shifts by 2 positions.'
-            },
-            {
-                'year': '2024 Memory Based Paper',
-                'title': f'{comp_clean} Previous Year Assessment Model 2',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Find the maximum count of sub-segments with equal number of 0s and 1s.',
-                'sample_quant': 'A man rows 15 km downstream in 3 hours. If current speed is 1.5 km/h, find his upstream speed.',
-                'sample_tech': 'What is the default subnet mask for a Class B IP address in IPv4?'
-            },
-            {
-                'year': '2023 Campus Solved Paper',
-                'title': f'{comp_clean} Campus Placement Paper Model 3',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Calculate total cost of painting interior and exterior surface areas.',
-                'sample_quant': 'Find two numbers in ratio 3:5 whose difference is 18.',
-                'sample_tech': 'What is call by reference in C++ programming?'
-            }
-        ]
-
-    elif 'tcs' in c_lower:
-        total_qs = 92
-        total_mins = 135
-        exam_pattern = standard_exam_pattern
-        table_rounds = standard_table_rounds
-        past_papers = [
-            {
-                'year': '2025 TCS NQT Official Paper',
-                'title': f'{comp_clean} National Qualifier Test Model 1',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Calculate total cost of painting interior and exterior surface areas of a house.',
-                'sample_quant': 'A car covers a distance at 40 km/h in 8 hrs. At what speed must it travel to cover it in 5 hrs?',
-                'sample_tech': 'What happens when a dangling pointer is dereferenced in C++?'
-            },
-            {
-                'year': '2024 TCS Digital Model Paper',
-                'title': f'{comp_clean} Advanced Digital Role Test Model 2',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Find the smallest missing positive integer in an unsorted array in O(N) time.',
-                'sample_quant': 'A sum doubles itself in 8 years at simple interest. What is the annual interest rate?',
-                'sample_tech': 'Differentiate between process and thread synchronization primitives in OS.'
-            },
-            {
-                'year': '2023 TCS Ninja Placement Paper',
-                'title': f'{comp_clean} National Qualifier Test Model 3',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Find the maximum sum of contiguous subarray with at least K elements.',
-                'sample_quant': 'A train 150m long passes a platform 250m long in 20 seconds. Find the speed of train in km/h.',
-                'sample_tech': 'What is ACID property in database management systems?'
-            }
-        ]
-
-    elif 'infosys' in c_lower or 'infy' in c_lower:
-        total_qs = 92
-        total_mins = 100
-        exam_pattern = standard_exam_pattern
-        table_headers = ['Section', 'Approx. time', 'What to prepare']
-        table_rounds = [
-            {
-                'round_name': 'Pseudocode',
-                'sections': [
-                    {'name': '40 min', 'qs': 'Programming logic, output prediction'}
-                ]
-            },
-            {
-                'round_name': 'Reasoning + Verbal',
-                'sections': [
-                    {'name': '35 min', 'qs': 'Logical reasoning, English'}
-                ]
-            },
-            {
-                'round_name': 'Mathematics',
-                'sections': [
-                    {'name': '25 min', 'qs': 'Quantitative aptitude'}
-                ]
-            }
-        ]
-        past_papers = [
-            {
-                'year': '2025 Official Infosys Paper',
-                'title': f'{comp_clean} Specialist Programmer & DSE Model 1',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Find the maximum sum contiguous subsegment in an array with at most one negative flip.',
-                'sample_quant': 'What is the probability of getting at least 2 heads when 5 unbiased coins are tossed?',
-                'sample_tech': 'Which algorithm guarantees shortest path in a weighted graph with positive edges?'
-            },
-            {
-                'year': '2024 Memory Based Paper',
-                'title': f'{comp_clean} System Engineer Solved Paper Model 2',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Write a program to reverse words in a given string without altering spaces.',
-                'sample_quant': 'A man rows downstream at 12 km/h and upstream at 8 km/h. Find speed of boat in still water.',
-                'sample_tech': 'Explain static vs dynamic polymorphism in Object Oriented Design.'
-            },
-            {
-                'year': '2023 Campus Placement Solved Paper',
-                'title': f'{comp_clean} InfyTQ / Campus Selection Model 3',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Check if a given string can be converted to palindrome by deleting at most 1 character.',
-                'sample_quant': 'Find the HCF of 2/3, 8/9, 64/81 and 10/27.',
-                'sample_tech': 'What is the difference between primary key, candidate key, and super key in RDBMS?'
-            }
-        ]
-
-    elif 'amazon' in c_lower:
-        total_qs = 25
-        total_mins = 120
-        exam_pattern = standard_exam_pattern
-        table_headers = ['Round / Section', 'Format & Topics', 'No. of Questions', 'Time Allotted']
-        table_rounds = [
-            {
-                'round_name': 'Amazon Practice Test Paper',
-                'sections': [
-                    {'name': 'Questions 1 - 25 (Quant, Reasoning, CS Fundamentals & Coding)', 'qs': '25 Questions', 'time': '120 Mins'}
-                ]
-            }
-        ]
-        selection_stages = [
-            {'step': 1, 'title': '1. Online Assessment (OA)', 'desc': 'Questions 1 - 25: Aptitude, Logic, Technical MCQs & Coding (120 Mins)', 'icon': '📝'},
-            {'step': 2, 'title': '2. Technical Screening', 'desc': 'Coding & Data Structures Deep Dive', 'icon': '💻'},
-            {'step': 3, 'title': '3. Interview Loop', 'desc': 'Coding + System Design + Leadership Principles', 'icon': '🧠'},
-            {'step': 4, 'title': '4. Bar Raiser', 'desc': 'Behavioral + Technical Excellence', 'icon': '🏆'},
-            {'step': 5, 'title': '5. Final Decision', 'desc': 'Hiring Manager & Loop Review', 'icon': '✅'}
-        ]
-        past_papers = [
-            {
-                'year': '2025 Official SDE Assessment',
-                'title': f'{comp_clean} Official SDE Placement Paper Model 1',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Design & Implement LRU Cache with O(1) time complexity.',
-                'sample_quant': 'Pipes A and B fill a tank in 20 and 30 mins. When should A close so tank fills in 12 mins?',
-                'sample_tech': 'Determine output of C bitwise shift expression (1 << 4) | (8 >> 2).'
-            },
-            {
-                'year': '2024 Memory Based Paper',
-                'title': f'{comp_clean} SDE Previous Year Assessment Model 2',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Reorganize String such that no two adjacent characters are identical.',
-                'sample_quant': 'A sum of money doubles itself in 8 years under Simple Interest. In how many years will it triple?',
-                'sample_tech': 'Floyd\'s Tortoise and Hare algorithm for O(1) space cycle detection.'
-            },
-            {
-                'year': '2023 Campus Solved Paper',
-                'title': f'{comp_clean} Campus Placement Solved Paper Model 3',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Number of Islands: count connected components of 1s in a 2D binary grid.',
-                'sample_quant': '3 men or 6 women can finish a project in 16 days. How long will 12 men and 8 women take?',
-                'sample_tech': 'Space complexity of recursive DFS on a skewed binary tree.'
-            }
-        ]
-
-    elif 'deloitte' in c_lower:
-        total_qs = 92
-        total_mins = 135
-        exam_pattern = standard_exam_pattern
-        table_rounds = standard_table_rounds
-        past_papers = [
-            {
-                'year': '2025 Deloitte NLA Official Paper',
-                'title': f'{comp_clean} National Level Assessment Model 1',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Find the minimum number of swaps required to sort an array of integers.',
-                'sample_quant': 'Two pipes A and B fill a tank in 20 and 30 mins. When should pipe A be closed so tank is full in 15 mins?',
-                'sample_tech': 'Explain how B-Trees improve index lookup performance in Relational Databases.'
-            },
-            {
-                'year': '2024 Deloitte NLA Memory Based Paper',
-                'title': f'{comp_clean} Previous Year Assessment Model 2',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Given an array of strings, group anagrams together in O(N*K) time.',
-                'sample_quant': 'A trader marks his goods 25% above cost price and allows a 10% discount. Find his net profit percentage.',
-                'sample_tech': 'What is the key difference between optimistic and pessimistic concurrency control in DBMS?'
-            },
-            {
-                'year': '2023 Deloitte Campus Solved Paper',
-                'title': f'{comp_clean} National Level Assessment Model 3',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Given a binary tree, check whether it is a Height Balanced Tree.',
-                'sample_quant': 'Find the simple interest on $8,000 at 5% per annum for 3 years.',
-                'sample_tech': 'What is normalization in SQL? Explain 1NF, 2NF, and 3NF.'
-            }
-        ]
-
-    elif 'wipro' in c_lower:
-        total_qs = 92
-        total_mins = 135
-        exam_pattern = standard_exam_pattern
-        table_rounds = standard_table_rounds
-        past_papers = [
-            {
-                'year': '2025 Wipro NTH Official Paper',
-                'title': f'{comp_clean} National Talent Hunt Model 1',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Given an array of integers, return the second non-repeating element.',
-                'sample_quant': 'Find compound interest on $10,000 for 2 years at 10% per annum compounded half-yearly.',
-                'sample_tech': 'What is the difference between shallow copy and deep copy in Java?'
-            },
-            {
-                'year': '2024 Wipro NTH Memory Based Paper',
-                'title': f'{comp_clean} National Talent Hunt Model 2',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Find the longest word in a sentence with even character length.',
-                'sample_quant': 'In how many ways can the letters of the word EXCELLENCE be arranged?',
-                'sample_tech': 'What is garbage collection in Java and how does System.gc() work?'
-            },
-            {
-                'year': '2023 Wipro Campus Solved Paper',
-                'title': f'{comp_clean} Campus Placement Solved Model 3',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Write a C program to check if an integer is an Armstrong Number.',
-                'sample_quant': 'A man buys an item for $1,400 and sells it at a loss of 15%. Find selling price.',
-                'sample_tech': 'Explain static variable vs global variable in C language.'
-            }
-        ]
-
-    elif 'capgemini' in c_lower:
-        total_qs = 92
-        total_mins = 135
-        exam_pattern = standard_exam_pattern
-        table_rounds = standard_table_rounds
-        past_papers = [
-            {
-                'year': '2025 Capgemini Exceller Official Paper',
-                'title': f'{comp_clean} Exceller Placement Paper 2025 Model 1',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Write a function to count occurrences of prime numbers in a 2D matrix.',
-                'sample_quant': 'Grid movement & spatial memory game: solve 2 interactive cognitive challenges.',
-                'sample_tech': 'Determine output of nested pseudocode loop with bitwise right shifts.'
-            },
-            {
-                'year': '2024 Capgemini Exceller Memory Based Paper',
-                'title': f'{comp_clean} Exceller Placement Paper 2024 Model 2',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Given an integer array, find the maximum product subarray in O(N) time.',
-                'sample_quant': 'A tank can be filled by two pipes in 12 and 16 hours. How long will it take if both are open together?',
-                'sample_tech': 'What is the difference between Abstract Class and Interface in Java / C++?'
-            },
-            {
-                'year': '2023 Capgemini Campus Placement Solved Paper',
-                'title': f'{comp_clean} Campus Selection Solved Paper 2023 Model 3',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Remove duplicate characters from a string while preserving original order.',
-                'sample_quant': 'Find the angle between hour and minute hands of a clock at 3:30.',
-                'sample_tech': 'Explain virtual functions and dynamic dispatch mechanism in C++.'
-            }
-        ]
-
-    elif 'tech mahindra' in c_lower or 'techmahindra' in c_lower:
-        total_qs = 92
-        total_mins = 135
-        table_headers = ['Round', 'What is tested']
-        table_rounds = standard_table_rounds
-        selection_stages = selection_stages
-        exam_pattern = [
-            {'section': 'Round 1: Aptitude + English', 'questions': 'Quant, Verbal, Reasoning', 'time': '45 Mins', 'icon': '📊', 'color': '#38bdf8'},
-            {'section': 'Round 2: Technical/Psychometric', 'questions': 'Pseudo Code & Fundamentals', 'time': '40 Mins', 'icon': '💻', 'color': '#fbbf24'},
-            {'section': 'Round 3: Communication', 'questions': 'Spoken English Test', 'time': '20 Mins', 'icon': '🗣️', 'color': '#a855f7'},
-            {'section': 'Round 4 & 5: Tech & HR Interview', 'questions': 'Coding, Projects & HR Chat', 'time': '45 Mins', 'icon': '🤝', 'color': '#10b981'}
-        ]
-        past_papers = [
-            {
-                'year': '2025 Official Assessment Paper',
-                'title': f'{comp_clean} National Level Assessment Model 1',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Write a C program to check if an integer is an Armstrong Number.',
-                'sample_quant': 'A car covers a distance at 60 km/h in 4 hours. At what speed must it travel to cover it in 3 hours?',
-                'sample_tech': 'What is the key difference between Process and Thread in Operating Systems?'
-            },
-            {
-                'year': '2024 Memory Based Paper',
-                'title': f'{comp_clean} Previous Year Assessment Model 2',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Find the second non-repeating character in a given input string.',
-                'sample_quant': 'A trader marks goods 20% above cost price and gives a 10% discount. Find profit percentage.',
-                'sample_tech': 'Explain primary key vs candidate key in Relational Database Management Systems.'
-            },
-            {
-                'year': '2023 Campus Solved Paper',
-                'title': f'{comp_clean} Campus Placement Solved Paper Model 3',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Given an integer array, move all zeroes to the end while preserving non-zero element order.',
-                'sample_quant': 'Two pipes A and B fill a tank in 12 and 15 hours. How long will both take together?',
-                'sample_tech': 'Explain static variable vs global variable in C language.'
-            }
-        ]
-
-    elif 'google' in c_lower:
-        total_qs = 50
-        total_mins = 180
-        table_headers = ['Round', 'Typical format', 'What they test']
-        table_rounds = [
-            {
-                'round_name': '1. Online Assessment / Screening',
-                'sections': [
-                    {'name': 'Coding problems', 'qs': 'DSA, problem solving'}
-                ]
-            },
-            {
-                'round_name': '2. Technical Interviews',
-                'sections': [
-                    {'name': 'Usually 3-4 interviews', 'qs': 'DSA, algorithms, coding, CS fundamentals'}
-                ]
-            },
-            {
-                'round_name': '3. Googleyness / Behavioral',
-                'sections': [
-                    {'name': '1 interview or integrated into interviews', 'qs': 'Communication, teamwork, decision-making'}
-                ]
-            },
-            {
-                'round_name': '4. Hiring Committee',
-                'sections': [
-                    {'name': 'Internal review', 'qs': 'Overall interview performance'}
-                ]
-            },
-            {
-                'round_name': '5. Team Matching',
-                'sections': [
-                    {'name': 'Team discussions', 'qs': 'Role/team fit'}
-                ]
-            },
-            {
-                'round_name': '6. Offer',
-                'sections': [
-                    {'name': 'Final stage', 'qs': 'Compensation and joining details'}
-                ]
-            }
-        ]
-        selection_stages = [
-            {'step': 1, 'title': 'Screening / OA', 'desc': 'Coding Problems | DSA & Problem Solving', 'icon': '💻'},
-            {'step': 2, 'title': 'Tech Interviews', 'desc': '3–4 Interviews | DSA, Algorithms, CS Fundamentals', 'icon': '🎯'},
-            {'step': 3, 'title': 'Googleyness', 'desc': 'Behavioral & Leadership | Communication & Teamwork', 'icon': '🌟'},
-            {'step': 4, 'title': 'Hiring Committee', 'desc': 'Internal Review | Overall Interview Performance', 'icon': '⚖️'},
-            {'step': 5, 'title': 'Team Matching', 'desc': 'Team Discussions | Role & Team Fit', 'icon': '🤝'},
-            {'step': 6, 'title': 'Offer', 'desc': 'Final Stage | Compensation & Joining Details', 'icon': '🎉'}
-        ]
-        exam_pattern = [
-            {'section': 'Online Assessment / Screening', 'questions': 'Coding Problems', 'time': '60-90 Mins', 'icon': '💻', 'color': '#38bdf8'},
-            {'section': 'Technical Interviews (3-4 Loops)', 'questions': 'DSA & System Design', 'time': '45 Mins each', 'icon': '🧠', 'color': '#fbbf24'},
-            {'section': 'Googleyness & Leadership', 'questions': 'Behavioral Scenarios', 'time': '45 Mins', 'icon': '🌟', 'color': '#a855f7'},
-            {'section': 'Hiring Committee & Team Matching', 'questions': 'Packet Review & Fit Chats', 'time': '1-2 Weeks', 'icon': '🤝', 'color': '#10b981'}
-        ]
-        past_papers = [
-            {
-                'year': '2025 Google SWE Official Practice Set',
-                'title': 'Google SDE Problem Solving & Algorithm Assessment Model 1',
-                'total_qs': 4,
-                'duration': '90 Mins',
-                'sample_coding': 'Given a directed graph, find the shortest path with constraint on edge colors.',
-                'sample_quant': 'Analyze amortized time complexity of dynamic array resizing algorithm.',
-                'sample_tech': 'How does Google Bigtable handle consistent hashing and SSTable compaction?'
-            },
-            {
-                'year': '2024 Memory Based Paper',
-                'title': 'Google SWE Onsite Coding & DSA Assessment Model 2',
-                'total_qs': 4,
-                'duration': '90 Mins',
-                'sample_coding': 'Implement a thread-safe Rate Limiter using Sliding Window Counter algorithm.',
-                'sample_quant': 'Given a stream of integers, maintain median in O(log N) per insert operation.',
-                'sample_tech': 'Explain Paxos vs Raft consensus algorithms in distributed system architectures.'
-            },
-            {
-                'year': '2023 Google Campus Selection Paper',
-                'title': 'Google University Graduate SDE Placement Paper Model 3',
-                'total_qs': 4,
-                'duration': '90 Mins',
-                'sample_coding': 'Serialize and Deserialize N-ary Tree structure with minimal string size.',
-                'sample_quant': 'Find total unique paths in a grid with obstacles using Dynamic Programming.',
-                'sample_tech': 'Explain Virtual Memory management and Page Fault handling in Operating Systems.'
-            }
-        ]
-
-    elif 'meta' in c_lower or 'facebook' in c_lower:
-        total_qs = 25
-        total_mins = 120
-        table_headers = ['Interview', 'Main focus']
-        table_rounds = [
-            {
-                'round_name': 'Coding 1',
-                'sections': [{'name': 'DSA + problem solving'}]
-            },
-            {
-                'round_name': 'Coding 2',
-                'sections': [{'name': 'DSA + optimization'}]
-            },
-            {
-                'round_name': 'Coding / AI-enabled',
-                'sections': [{'name': 'Coding + debugging/code review, where applicable'}]
-            },
-            {
-                'round_name': 'System Design',
-                'sections': [{'name': 'Architecture/design, especially for experienced roles'}]
-            },
-            {
-                'round_name': 'Behavioral',
-                'sections': [{'name': 'Collaboration, impact, leadership'}]
-            },
-            {
-                'round_name': 'Additional technical',
-                'sections': [{'name': 'Depends on role/level'}]
-            }
-        ]
-        selection_stages = [
-            {'step': 1, 'title': 'Screening / OA', 'desc': 'Coding 1 & Coding 2 | DSA, Optimization & Problem Solving', 'icon': '💻'},
-            {'step': 2, 'title': 'Tech Loop', 'desc': 'Coding / AI-enabled | Debugging & Code Review', 'icon': '🔍'},
-            {'step': 3, 'title': 'System Design', 'desc': 'Architecture & Scalable System Design', 'icon': '🏗️'},
-            {'step': 4, 'title': 'Behavioral', 'desc': 'Collaboration, Leadership & Impact', 'icon': '🤝'}
-        ]
-        exam_pattern = [
-            {'section': 'Coding 1 & Coding 2', 'questions': 'DSA & Optimization', 'time': '45 Mins each', 'icon': '💻', 'color': '#38bdf8'},
-            {'section': 'Coding / AI-enabled', 'questions': 'Debugging & Review', 'time': '45 Mins', 'icon': '🔍', 'color': '#fbbf24'},
-            {'section': 'System Design', 'questions': 'Architecture', 'time': '45 Mins', 'icon': '🏗️', 'color': '#a855f7'},
-            {'section': 'Behavioral', 'questions': 'Leadership & Impact', 'time': '45 Mins', 'icon': '🤝', 'color': '#10b981'}
-        ]
-        past_papers = [
-            {
-                'year': '2025 Meta Official Practice Set',
-                'title': f'{comp_clean} Software Engineer Assessment Model 1',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Given a binary tree, return the vertical order traversal of its nodes values.',
-                'sample_quant': 'Analyze the time and space complexity of sparse matrix multiplication.',
-                'sample_tech': 'How does Meta Memcached scale distributed caching across millions of QPS?'
-            },
-            {
-                'year': '2024 Memory Based Paper',
-                'title': f'{comp_clean} Rotational Engineer Assessment Model 2',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Valid Palindrome II: check if a string can be palindrome after deleting at most 1 char.',
-                'sample_quant': 'Maintain top K frequent elements from continuous real-time event logs.',
-                'sample_tech': 'Explain GraphQL query execution engine vs REST API architecture.'
-            },
-            {
-                'year': '2023 Meta Campus Selection Paper',
-                'title': f'{comp_clean} University Graduate Solved Paper Model 3',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Simplify Path: given an absolute Unix-style path, convert it to simplified canonical path.',
-                'sample_quant': 'Calculate minimum total distance to visit all target points in 2D coordinate grid.',
-                'sample_tech': 'Explain Virtual Memory page replacement policies LRU vs LFU.'
-            }
-        ]
-
-    elif 'apple' in c_lower:
-        total_qs = 25
-        total_mins = 120
-        table_headers = ['Round', 'Main focus']
-        table_rounds = [
-            {
-                'round_name': '1. Online Assessment',
-                'sections': [{'name': 'Coding problems, DSA, problem solving'}]
-            },
-            {
-                'round_name': '2. Technical Interviews (3-5 loops)',
-                'sections': [{'name': 'DSA, algorithms, system design, CS fundamentals'}]
-            },
-            {
-                'round_name': '3. System Design',
-                'sections': [{'name': 'Architecture, scalability, iOS/macOS platform design'}]
-            },
-            {
-                'round_name': '4. Behavioral',
-                'sections': [{'name': 'Collaboration, ownership, innovation, Apple values'}]
-            },
-            {
-                'round_name': '5. Hiring Manager',
-                'sections': [{'name': 'Final review, role and team fit'}]
-            }
-        ]
-        selection_stages = [
-            {'step': 1, 'title': 'Online Assessment', 'desc': 'Coding Problems | DSA & Problem Solving', 'icon': '💻'},
-            {'step': 2, 'title': 'Technical Loops', 'desc': '3–5 Interviews | DSA, Algorithms, CS Fundamentals', 'icon': '🎯'},
-            {'step': 3, 'title': 'System Design', 'desc': 'Architecture & Scalability | iOS/macOS Platform Design', 'icon': '🏗️'},
-            {'step': 4, 'title': 'Behavioral', 'desc': 'Collaboration, Ownership & Apple Values', 'icon': '🤝'},
-            {'step': 5, 'title': 'Hiring Manager', 'desc': 'Final Review | Role & Team Fit', 'icon': '✅'}
-        ]
-        exam_pattern = [
-            {'section': 'Online Assessment', 'questions': 'Coding Problems', 'time': '60-90 Mins', 'icon': '💻', 'color': '#38bdf8'},
-            {'section': 'Technical Interviews (3-5 Loops)', 'questions': 'DSA & System Design', 'time': '45 Mins each', 'icon': '🧠', 'color': '#fbbf24'},
-            {'section': 'System Design', 'questions': 'Architecture & Platform Design', 'time': '45 Mins', 'icon': '🏗️', 'color': '#a855f7'},
-            {'section': 'Behavioral & Hiring Manager', 'questions': 'Values & Leadership', 'time': '45 Mins', 'icon': '🤝', 'color': '#10b981'}
-        ]
-        past_papers = [
-            {
-                'year': '2025 Apple SWE Official Practice Set',
-                'title': 'Apple Software Engineer Assessment Model 1',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Given a list of app events with timestamps, find the top-K most frequent events in O(N log K) time.',
-                'sample_quant': 'Analyze the time and space complexity of a recursive algorithm for generating all subsets of a set.',
-                'sample_tech': 'How does Apple\'s Core Data framework handle persistent storage and concurrency in iOS apps?'
-            },
-            {
-                'year': '2024 Memory Based Paper',
-                'title': 'Apple SWE Onsite Coding & System Design Model 2',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Implement an LFU Cache with O(1) time complexity for get and put operations.',
-                'sample_quant': 'Given a stream of integers, find the median after each insertion using two heaps.',
-                'sample_tech': 'Explain Metal graphics API and how it differs from OpenGL for GPU-accelerated rendering on Apple platforms.'
-            },
-            {
-                'year': '2023 Apple Campus Selection Paper',
-                'title': 'Apple University Graduate SDE Placement Paper Model 3',
-                'total_qs': 25,
-                'duration': '120 Mins',
-                'sample_coding': 'Design a thread-safe, memory-efficient trie supporting autocomplete with wildcard support.',
-                'sample_quant': 'Find the minimum number of operations to convert one binary string to another using dynamic programming.',
-                'sample_tech': 'Explain Swift\'s ARC (Automatic Reference Counting) and how it prevents retain cycles.'
-            }
-        ]
-
-    else:
-        # Default Fallback Company Pattern
-        total_qs = 92
-        total_mins = 135
-        exam_pattern = standard_exam_pattern
-        table_rounds = standard_table_rounds
-        past_papers = [
-            {
-                'year': '2025 Official Assessment Paper',
-                'title': f'{comp_clean} Online Assessment Test Model 1',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Write a program to find the longest palindrome substring in a given input string.',
-                'sample_quant': 'If 12 men or 18 women finish a project in 14 days, how long do 8 men and 16 women take?',
-                'sample_tech': 'What is the time complexity of searching an element in a Balanced Binary Search Tree (AVL Tree)?'
-            },
-            {
-                'year': '2024 Memory Based Paper',
-                'title': f'{comp_clean} Previous Year Assessment Model 2',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Given an integer array, move all zeroes to the end while maintaining relative order of non-zero elements.',
-                'sample_quant': 'A sum of money doubles itself in 8 years at simple interest. What is the annual rate of interest?',
-                'sample_tech': 'Explain the difference between Method Overloading and Method Overriding in OOP.'
-            },
-            {
-                'year': '2023 Campus Placement Solved Paper',
-                'title': f'{comp_clean} Campus Drive Solved Paper Model 3',
-                'total_qs': 92,
-                'duration': '135 Mins',
-                'sample_coding': 'Find the first non-repeating character in a string using Hash Map in O(N) time.',
-                'sample_quant': 'Two trains running in opposite directions cross a man standing on the platform in 27s and 17s. Find ratio of their speeds.',
-                'sample_tech': 'What is deadlock in Operating Systems? Explain the 4 necessary Coffman conditions.'
-            }
-        ]
-
-    if 'selection_stages' not in locals():
-        selection_stages = [
-            {'step': 1, 'title': 'Group Discussion', 'desc': '1–3 Topics | 10–20 Mins', 'icon': '🗣️'},
-            {'step': 2, 'title': 'Technical Round', 'desc': '15–30 Questions | 30–60 Mins', 'icon': '💻'},
-            {'step': 3, 'title': 'Managerial Round', 'desc': '8–15 Questions | 20–40 Mins', 'icon': '👔'},
-            {'step': 4, 'title': 'HR Round', 'desc': '8–15 Questions | 15–30 Mins', 'icon': '📜'},
-            {'step': 5, 'title': 'Mock Interview', 'desc': '10–20 Questions | 20–40 Mins', 'icon': '🎙️'}
-        ]
-
-    # Build enriched company_meta for UI branding & stats
+    # Fetch verified comprehensive company profile
+    profile = get_company_full_profile(comp_clean)
+    if not profile:
+        profile = {}
+    
+    c_name = profile.get('canonical_name', comp_clean)
+    total_mins = profile.get('total_mins', 90)
+    total_qs = profile.get('total_qs', 45)
+    selection_stages = profile.get('selection_stages', [])
+    table_rounds = profile.get('table_rounds', [])
+    table_headers = profile.get('table_headers', ['Round', 'Section Details', 'No. of Questions', 'Time Allotted'])
+    past_papers = profile.get('past_papers', [])
+    
+    # Build company_meta for UI rendering
     company_meta = {
-        'ctc': '₹4.5 - ₹6.5 LPA',
-        'roles': 'Software Engineer / Associate Analyst',
-        'eligibility': '60% or 6.5 CGPA in 10th, 12th & Graduation',
-        'difficulty': 'Moderate',
-        'difficulty_class': 'badge-warning',
-        'logo_icon': '⚡',
-        'brand_color': '#6366f1',
-        'accent_bg': 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
-        'tagline': f'Complete placement exam pattern, syllabus, sectional cutoffs & solved model papers for {comp_clean}.',
-        'syllabus': [
-            {'category': 'Cognitive Assessment', 'icon': '🧠', 'qs': '50 Qs', 'time': '50 Mins', 'topics': ['Quantitative Aptitude', 'Logical & Critical Reasoning', 'Abstract Reasoning', 'Verbal Ability & RC']},
-            {'category': 'Technical & Pseudocode', 'icon': '💻', 'qs': '40 Qs', 'time': '40 Mins', 'topics': ['Pseudocode & Bitwise Operators', 'Data Structures & Logic', 'Networking & Cloud Basics', 'DBMS, SQL & Security']},
-            {'category': 'Coding Assessment', 'icon': '⚡', 'qs': '2 Qs', 'time': '45 Mins', 'topics': ['Array Subsegment Logic', 'String Manipulation', 'Bit Operations', 'Optimized Algorithm Design']},
-            {'category': 'Communication Assessment', 'icon': '🗣️', 'qs': '6 Modules', 'time': '20 Mins', 'topics': ['Sentence Reading & Repeat', 'Vocabulary & Pronunciation', 'Short Story Retelling', 'Fluency & Conversation']}
-        ],
-        'faqs': [
-            {'q': f'Is there negative marking in {comp_clean} online assessment?', 'a': 'No, there is no negative marking in the assessment. Candidates are encouraged to attempt all questions.'},
-            {'q': f'Can candidates switch between sections during the exam?', 'a': 'No. Sections are strictly time-bound. Once the allocated time for a section expires, candidates automatically proceed to the next section.'},
-            {'q': f'Which programming languages can be used in the coding section?', 'a': 'Supported languages include C, C++, Java, Python, and JavaScript.'},
-            {'q': f'What is the minimum eligibility criteria for {comp_clean} campus recruitment?', 'a': 'A minimum of 60% or 6.5 CGPA in 10th, 12th, and Graduation with no active backlogs.'}
-        ]
+        'ctc': profile.get('ctc', '₹6.0 - ₹12.0 LPA'),
+        'roles': profile.get('roles', f'Software Engineer / Analyst at {c_name}'),
+        'eligibility': profile.get('eligibility', '60% or 6.5 CGPA in Graduation with no active backlogs'),
+        'difficulty': profile.get('difficulty', 'Moderate'),
+        'difficulty_class': profile.get('difficulty_class', 'badge-info'),
+        'logo_icon': profile.get('logo_icon', '🏢'),
+        'logo_image': profile.get('logo_image', None),
+        'brand_color': profile.get('brand_color', '#2563eb'),
+        'accent_bg': profile.get('accent_bg', 'linear-gradient(135deg, #2563eb 0%, #1e293b 100%)'),
+        'tagline': profile.get('tagline', f'Complete recruitment exam pattern, syllabus & solved papers for {c_name}.'),
+        'syllabus': profile.get('syllabus', []),
+        'faqs': profile.get('faqs', [])
     }
-
-    if 'accenture' in c_lower:
-        company_meta.update({
-            'logo_icon': '⚡',
-            'brand_color': '#a100ff',
-            'accent_bg': 'linear-gradient(135deg, #a100ff 0%, #4f46e5 100%)',
-            'roles': 'Associate Software Engineer (ASE) & Advanced ASE',
-            'ctc': '₹4.5 - ₹6.5 LPA',
-            'eligibility': '60% or 6.5 CGPA in B.E/B.Tech/MCA/M.Sc',
-            'difficulty': 'Moderate to Hard',
-            'difficulty_class': 'badge-warning'
-        })
-    elif 'tcs' in c_lower:
-        company_meta.update({
-            'logo_icon': '🏆',
-            'brand_color': '#0284c7',
-            'accent_bg': 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-            'roles': 'TCS Ninja (₹3.36 LPA) & TCS Digital (₹7.0 - ₹9.0 LPA)',
-            'ctc': '₹3.36 - ₹9.0 LPA',
-            'eligibility': '60% throughout academics (10th, 12th, UG/PG)',
-            'difficulty': 'Moderate to Advanced',
-            'difficulty_class': 'badge-danger'
-        })
-    elif 'infosys' in c_lower or 'infy' in c_lower:
-        company_meta.update({
-            'logo_icon': '🚀',
-            'brand_color': '#007cc3',
-            'accent_bg': 'linear-gradient(135deg, #007cc3 0%, #1e40af 100%)',
-            'roles': 'System Engineer (SE) & Specialist Programmer (SP)',
-            'ctc': '₹3.6 - ₹9.5 LPA',
-            'eligibility': '60% or 6.0 CGPA in B.E/B.Tech/MCA/M.Sc',
-            'difficulty': 'Moderate',
-            'difficulty_class': 'badge-warning'
-        })
-    elif 'amazon' in c_lower:
-        company_meta.update({
-            'logo_icon': '📦',
-            'brand_color': '#ff9900',
-            'accent_bg': 'linear-gradient(135deg, #ff9900 0%, #d97706 100%)',
-            'roles': 'Software Development Engineer (SDE-1)',
-            'ctc': '₹18.0 - ₹45.0 LPA',
-            'eligibility': 'B.E / B.Tech / M.Tech in CS/IT/EC',
-            'difficulty': 'Hard / Advanced',
-            'difficulty_class': 'badge-danger'
-        })
-    elif 'google' in c_lower:
-        company_meta.update({
-            'logo_icon': '🌐',
-            'brand_color': '#4285f4',
-            'accent_bg': 'linear-gradient(135deg, #4285f4 0%, #34a853 100%)',
-            'roles': 'Software Engineer (L1/L2 / Early Career)',
-            'ctc': '₹25.0 - ₹60.0 LPA',
-            'eligibility': 'B.S / M.S / Ph.D in CS or STEM',
-            'difficulty': 'Very Hard',
-            'difficulty_class': 'badge-danger'
-        })
-    elif 'wipro' in c_lower:
-        company_meta.update({
-            'logo_icon': '💼',
-            'brand_color': '#4e148c',
-            'accent_bg': 'linear-gradient(135deg, #4e148c 0%, #6b21a8 100%)',
-            'roles': 'Project Engineer (Elite & Turbo)',
-            'ctc': '₹3.5 - ₹6.5 LPA',
-            'eligibility': '60% or 6.0 CGPA in 10th, 12th & Graduation',
-            'difficulty': 'Easy to Moderate',
-            'difficulty_class': 'badge-info'
-        })
-    elif 'netflix' in c_lower:
-        company_meta.update({
-            'logo_icon': '🎬',
-            'brand_color': '#e50914',
-            'accent_bg': 'linear-gradient(135deg, #e50914 0%, #b81d24 100%)',
-            'roles': 'Software Engineer (L4/L5) & Platform Engineer',
-            'ctc': '₹35.0 - ₹75.0 LPA',
-            'eligibility': 'B.E / B.Tech / M.Tech in CS/IT or equivalent',
-            'difficulty': 'Very Hard / Elite',
-            'difficulty_class': 'badge-danger'
-        })
-    elif 'oracle' in c_lower:
-        company_meta.update({
-            'logo_icon': '🔴',
-            'brand_color': '#f80000',
-            'accent_bg': 'linear-gradient(135deg, #f80000 0%, #c00000 100%)',
-            'roles': 'Associate Software Engineer / Server Technology',
-            'ctc': '₹14.0 - ₹28.0 LPA',
-            'eligibility': '60% or 6.5 CGPA in B.E/B.Tech/MCA',
-            'difficulty': 'Hard',
-            'difficulty_class': 'badge-danger'
-        })
-    elif 'adobe' in c_lower:
-        company_meta.update({
-            'logo_icon': '🎨',
-            'brand_color': '#ff0000',
-            'accent_bg': 'linear-gradient(135deg, #ff0000 0%, #cc0000 100%)',
-            'roles': 'Member of Technical Staff (MTS-1) / Software Engineer',
-            'ctc': '₹18.0 - ₹40.0 LPA',
-            'eligibility': 'B.E / B.Tech / M.Tech in CS/IT/ECE with 7.0+ CGPA',
-            'difficulty': 'Hard / Product Tier',
-            'difficulty_class': 'badge-danger'
-        })
+    
+    exam_pattern = [
+        {'section': f"{r.get('round_name', 'Round')}", 'questions': f"{len(r.get('sections', []))} Sections", 'time': '60 Mins', 'icon': '💻', 'color': '#2563eb'}
+        for r in table_rounds
+    ]
 
     return render_template('company_detail.html',
-                           company_name=comp_clean,
+                           company_name=c_name,
                            exam_pattern=exam_pattern,
                            selection_stages=selection_stages,
                            past_papers=past_papers,
@@ -2140,7 +1639,6 @@ def company_detail(company_name):
                            total_qs=total_qs,
                            total_mins=total_mins,
                            company_meta=company_meta)
-
 def get_quant_logical_10_qs(comp_name, title_str):
     t_lower = title_str.lower()
     
@@ -9274,7 +8772,23 @@ def build_model_paper_data(comp_name, title_str, year, duration, paper_type="mod
     t_lower = title_str.lower()
     y_lower = year.lower()
 
-    if 'google' in comp_name.lower():
+    profile = get_company_full_profile(comp_name)
+    company_past_papers = profile.get('past_papers', []) if profile else []
+    
+    # Check if there is a custom verified past paper defined in company_data
+    selected_paper = None
+    if company_past_papers:
+        if 'model 2' in t_lower or '2024' in y_lower or 'model 2' in y_lower:
+            selected_paper = company_past_papers[1] if len(company_past_papers) > 1 else company_past_papers[0]
+        elif 'model 3' in t_lower or '2023' in y_lower or 'model 3' in y_lower:
+            selected_paper = company_past_papers[2] if len(company_past_papers) > 2 else company_past_papers[0]
+        else:
+            selected_paper = company_past_papers[0]
+            
+    if selected_paper and selected_paper.get('sections'):
+        sections = [dict(s) for s in selected_paper['sections']]
+        paper_title = selected_paper.get('title', title_str)
+    elif 'google' in comp_name.lower():
         if 'model 2' in t_lower or 'model 2' in y_lower:
             sections = get_google_practice_sections_model2()
             paper_title = 'Google SWE Onsite Coding & DSA Assessment Model 2'
@@ -9438,14 +8952,15 @@ def practice():
         paper_type = request.args.get('paper_type', 'model').strip()
         model_paper = build_model_paper_data(comp_name, title_str, year, duration, paper_type=paper_type)
 
-    return render_template('practice.html', questions=q_data, selected_category=category, model_paper=model_paper, available_papers=available_papers)
+    hub_companies = get_all_companies_hub_data()
+    return render_template('practice.html', questions=q_data, selected_category=category, model_paper=model_paper, available_papers=available_papers, hub_companies=hub_companies)
 
 def get_mock_user_metrics(user_id):
     user = db.session.get(User, user_id)
     attempts = MockInterviewAttempt.query.filter_by(user_id=user_id).order_by(MockInterviewAttempt.created_at.desc()).all()
     
     tests_completed = len(attempts)
-    total_rounds = 8  # 8 Technical Domains + 2 HR modules
+    total_rounds = 25  # 25 Technical Domains in 4 Categories
     
     if tests_completed > 0:
         total_score_sum = sum(a.score_percentage for a in attempts)
@@ -9463,22 +8978,28 @@ def get_mock_user_metrics(user_id):
     streak_count = user.streak_count if user and user.streak_count else 0
     
     # Topic-specific highest score / completion state
+    now = datetime.utcnow()
     topic_attempts = {}
     for a in attempts:
+        time_diff = now - a.created_at
+        is_within_1h = (time_diff < timedelta(hours=1))
+        rem_sec = max(0, int(3600 - time_diff.total_seconds())) if is_within_1h else 0
+
         if a.topic_key not in topic_attempts:
             topic_attempts[a.topic_key] = {
                 'score_percentage': a.score_percentage,
                 'correct_count': a.correct_count,
                 'total_questions': a.total_questions,
-                'date': a.created_at
+                'date': a.created_at,
+                'is_within_1h': is_within_1h,
+                'remaining_seconds': rem_sec
             }
         elif a.score_percentage > topic_attempts[a.topic_key]['score_percentage']:
-            topic_attempts[a.topic_key] = {
-                'score_percentage': a.score_percentage,
-                'correct_count': a.correct_count,
-                'total_questions': a.total_questions,
-                'date': a.created_at
-            }
+            topic_attempts[a.topic_key]['score_percentage'] = a.score_percentage
+            # If any attempt was within 1h, preserve that state
+            if is_within_1h and not topic_attempts[a.topic_key]['is_within_1h']:
+                topic_attempts[a.topic_key]['is_within_1h'] = True
+                topic_attempts[a.topic_key]['remaining_seconds'] = rem_sec
 
     recent_mock_tests = []
     for att in attempts[:5]:
@@ -9516,7 +9037,35 @@ def mock_interview():
     user = db.session.get(User, user_id)
     update_user_streak(user)
     mock_stats = get_mock_user_metrics(user_id)
-    return render_template('mock_interview.html', mock_stats=mock_stats, current_user=user)
+    
+    import mock_data
+    topics_by_cat = {
+        'programming': {'label': 'Programming', 'icon': '💻', 'topics': []},
+        'core_cs': {'label': 'Core CS', 'icon': '⚙️', 'topics': []},
+        'web_dev': {'label': 'Web Development', 'icon': '🌐', 'topics': []},
+        'emerging': {'label': 'Emerging Technologies', 'icon': '🚀', 'topics': []}
+    }
+    
+    all_tech_topics = []
+    for k, v in mock_data.MOCK_TOPICS_DATA.items():
+        if k in ('hr_self_intro', 'hr_general') or not v.get('category'):
+            continue
+        cat = v.get('category', 'programming')
+        t_obj = {
+            'key': k,
+            'name': v['name'],
+            'category': cat,
+            'category_label': v.get('category_label', cat.title()),
+            'difficulty': v.get('difficulty', 'Medium'),
+            'questions_count': len(v.get('questions', [])),
+            'duration': v.get('duration', '30 Mins'),
+            'icon_class': v.get('icon_class', 'default-bg')
+        }
+        if cat in topics_by_cat:
+            topics_by_cat[cat]['topics'].append(t_obj)
+        all_tech_topics.append(t_obj)
+        
+    return render_template('mock_interview.html', mock_stats=mock_stats, current_user=user, topics_by_cat=topics_by_cat, all_tech_topics=all_tech_topics)
 
 @app.route('/api/submit-mock-test', methods=['POST'])
 @login_required
@@ -9812,31 +9361,82 @@ def progress():
 @login_required
 def leaderboard():
     current_user_obj = db.session.get(User, session['user_id'])
-    filter_type = request.args.get('filter', 'all_time')
+    filter_type = request.args.get('filter', 'daily')
+    if filter_type not in ['daily', 'weekly', 'monthly', 'all_time']:
+        filter_type = 'daily'
 
     # Query all real registered portal users from database
     all_users = User.query.all()
     
-    # Pre-aggregate stats for all users in one single query
-    prog_stats = db.session.query(
+    now = datetime.utcnow()
+    cutoff_time = None
+    if filter_type == 'daily':
+        cutoff_time = now - timedelta(days=1)
+    elif filter_type == 'weekly':
+        cutoff_time = now - timedelta(days=7)
+    elif filter_type == 'monthly':
+        cutoff_time = now - timedelta(days=30)
+
+    # Pre-aggregate stats based on filter window
+    if cutoff_time:
+        prog_stats = db.session.query(
+            UserProgress.user_id,
+            db.func.count(UserProgress.id).label('attempted'),
+            db.func.sum(db.case((UserProgress.status == 'mastered', 1), else_=0)).label('mastered')
+        ).filter(UserProgress.updated_at >= cutoff_time).group_by(UserProgress.user_id).all()
+    else:
+        prog_stats = db.session.query(
+            UserProgress.user_id,
+            db.func.count(UserProgress.id).label('attempted'),
+            db.func.sum(db.case((UserProgress.status == 'mastered', 1), else_=0)).label('mastered')
+        ).group_by(UserProgress.user_id).all()
+    stats_map = {row[0]: (row[1] or 0, row[2] or 0) for row in prog_stats}
+
+    # Also get all-time counts for overall candidate profile
+    all_time_stats = db.session.query(
         UserProgress.user_id,
         db.func.count(UserProgress.id).label('attempted'),
         db.func.sum(db.case((UserProgress.status == 'mastered', 1), else_=0)).label('mastered')
     ).group_by(UserProgress.user_id).all()
-    stats_map = {row[0]: (row[1] or 0, row[2] or 0) for row in prog_stats}
+    all_time_map = {row[0]: (row[1] or 0, row[2] or 0) for row in all_time_stats}
 
     user_list = []
     for u in all_users:
         attempted, mastered = stats_map.get(u.id, (0, 0))
+        all_attempted, all_mastered = all_time_map.get(u.id, (0, 0))
         streak = getattr(u, 'streak_count', None) or 1
         
-        # Real calculated user score (0 if no questions solved yet)
-        if attempted > 0:
-            score = (mastered * 20) + (attempted * 10) + (streak * 5)
-            user_streak_val = streak
-        else:
-            score = 0
-            user_streak_val = 0
+        # Real calculated user score based on selected timeframe
+        if filter_type == 'daily':
+            if attempted > 0:
+                score = (mastered * 20) + (attempted * 10) + (streak * 5)
+            elif all_attempted > 0:
+                score = streak * 5
+            else:
+                score = 0
+            user_streak_val = streak if (attempted > 0 or all_attempted > 0) else 0
+        elif filter_type == 'weekly':
+            if attempted > 0:
+                score = (mastered * 20) + (attempted * 10) + (streak * 10)
+            elif all_attempted > 0:
+                score = min(all_attempted * 5, 80) + (streak * 10)
+            else:
+                score = 0
+            user_streak_val = streak if (attempted > 0 or all_attempted > 0) else 0
+        elif filter_type == 'monthly':
+            if attempted > 0:
+                score = (mastered * 20) + (attempted * 10) + (streak * 15)
+            elif all_attempted > 0:
+                score = min(all_attempted * 8, 250) + (streak * 15)
+            else:
+                score = 0
+            user_streak_val = streak if (attempted > 0 or all_attempted > 0) else 0
+        else: # all_time
+            if attempted > 0:
+                score = (mastered * 20) + (attempted * 10) + (streak * 20)
+            else:
+                score = 0
+            user_streak_val = streak if attempted > 0 else 0
             
         display_name = u.full_name or u.username or f"User #{u.id}"
         
@@ -9854,8 +9454,9 @@ def leaderboard():
             'name': display_name,
             'score': score,
             'streak': user_streak_val,
-            'solved': attempted,
-            'mastered': mastered,
+            'solved': attempted if filter_type != 'all_time' else all_attempted,
+            'mastered': mastered if filter_type != 'all_time' else all_mastered,
+            'all_time_solved': all_attempted,
             'badge': badge,
             'avatar': display_name[0].upper() if display_name else 'U',
             'is_current': (u.id == current_user_obj.id)
@@ -9892,28 +9493,61 @@ def leaderboard():
         top_score = candidates[0]['score']
         top_needed = max(0, top_score - user_score + 10) if user_rank > 1 else 0
         spotlight = candidates[0]
+        top_1_user = candidates[0]
     else:
         top_needed = 0
         spotlight = {
             'rank': 1, 'badge_icon': '🥇', 'name': current_user_obj.full_name or current_user_obj.username,
             'score': user_score, 'streak': 0, 'badge': '⭐ Rising Star', 'avatar': (current_user_obj.username or 'U')[0].upper()
         }
+        top_1_user = spotlight
 
-    total_solved_sum = sum(c['solved'] for c in candidates)
-    total_streak_sum = sum(c['streak'] for c in candidates)
+    # CALCULATE STATS OF WHO COMES FIRST (#1 ON THE LEADERBOARD)
+    top_1_id = top_1_user.get('id', current_user_obj.id)
+    top_1_solved = top_1_user.get('all_time_solved') or top_1_user.get('solved', 0)
+    if top_1_solved == 0:
+        top_1_solved = top_1_user.get('solved', 0)
 
-    # Calculate actual percentage metrics based on solved questions
-    mock_score_val = round((total_solved_sum * 0.5)) if total_solved_sum > 0 else 0
-    aptitude_score_val = round((total_solved_sum * 0.4)) if total_solved_sum > 0 else 0
-    readiness_score_val = round((total_solved_sum * 0.6)) if total_solved_sum > 0 else 0
-    streak_points_val = total_streak_sum * 10 if total_solved_sum > 0 else 0
+    # Top 1 user's mock interview attempts & score
+    top_mock_attempts = MockInterviewAttempt.query.filter_by(user_id=top_1_id).all()
+    if top_mock_attempts:
+        top_mock_score = round(sum(m.score_percentage for m in top_mock_attempts) / len(top_mock_attempts))
+    elif top_1_solved > 0:
+        top_mock_score = min(100, max(40, round((top_1_user.get('mastered', 0) / max(1, top_1_solved)) * 80) + 15))
+    else:
+        top_mock_score = 0
+
+    # Top 1 user's aptitude score
+    top_apt_attempts = AptitudeTestAttempt.query.filter_by(user_id=top_1_id).all()
+    if top_apt_attempts:
+        top_apt_score = round(sum(a.score_percentage for a in top_apt_attempts) / len(top_apt_attempts))
+    else:
+        top_apt_solved = db.session.query(db.func.count(UserProgress.id)).join(
+            Question, UserProgress.question_id == Question.id
+        ).filter(UserProgress.user_id == top_1_id, Question.category == 'Aptitude').scalar() or 0
+        if top_apt_solved > 0:
+            top_apt_score = min(100, max(35, round((top_apt_solved / 25) * 65)))
+        elif top_1_solved > 0:
+            top_apt_score = min(100, max(30, round(top_1_solved * 0.5)))
+        else:
+            top_apt_score = 0
+
+    # Top 1 user's readiness score
+    if top_1_solved > 0:
+        top_readiness = min(100, max(20, round((top_1_solved * 0.7) + (top_mock_score * 0.2) + (top_1_user.get('streak', 1) * 3))))
+    else:
+        top_readiness = 0
+
+    # Top 1 user's streak points
+    top_streak_pts = (top_1_user.get('streak', 1) or 1) * 20
 
     metrics_summary = {
-        'total_questions_solved': total_solved_sum,
-        'avg_mock_score': min(100, mock_score_val),
-        'avg_aptitude_score': min(100, aptitude_score_val),
-        'avg_readiness_score': min(100, readiness_score_val),
-        'total_streak_points': streak_points_val
+        'total_questions_solved': top_1_solved,
+        'avg_mock_score': min(100, top_mock_score),
+        'avg_aptitude_score': min(100, top_apt_score),
+        'avg_readiness_score': min(100, top_readiness),
+        'total_streak_points': top_streak_pts,
+        'top_user_name': top_1_user.get('name', 'Rank #1')
     }
 
     return render_template('leaderboard.html',
@@ -9946,13 +9580,32 @@ def profile():
     else:
         readiness_percentage = 0
 
-    skills_str = getattr(user, 'skills', None) or 'Python, JavaScript, Data Structures, System Design, SQL, React'
-    courses_str = getattr(user, 'completed_courses', None) or 'Full-Stack Interview Mastery, Data Structures & Algorithms Deep Dive, System Design Principles'
-    certs_str = getattr(user, 'certificates', None) or 'Verified Algorithm Expert, Certified System Architecture Professional'
+    skills_str = getattr(user, 'skills', None) or ''
+    courses_str = getattr(user, 'completed_courses', None) or ''
+    certs_str = getattr(user, 'certificates', None) or ''
 
     skills_list = [s.strip() for s in skills_str.split(',') if s.strip()]
     courses_list = [c.strip() for c in courses_str.split(',') if c.strip()]
     certs_list = [cert.strip() for cert in certs_str.split(',') if cert.strip()]
+
+    # Dynamic PREPARATION OVERVIEW calculations based on real user performance
+    apt_attempts = AptitudeTestAttempt.query.filter_by(user_id=user.id).all()
+    mock_attempts = MockInterviewAttempt.query.filter_by(user_id=user.id).all()
+    total_tests_taken = len(apt_attempts) + len(mock_attempts)
+
+    # Questions Solved: total distinct questions practiced / mastered plus questions answered in tests
+    total_questions_solved = mastered_count
+
+    # Calculate overall accuracy
+    total_test_q = sum(a.total_questions for a in apt_attempts) + sum(m.total_questions for m in mock_attempts)
+    total_test_correct = sum(a.correct_count for a in apt_attempts) + sum(m.correct_count for m in mock_attempts)
+
+    if total_test_q > 0:
+        overall_accuracy = round((total_test_correct / total_test_q) * 100)
+    elif attempted_count > 0:
+        overall_accuracy = round((mastered_count / attempted_count) * 100)
+    else:
+        overall_accuracy = 0
 
     categories = ['Frontend', 'Backend', 'Data Structures', 'System Design', 'Behavioral']
     cat_stats = []
@@ -9977,7 +9630,10 @@ def profile():
                            skills_list=skills_list,
                            courses_list=courses_list,
                            certs_list=certs_list,
-                           cat_stats=cat_stats)
+                           cat_stats=cat_stats,
+                           total_tests_taken=total_tests_taken,
+                           total_questions_solved=total_questions_solved,
+                           overall_accuracy=overall_accuracy)
 
 @app.route('/profile/update', methods=['POST'])
 @login_required
@@ -9987,10 +9643,10 @@ def update_profile():
     user.education = request.form.get('education', '').strip() or 'B.Tech'
     user.college = request.form.get('college', '').strip() or ''
     user.location = request.form.get('location', '').strip() or 'India'
-    user.target_role = request.form.get('target_role', '').strip() or 'Software Developer'
-    user.preferred_domain = request.form.get('preferred_domain', '').strip() or 'Python / Full Stack'
-    user.target_companies = request.form.get('target_companies', '').strip() or 'Deloitte, TCS, Infosys'
-    user.skills = request.form.get('skills', '').strip() or 'Python, HTML, CSS, JavaScript, Flask, SQL'
+    user.target_role = request.form.get('target_role', '').strip()
+    user.preferred_domain = request.form.get('preferred_domain', '').strip()
+    user.target_companies = request.form.get('target_companies', '').strip()
+    user.skills = request.form.get('skills', '').strip()
     db.session.commit()
     flash('Profile updated successfully!', 'success')
     return redirect(url_for('profile'))

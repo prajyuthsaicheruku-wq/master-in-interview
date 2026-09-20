@@ -25,7 +25,7 @@
             <!-- TIME FILTERS -->
             <div class="lb-filters-row">
                 <span class="lb-filter-label">Time Filter:</span>
-                <a href="{{ url_for('leaderboard', filter='daily') }}" class="lb-filter-btn {{ 'active' if filter_type == 'daily' else '' }}">
+                <a href="{{ url_for('leaderboard', filter='daily') }}" class="lb-filter-btn {{ 'active' if filter_type == 'daily' or not filter_type else '' }}">
                     Daily
                 </a>
                 <a href="{{ url_for('leaderboard', filter='weekly') }}" class="lb-filter-btn {{ 'active' if filter_type == 'weekly' else '' }}">
@@ -34,7 +34,7 @@
                 <a href="{{ url_for('leaderboard', filter='monthly') }}" class="lb-filter-btn {{ 'active' if filter_type == 'monthly' else '' }}">
                     Monthly
                 </a>
-                <a href="{{ url_for('leaderboard', filter='all_time') }}" class="lb-filter-btn {{ 'active' if filter_type == 'all_time' or not filter_type else '' }}">
+                <a href="{{ url_for('leaderboard', filter='all_time') }}" class="lb-filter-btn {{ 'active' if filter_type == 'all_time' else '' }}">
                     All Time
                 </a>
             </div>

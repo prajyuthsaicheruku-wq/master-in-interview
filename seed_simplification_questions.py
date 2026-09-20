@@ -1,462 +1,1574 @@
+"""
+Seed script for Simplification (Number & Arithmetic)
+Contains exactly 50 easy-to-medium questions with detailed solutions and tips.
+"""
+import os
 import json
 import sqlite3
-import os
-
-DB_PATH = os.path.join(os.path.dirname(__file__), 'instance', 'interview_portal.db')
 
 questions = [
     {
-        "title": "Simplification - 48 / 6 * 4 + 12 - 5",
-        "difficulty": "Medium",
-        "question_text": "Simplify: 48 ÷ 6 × 4 + 12 − 5",
-        "sample_answer": "Apply BODMAS:\n1. 48 ÷ 6 = 8\n2. 8 × 4 = 32\n3. 32 + 12 = 44\n4. 44 − 5 = 39.",
-        "tips": "Follow order of operations: Division -> Multiplication -> Addition -> Subtraction.",
+        "title": "Simplification - BODMAS Expression 1",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 14 + 3 \u00d7 4 \u2212 9",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 3 \u00d7 4 = 12\n2. Addition & Subtraction: 14 + 12 \u2212 9 = 17.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
         "options": [
-            {"label": "A", "text": "32", "is_correct": False},
-            {"label": "B", "text": "39", "is_correct": True},
-            {"label": "C", "text": "44", "is_correct": False},
-            {"label": "D", "text": "48", "is_correct": False}
+            {
+                "label": "A",
+                "text": "19",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "15",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "17",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "22",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 2",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 14 + 4 \u00d7 4 \u2212 2",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 4 \u00d7 4 = 16\n2. Addition & Subtraction: 14 + 16 \u2212 2 = 28.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "30",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "33",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "26",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "28",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 3",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 15 + 4 \u00d7 5 \u2212 6",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 4 \u00d7 5 = 20\n2. Addition & Subtraction: 15 + 20 \u2212 6 = 29.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "34",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "31",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "29",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "27",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 4",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 27 + 6 \u00d7 5 \u2212 9",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 6 \u00d7 5 = 30\n2. Addition & Subtraction: 27 + 30 \u2212 9 = 48.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "53",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "50",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "48",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "46",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 5",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 31 + 7 \u00d7 6 \u2212 3",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 7 \u00d7 6 = 42\n2. Addition & Subtraction: 31 + 42 \u2212 3 = 70.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "70",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "68",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "72",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "75",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 6",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 16 + 2 \u00d7 5 \u2212 10",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 2 \u00d7 5 = 10\n2. Addition & Subtraction: 16 + 10 \u2212 10 = 16.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "14",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "21",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "16",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "18",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 7",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 38 + 3 \u00d7 6 \u2212 10",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 3 \u00d7 6 = 18\n2. Addition & Subtraction: 38 + 18 \u2212 10 = 46.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "48",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "46",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "51",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "44",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Simplification - 25 + 36 / 6 * 3 - 8",
-        "difficulty": "Medium",
-        "question_text": "Simplify: 25 + 36 ÷ 6 × 3 − 8",
-        "sample_answer": "1. 36 ÷ 6 = 6\n2. 6 × 3 = 18\n3. 25 + 18 = 43\n4. 43 − 8 = 35.",
-        "tips": "Perform division and multiplication before addition and subtraction.",
+        "title": "Simplification - BODMAS Expression 8",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 27 + 7 \u00d7 2 \u2212 8",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 7 \u00d7 2 = 14\n2. Addition & Subtraction: 27 + 14 \u2212 8 = 33.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
         "options": [
-            {"label": "A", "text": "25", "is_correct": False},
-            {"label": "B", "text": "30", "is_correct": False},
-            {"label": "C", "text": "35", "is_correct": True},
-            {"label": "D", "text": "42", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - 3/4 + 5/8 - 1/2",
-        "difficulty": "Medium",
-        "question_text": "Find the value: 3/4 + 5/8 − 1/2",
-        "sample_answer": "LCM of denominators 4, 8, 2 is 8.\n3/4 = 6/8, 5/8 = 5/8, 1/2 = 4/8.\n(6 + 5 - 4) / 8 = 7/8.",
-        "tips": "Convert all fractions to common denominator 8.",
-        "options": [
-            {"label": "A", "text": "5/8", "is_correct": False},
-            {"label": "B", "text": "7/8", "is_correct": True},
-            {"label": "C", "text": "9/8", "is_correct": False},
-            {"label": "D", "text": "1/2", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "Simplification - (24 * 15) / (8 * 5)",
-        "difficulty": "Medium",
-        "question_text": "Simplify: (24 × 15) / (8 × 5)",
-        "sample_answer": "Cancel out common terms:\n24 / 8 = 3\n15 / 5 = 3\n3 × 3 = 9.",
-        "tips": "Simplify terms in numerator and denominator individually.",
-        "options": [
-            {"label": "A", "text": "6", "is_correct": False},
-            {"label": "B", "text": "8", "is_correct": False},
-            {"label": "C", "text": "9", "is_correct": True},
-            {"label": "D", "text": "12", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - sqrt(144) + sqrt(225) - sqrt(81)",
-        "difficulty": "Medium",
-        "question_text": "Find: √144 + √225 − √81",
-        "sample_answer": "√144 = 12\n√225 = 15\n√81 = 9\n12 + 15 − 9 = 27 − 9 = 18.",
-        "tips": "Evaluate square roots first.",
-        "options": [
-            {"label": "A", "text": "15", "is_correct": False},
-            {"label": "B", "text": "18", "is_correct": True},
-            {"label": "C", "text": "21", "is_correct": False},
-            {"label": "D", "text": "24", "is_correct": False}
+            {
+                "label": "A",
+                "text": "38",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "33",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "31",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "35",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Simplification - (2/3 * 9/4) + 5/6",
-        "difficulty": "Medium",
-        "question_text": "Simplify: (2/3 × 9/4) + 5/6",
-        "sample_answer": "(2/3 × 9/4) = 18/12 = 3/2.\n3/2 + 5/6 = 9/6 + 5/6 = 14/6 = 7/3.",
-        "tips": "Multiply fractions first, then add.",
+        "title": "Simplification - BODMAS Expression 9",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 23 + 8 \u00d7 4 \u2212 9",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 8 \u00d7 4 = 32\n2. Addition & Subtraction: 23 + 32 \u2212 9 = 46.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
         "options": [
-            {"label": "A", "text": "5/3", "is_correct": False},
-            {"label": "B", "text": "2", "is_correct": False},
-            {"label": "C", "text": "7/3", "is_correct": True},
-            {"label": "D", "text": "8/3", "is_correct": False}
+            {
+                "label": "A",
+                "text": "44",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "51",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "48",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "46",
+                "is_correct": true
+            }
         ],
-        "correct_option": "C"
+        "correct_option": "D"
     },
     {
-        "title": "Simplification - 18^2 - 12^2",
-        "difficulty": "Medium",
-        "question_text": "Find the value: 18² − 12²",
-        "sample_answer": "Using a² − b² = (a − b)(a + b):\n(18 − 12)(18 + 12) = 6 × 30 = 180.",
-        "tips": "Use algebraic identity a^2 - b^2.",
+        "title": "Simplification - BODMAS Expression 10",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 36 + 6 \u00d7 5 \u2212 2",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 6 \u00d7 5 = 30\n2. Addition & Subtraction: 36 + 30 \u2212 2 = 64.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
         "options": [
-            {"label": "A", "text": "150", "is_correct": False},
-            {"label": "B", "text": "180", "is_correct": True},
-            {"label": "C", "text": "210", "is_correct": False},
-            {"label": "D", "text": "240", "is_correct": False}
+            {
+                "label": "A",
+                "text": "69",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "64",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "66",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "62",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Simplification - 125/5 + 144/12 - 7",
+        "title": "Simplification - BODMAS Expression 11",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 34 + 3 \u00d7 2 \u2212 8",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 3 \u00d7 2 = 6\n2. Addition & Subtraction: 34 + 6 \u2212 8 = 32.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "30",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "37",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "34",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "32",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 12",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 27 + 3 \u00d7 5 \u2212 3",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 3 \u00d7 5 = 15\n2. Addition & Subtraction: 27 + 15 \u2212 3 = 39.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "44",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "37",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "41",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "39",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 13",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 36 + 2 \u00d7 4 \u2212 10",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 2 \u00d7 4 = 8\n2. Addition & Subtraction: 36 + 8 \u2212 10 = 34.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "36",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "39",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "32",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "34",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 14",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 31 + 2 \u00d7 4 \u2212 9",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 2 \u00d7 4 = 8\n2. Addition & Subtraction: 31 + 8 \u2212 9 = 30.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "32",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "30",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "28",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "35",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 15",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 13 + 2 \u00d7 2 \u2212 6",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 2 \u00d7 2 = 4\n2. Addition & Subtraction: 13 + 4 \u2212 6 = 11.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "11",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "13",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "9",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "16",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 16",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 26 + 5 \u00d7 4 \u2212 4",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 5 \u00d7 4 = 20\n2. Addition & Subtraction: 26 + 20 \u2212 4 = 42.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "44",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "47",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "40",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "42",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 17",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 16 + 3 \u00d7 3 \u2212 7",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 3 \u00d7 3 = 9\n2. Addition & Subtraction: 16 + 9 \u2212 7 = 18.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "16",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "23",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "20",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "18",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 18",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 24 + 2 \u00d7 2 \u2212 7",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 2 \u00d7 2 = 4\n2. Addition & Subtraction: 24 + 4 \u2212 7 = 21.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "23",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "26",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "21",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "19",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 19",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 11 + 8 \u00d7 6 \u2212 3",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 8 \u00d7 6 = 48\n2. Addition & Subtraction: 11 + 48 \u2212 3 = 56.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "61",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "56",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "58",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "54",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Simplification - BODMAS Expression 20",
+        "difficulty": "Easy",
+        "question_text": "Evaluate the expression: 28 + 5 \u00d7 4 \u2212 9",
+        "sample_answer": "According to BODMAS:\n1. Multiplication: 5 \u00d7 4 = 20\n2. Addition & Subtraction: 28 + 20 \u2212 9 = 39.",
+        "tips": "BODMAS order: Brackets, Orders, Division/Multiplication, Addition/Subtraction.",
+        "options": [
+            {
+                "label": "A",
+                "text": "39",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "37",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "41",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "44",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - Square Root of 144",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a144.",
+        "sample_answer": "Since 12 \u00d7 12 = 144, \u221a144 = 12.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "11",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "14",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "12",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "13",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - Square Root of 225",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a225.",
+        "sample_answer": "Since 15 \u00d7 15 = 225, \u221a225 = 15.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "14",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "16",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "15",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "17",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - Square Root of 324",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a324.",
+        "sample_answer": "Since 18 \u00d7 18 = 324, \u221a324 = 18.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "18",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "19",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "20",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "17",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - Square Root of 441",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a441.",
+        "sample_answer": "Since 21 \u00d7 21 = 441, \u221a441 = 21.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "23",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "21",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "20",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "22",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Simplification - Square Root of 625",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a625.",
+        "sample_answer": "Since 25 \u00d7 25 = 625, \u221a625 = 25.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "25",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "27",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "26",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Simplification - Square Root of 196",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a196.",
+        "sample_answer": "Since 14 \u00d7 14 = 196, \u221a196 = 14.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "13",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "15",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "14",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "16",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - Square Root of 256",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a256.",
+        "sample_answer": "Since 16 \u00d7 16 = 256, \u221a256 = 16.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "15",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "17",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "18",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "16",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - Square Root of 576",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a576.",
+        "sample_answer": "Since 24 \u00d7 24 = 576, \u221a576 = 24.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "25",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "24",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "26",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "23",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Simplification - Square Root of 484",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a484.",
+        "sample_answer": "Since 22 \u00d7 22 = 484, \u221a484 = 22.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "22",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "23",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "21",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "24",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - Square Root of 900",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a900.",
+        "sample_answer": "Since 30 \u00d7 30 = 900, \u221a900 = 30.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "32",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "31",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "30",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "29",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "C"
+    },
+    {
+        "title": "Simplification - Square Root of 169",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a169.",
+        "sample_answer": "Since 13 \u00d7 13 = 169, \u221a169 = 13.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "12",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "15",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "14",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "13",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - Square Root of 289",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a289.",
+        "sample_answer": "Since 17 \u00d7 17 = 289, \u221a289 = 17.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "17",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "16",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "19",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "18",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - Square Root of 361",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a361.",
+        "sample_answer": "Since 19 \u00d7 19 = 361, \u221a361 = 19.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "19",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "21",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "20",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "18",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - Square Root of 529",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a529.",
+        "sample_answer": "Since 23 \u00d7 23 = 529, \u221a529 = 23.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "24",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "23",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "25",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "22",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "B"
+    },
+    {
+        "title": "Simplification - Square Root of 676",
+        "difficulty": "Easy",
+        "question_text": "Find the value of \u221a676.",
+        "sample_answer": "Since 26 \u00d7 26 = 676, \u221a676 = 26.",
+        "tips": "Recall common squares from 1 to 30.",
+        "options": [
+            {
+                "label": "A",
+                "text": "26",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "28",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "25",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "27",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - Fraction Decimal Equivalent 36",
         "difficulty": "Medium",
-        "question_text": "Simplify: 125/5 + 144/12 − 7",
-        "sample_answer": "125 / 5 = 25\n144 / 12 = 12\n25 + 12 − 7 = 37 − 7 = 30.",
-        "tips": "Perform divisions before addition/subtraction.",
+        "question_text": "Simplify the fraction 6/17 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "6 divided by 17 = 0.35.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "25", "is_correct": False},
-            {"label": "B", "text": "30", "is_correct": True},
-            {"label": "C", "text": "35", "is_correct": False},
-            {"label": "D", "text": "40", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.3",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.35",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "0.45",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.4",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Simplification - (15 + 5) * (18 - 8) / 10",
+        "title": "Simplification - Fraction Decimal Equivalent 37",
         "difficulty": "Medium",
-        "question_text": "Find: (15 + 5) × (18 − 8) ÷ 10",
-        "sample_answer": "(15 + 5) = 20\n(18 − 8) = 10\n20 × 10 ÷ 10 = 20.",
-        "tips": "Simplify terms inside parentheses first.",
+        "question_text": "Simplify the fraction 8/24 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "8 divided by 24 = 0.33.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "10", "is_correct": False},
-            {"label": "B", "text": "20", "is_correct": True},
-            {"label": "C", "text": "30", "is_correct": False},
-            {"label": "D", "text": "40", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.28",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.43",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.33",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "0.38",
+                "is_correct": false
+            }
         ],
-        "correct_option": "B"
+        "correct_option": "C"
     },
     {
-        "title": "Simplification - 7/12 + 5/18 - 1/9",
+        "title": "Simplification - Fraction Decimal Equivalent 38",
         "difficulty": "Medium",
-        "question_text": "Simplify: 7/12 + 5/18 − 1/9",
-        "sample_answer": "LCM of 12, 18, 9 is 36.\n(21 + 10 − 4) / 36 = 27 / 36 = 3/4.",
-        "tips": "Use common denominator 36.",
+        "question_text": "Simplify the fraction 6/22 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "6 divided by 22 = 0.27.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "1/2", "is_correct": False},
-            {"label": "B", "text": "2/3", "is_correct": False},
-            {"label": "C", "text": "3/4", "is_correct": True},
-            {"label": "D", "text": "5/6", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.22",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.37",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.27",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "0.32",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "Simplification - 2^5 + 3^3 - 4^2",
+        "title": "Simplification - Fraction Decimal Equivalent 39",
         "difficulty": "Medium",
-        "question_text": "Find the value: 2⁵ + 3³ − 4²",
-        "sample_answer": "2⁵ = 32\n3³ = 27\n4² = 16\n32 + 27 − 16 = 59 − 16 = 43.",
-        "tips": "Evaluate exponent powers individually.",
+        "question_text": "Simplify the fraction 7/23 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "7 divided by 23 = 0.3.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "37", "is_correct": False},
-            {"label": "B", "text": "43", "is_correct": True},
-            {"label": "C", "text": "49", "is_correct": False},
-            {"label": "D", "text": "55", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.25",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.4",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.35",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.3",
+                "is_correct": true
+            }
         ],
-        "correct_option": "B"
+        "correct_option": "D"
     },
     {
-        "title": "Simplification - (45/9 * 18/5) + 7",
+        "title": "Simplification - Fraction Decimal Equivalent 40",
         "difficulty": "Medium",
-        "question_text": "Simplify: (45/9 × 18/5) + 7",
-        "sample_answer": "45 / 9 = 5\n5 × (18 / 5) = 18\n18 + 7 = 25.",
-        "tips": "Cancel out common factor 5.",
+        "question_text": "Simplify the fraction 8/19 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "8 divided by 19 = 0.42.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "18", "is_correct": False},
-            {"label": "B", "text": "23", "is_correct": False},
-            {"label": "C", "text": "25", "is_correct": True},
-            {"label": "D", "text": "29", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.42",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "0.52",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.37",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.47",
+                "is_correct": false
+            }
         ],
-        "correct_option": "C"
+        "correct_option": "A"
     },
     {
-        "title": "Simplification - sqrt(400) + sqrt(196) - sqrt(64)",
+        "title": "Simplification - Fraction Decimal Equivalent 41",
         "difficulty": "Medium",
-        "question_text": "Find: √400 + √196 − √64",
-        "sample_answer": "√400 = 20\n√196 = 14\n√64 = 8\n20 + 14 − 8 = 34 − 8 = 26.",
-        "tips": "20 + 14 - 8.",
+        "question_text": "Simplify the fraction 8/23 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "8 divided by 23 = 0.35.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "22", "is_correct": False},
-            {"label": "B", "text": "24", "is_correct": False},
-            {"label": "C", "text": "26", "is_correct": True},
-            {"label": "D", "text": "28", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.4",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.3",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.35",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "0.45",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
     },
     {
-        "title": "Simplification - 75 - {18 + 6 * 4}",
+        "title": "Simplification - Fraction Decimal Equivalent 42",
         "difficulty": "Medium",
-        "question_text": "Simplify: 75 − {18 + 6 × 4}",
-        "sample_answer": "Inside braces: 6 × 4 = 24.\n18 + 24 = 42.\n75 − 42 = 33.",
-        "tips": "Work from innermost operations outward.",
+        "question_text": "Simplify the fraction 2/14 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "2 divided by 14 = 0.14.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "27", "is_correct": False},
-            {"label": "B", "text": "33", "is_correct": True},
-            {"label": "C", "text": "39", "is_correct": False},
-            {"label": "D", "text": "45", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.24",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.09",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.14",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "0.19",
+                "is_correct": false
+            }
         ],
-        "correct_option": "B"
+        "correct_option": "C"
     },
     {
-        "title": "Simplification - (5/6 / 10/9) + 3/4",
+        "title": "Simplification - Fraction Decimal Equivalent 43",
         "difficulty": "Medium",
-        "question_text": "Find the value: (5/6 ÷ 10/9) + 3/4",
-        "sample_answer": "(5/6 × 9/10) = 45/60 = 3/4.\n3/4 + 3/4 = 6/4 = 3/2.",
-        "tips": "Invert fraction for division.",
+        "question_text": "Simplify the fraction 2/19 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "2 divided by 19 = 0.11.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "1", "is_correct": False},
-            {"label": "B", "text": "5/4", "is_correct": False},
-            {"label": "C", "text": "3/2", "is_correct": True},
-            {"label": "D", "text": "7/4", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.06",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.21",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.16",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.11",
+                "is_correct": true
+            }
         ],
-        "correct_option": "C"
+        "correct_option": "D"
     },
-
-    # QUESTIONS 16 TO 30
     {
-        "title": "Simplification - 3/5 + (7/10 * 15/14) - 1/4",
-        "difficulty": "Hard",
-        "question_text": "Simplify: 3/5 + (7/10 × 15/14) − 1/4",
-        "sample_answer": "(7/10 × 15/14) = 3/4.\n3/5 + 3/4 − 1/4 = 3/5 + 2/4 = 3/5 + 1/2 = 11/10.",
-        "tips": "Multiply first, then simplify fractions.",
+        "title": "Simplification - Fraction Decimal Equivalent 44",
+        "difficulty": "Medium",
+        "question_text": "Simplify the fraction 5/13 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "5 divided by 13 = 0.38.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "9/10", "is_correct": False},
-            {"label": "B", "text": "11/10", "is_correct": True},
-            {"label": "C", "text": "6/5", "is_correct": False},
-            {"label": "D", "text": "13/10", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.33",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.38",
+                "is_correct": true
+            },
+            {
+                "label": "C",
+                "text": "0.43",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.48",
+                "is_correct": false
+            }
         ],
         "correct_option": "B"
     },
     {
-        "title": "Simplification - (3/4 + 5/6) / (19/12)",
-        "difficulty": "Hard",
-        "question_text": "Find the value: (3/4 + 5/6) ÷ (19/12)",
-        "sample_answer": "(3/4 + 5/6) = (9 + 10) / 12 = 19/12.\n(19/12) ÷ (19/12) = 1.",
-        "tips": "Numerator equals denominator.",
+        "title": "Simplification - Fraction Decimal Equivalent 45",
+        "difficulty": "Medium",
+        "question_text": "Simplify the fraction 2/16 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "2 divided by 16 = 0.12.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "1/2", "is_correct": False},
-            {"label": "B", "text": "1", "is_correct": True},
-            {"label": "C", "text": "3/2", "is_correct": False},
-            {"label": "D", "text": "2", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.22",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.17",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.07",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.12",
+                "is_correct": true
+            }
         ],
-        "correct_option": "B"
+        "correct_option": "D"
     },
     {
-        "title": "Simplification - (3^3 * 2^5) / 6^2 + sqrt(625)",
-        "difficulty": "Hard",
-        "question_text": "Simplify: (3³ × 2⁵) / 6² + √625",
-        "sample_answer": "(27 × 32) / 36 = 864 / 36 = 24.\n√625 = 25.\n24 + 25 = 49.",
-        "tips": "Express 6^2 as 3^2 * 2^2.",
+        "title": "Simplification - Fraction Decimal Equivalent 46",
+        "difficulty": "Medium",
+        "question_text": "Simplify the fraction 7/23 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "7 divided by 23 = 0.3.",
+        "tips": "Perform direct decimal division.",
         "options": [
-            {"label": "A", "text": "39", "is_correct": False},
-            {"label": "B", "text": "45", "is_correct": False},
-            {"label": "C", "text": "49", "is_correct": True},
-            {"label": "D", "text": "54", "is_correct": False}
+            {
+                "label": "A",
+                "text": "0.25",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.4",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.35",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.3",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - Fraction Decimal Equivalent 47",
+        "difficulty": "Medium",
+        "question_text": "Simplify the fraction 7/22 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "7 divided by 22 = 0.32.",
+        "tips": "Perform direct decimal division.",
+        "options": [
+            {
+                "label": "A",
+                "text": "0.32",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "0.27",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.37",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.42",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - Fraction Decimal Equivalent 48",
+        "difficulty": "Medium",
+        "question_text": "Simplify the fraction 4/18 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "4 divided by 18 = 0.22.",
+        "tips": "Perform direct decimal division.",
+        "options": [
+            {
+                "label": "A",
+                "text": "0.22",
+                "is_correct": true
+            },
+            {
+                "label": "B",
+                "text": "0.17",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.27",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.32",
+                "is_correct": false
+            }
+        ],
+        "correct_option": "A"
+    },
+    {
+        "title": "Simplification - Fraction Decimal Equivalent 49",
+        "difficulty": "Medium",
+        "question_text": "Simplify the fraction 6/11 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "6 divided by 11 = 0.55.",
+        "tips": "Perform direct decimal division.",
+        "options": [
+            {
+                "label": "A",
+                "text": "0.6",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.5",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.65",
+                "is_correct": false
+            },
+            {
+                "label": "D",
+                "text": "0.55",
+                "is_correct": true
+            }
+        ],
+        "correct_option": "D"
+    },
+    {
+        "title": "Simplification - Fraction Decimal Equivalent 50",
+        "difficulty": "Medium",
+        "question_text": "Simplify the fraction 2/19 into decimal (rounded to 2 decimal places):",
+        "sample_answer": "2 divided by 19 = 0.11.",
+        "tips": "Perform direct decimal division.",
+        "options": [
+            {
+                "label": "A",
+                "text": "0.21",
+                "is_correct": false
+            },
+            {
+                "label": "B",
+                "text": "0.16",
+                "is_correct": false
+            },
+            {
+                "label": "C",
+                "text": "0.11",
+                "is_correct": true
+            },
+            {
+                "label": "D",
+                "text": "0.06",
+                "is_correct": false
+            }
         ],
         "correct_option": "C"
-    },
-    {
-        "title": "Simplification - (15^2 - 9^2) / (15 - 9)",
-        "difficulty": "Hard",
-        "question_text": "Find: (15² − 9²) / (15 − 9)",
-        "sample_answer": "Using (a² − b²) / (a − b) = a + b:\n15 + 9 = 24.",
-        "tips": "Cancel (a - b) term.",
-        "options": [
-            {"label": "A", "text": "18", "is_correct": False},
-            {"label": "B", "text": "21", "is_correct": False},
-            {"label": "C", "text": "24", "is_correct": True},
-            {"label": "D", "text": "27", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - (7/8 * 16/21) + (5/6 / 10/9)",
-        "difficulty": "Hard",
-        "question_text": "Simplify: (7/8 × 16/21) + (5/6 ÷ 10/9)",
-        "sample_answer": "Term 1: (7/8 × 16/21) = 2/3.\nTerm 2: (5/6 × 9/10) = 3/4.\n2/3 + 3/4 = (8 + 9) / 12 = 17/12.",
-        "tips": "Evaluate both fraction terms separately.",
-        "options": [
-            {"label": "A", "text": "13/12", "is_correct": False},
-            {"label": "B", "text": "15/12", "is_correct": False},
-            {"label": "C", "text": "17/12", "is_correct": True},
-            {"label": "D", "text": "19/12", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - (25 + 15)^2 / 20^2 + 3^2 / 9",
-        "difficulty": "Hard",
-        "question_text": "Find the value: (25 + 15)² / 20² + 3² / 9",
-        "sample_answer": "(40)² / 20² = 1600 / 400 = 4.\n3² / 9 = 9 / 9 = 1.\n4 + 1 = 5.",
-        "tips": "(40 / 20)^2 + 1.",
-        "options": [
-            {"label": "A", "text": "3", "is_correct": False},
-            {"label": "B", "text": "4", "is_correct": False},
-            {"label": "C", "text": "5", "is_correct": True},
-            {"label": "D", "text": "6", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - (5/7 / 10/21) + (3/4 * 8/9)",
-        "difficulty": "Hard",
-        "question_text": "Simplify: (5/7 ÷ 10/21) + (3/4 × 8/9)",
-        "sample_answer": "Term 1: (5/7 × 21/10) = 3/2.\nTerm 2: (3/4 × 8/9) = 2/3.\n3/2 + 2/3 = (9 + 4) / 6 = 13/6.",
-        "tips": "Common denominator is 6.",
-        "options": [
-            {"label": "A", "text": "11/6", "is_correct": False},
-            {"label": "B", "text": "13/6", "is_correct": True},
-            {"label": "C", "text": "15/6", "is_correct": False},
-            {"label": "D", "text": "17/6", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "Simplification - sqrt(1296) + sqrt(625) - sqrt(256)",
-        "difficulty": "Hard",
-        "question_text": "Find: √1296 + √625 − √256",
-        "sample_answer": "√1296 = 36\n√625 = 25\n√256 = 16\n36 + 25 − 16 = 61 − 16 = 45.",
-        "tips": "Square roots of 36, 25, 16.",
-        "options": [
-            {"label": "A", "text": "35", "is_correct": False},
-            {"label": "B", "text": "40", "is_correct": False},
-            {"label": "C", "text": "45", "is_correct": True},
-            {"label": "D", "text": "50", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - (3^3 + 4^3 - 5^2) / 2^3",
-        "difficulty": "Hard",
-        "question_text": "Simplify: (3³ + 4³ − 5²) / 2³",
-        "sample_answer": "3³ = 27, 4³ = 64, 5² = 25.\nNumerator = 27 + 64 − 25 = 66.\nDenominator = 2³ = 8.\n66 / 8 = 33/4.",
-        "tips": "66 / 8 = 33 / 4.",
-        "options": [
-            {"label": "A", "text": "27/4", "is_correct": False},
-            {"label": "B", "text": "31/4", "is_correct": False},
-            {"label": "C", "text": "33/4", "is_correct": True},
-            {"label": "D", "text": "35/4", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - (5/6 - 1/4) * (12/7)",
-        "difficulty": "Hard",
-        "question_text": "Find the value: (5/6 − 1/4) × (12/7)",
-        "sample_answer": "(5/6 − 1/4) = (10 − 3) / 12 = 7/12.\n(7/12) × (12/7) = 1.",
-        "tips": "Numerator cancels denominator.",
-        "options": [
-            {"label": "A", "text": "1/2", "is_correct": False},
-            {"label": "B", "text": "3/4", "is_correct": False},
-            {"label": "C", "text": "1", "is_correct": True},
-            {"label": "D", "text": "7/6", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - (15 * 10) / ((18 + 12) * (25 - 15))",
-        "difficulty": "Hard",
-        "question_text": "Simplify: (15 × 10) / [(18 + 12) × (25 − 15)]",
-        "sample_answer": "Numerator = 15 × 10 = 150.\nDenominator = 30 × 10 = 300.\n150 / 300 = 1/2.",
-        "tips": "150 / 300.",
-        "options": [
-            {"label": "A", "text": "1/4", "is_correct": False},
-            {"label": "B", "text": "1/2", "is_correct": True},
-            {"label": "C", "text": "3/4", "is_correct": False},
-            {"label": "D", "text": "1", "is_correct": False}
-        ],
-        "correct_option": "B"
-    },
-    {
-        "title": "Simplification - 2/3 + (4/9 / 8/27) - 5/6",
-        "difficulty": "Hard",
-        "question_text": "Find: 2/3 + (4/9 ÷ 8/27) − 5/6",
-        "sample_answer": "(4/9 × 27/8) = 3/2.\n2/3 + 3/2 − 5/6 = (4 + 9 − 5) / 6 = 8/6 = 4/3.",
-        "tips": "Convert division to multiplication.",
-        "options": [
-            {"label": "A", "text": "1", "is_correct": False},
-            {"label": "B", "text": "7/6", "is_correct": False},
-            {"label": "C", "text": "4/3", "is_correct": True},
-            {"label": "D", "text": "3/2", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - ((7^2 - 5^2)(7^2 + 5^2)) / 24",
-        "difficulty": "Hard",
-        "question_text": "Simplify: [(7² − 5²)(7² + 5²)] / 24",
-        "sample_answer": "(7² − 5²) = 49 − 25 = 24.\n(7² + 5²) = 49 + 25 = 74.\n(24 × 74) / 24 = 74.",
-        "tips": "Cancel factor 24.",
-        "options": [
-            {"label": "A", "text": "48", "is_correct": False},
-            {"label": "B", "text": "60", "is_correct": False},
-            {"label": "C", "text": "74", "is_correct": True},
-            {"label": "D", "text": "96", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - 3/4 * [8/9 + 5/6] - 1/8",
-        "difficulty": "Hard",
-        "question_text": "Find the value: 3/4 × [8/9 + 5/6] − 1/8",
-        "sample_answer": "[8/9 + 5/6] = (16 + 15) / 18 = 31/18.\n3/4 × 31/18 = 31/24.\n31/24 − 1/8 = (31 − 3) / 24 = 28/24 = 7/6.",
-        "tips": "Common denominator for fraction addition.",
-        "options": [
-            {"label": "A", "text": "5/6", "is_correct": False},
-            {"label": "B", "text": "1", "is_correct": False},
-            {"label": "C", "text": "7/6", "is_correct": True},
-            {"label": "D", "text": "4/3", "is_correct": False}
-        ],
-        "correct_option": "C"
-    },
-    {
-        "title": "Simplification - 13/sqrt(5^2 + 12^2) + 15/sqrt(17^2 - 8^2)",
-        "difficulty": "Hard",
-        "question_text": "Simplify: 13 / √(5² + 12²) + 15 / √(17² − 8²)",
-        "sample_answer": "√(5² + 12²) = √(25 + 144) = √169 = 13.\n13 / 13 = 1.\n√(17² − 8²) = √(289 − 64) = √225 = 15.\n15 / 15 = 1.\n1 + 1 = 2.",
-        "tips": "Evaluate Pythagorean radicals.",
-        "options": [
-            {"label": "A", "text": "1", "is_correct": False},
-            {"label": "B", "text": "2", "is_correct": True},
-            {"label": "C", "text": "3", "is_correct": False},
-            {"label": "D", "text": "4", "is_correct": False}
-        ],
-        "correct_option": "B"
     }
 ]
 
-def seed_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    # Delete old Simplification questions to replace with exact 30 questions requested by user
-    cursor.execute("DELETE FROM questions WHERE category = 'Aptitude' AND topic = 'Simplification'")
-    print("Cleared existing Simplification questions.")
-    
-    for q in questions:
-        cursor.execute("""
-            INSERT INTO questions (category, sub_category, topic, title, difficulty, question_text, sample_answer, tips, options, correct_option)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            'Aptitude',
-            'Number & Arithmetic',
-            'Simplification',
-            q['title'],
-            q['difficulty'],
-            q['question_text'],
-            q['sample_answer'],
-            q['tips'],
-            json.dumps(q['options']),
-            q['correct_option']
-        ))
-        
-    conn.commit()
-    conn.close()
-    print(f"Successfully seeded {len(questions)} Simplification questions into SQLite DB!")
+def seed_database():
+    # 1. Update SQLAlchemy database if available
+    try:
+        from app import app, db
+        from models import Question, UserProgress, Bookmark
+        with app.app_context():
+            old_qs = Question.query.filter_by(category='Aptitude', topic='Simplification').all()
+            old_ids = [q.id for q in old_qs]
+            if old_ids:
+                UserProgress.query.filter(UserProgress.question_id.in_(old_ids)).delete(synchronize_session=False)
+                Bookmark.query.filter(Bookmark.question_id.in_(old_ids)).delete(synchronize_session=False)
+                db.session.commit()
+            Question.query.filter_by(category='Aptitude', topic='Simplification').delete(synchronize_session=False)
+            for q in questions:
+                opts_json = json.dumps(q.get('options', []))
+                new_q = Question(
+                    category='Aptitude',
+                    sub_category='Number & Arithmetic',
+                    topic='Simplification',
+                    title=q.get('title', 'Simplification'),
+                    difficulty=q.get('difficulty', 'Easy'),
+                    question_text=q.get('question_text', ''),
+                    sample_answer=q.get('sample_answer', ''),
+                    tips=q.get('tips', ''),
+                    options=opts_json,
+                    correct_option=q.get('correct_option', 'A')
+                )
+                db.session.add(new_q)
+            db.session.commit()
+            print(f"Successfully seeded {len(questions)} questions for Simplification via SQLAlchemy.")
+    except Exception as e:
+        print(f"SQLAlchemy seeding error for Simplification: {e}")
+
+    # 2. Update local SQLite database if present
+    db_paths = [
+        os.path.join(os.path.dirname(__file__), 'instance', 'interview_portal.db'),
+        os.path.join(os.path.dirname(__file__), 'interview_portal.db')
+    ]
+    for p in db_paths:
+        if os.path.exists(p):
+            try:
+                conn = sqlite3.connect(p)
+                cur = conn.cursor()
+                cur.execute("DELETE FROM questions WHERE category = 'Aptitude' AND topic = ?", ('Simplification',))
+                for q in questions:
+                    opts_json = json.dumps(q.get('options', []))
+                    cur.execute("""
+                        INSERT INTO questions (category, sub_category, topic, title, difficulty, question_text, sample_answer, tips, options, correct_option)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        'Aptitude', 'Number & Arithmetic', 'Simplification',
+                        q.get('title', 'Simplification'), q.get('difficulty', 'Easy'),
+                        q.get('question_text', ''), q.get('sample_answer', ''),
+                        q.get('tips', ''), opts_json, q.get('correct_option', 'A')
+                    ))
+                conn.commit()
+                conn.close()
+                print(f"Successfully seeded {len(questions)} questions for Simplification into SQLite: {p}")
+            except Exception as e:
+                print(f"SQLite seeding error for {p}: {e}")
 
 if __name__ == '__main__':
-    seed_db()
+    seed_database()

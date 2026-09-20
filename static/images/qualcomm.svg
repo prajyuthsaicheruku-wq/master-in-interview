@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="20" fill="#3253DC"/>
+  <g transform="translate(15, 24)">
+    <!-- Qualcomm Modern Q -->
+    <path d="M35 8 C22 8 12 18 12 32 C12 46 22 56 35 56 C42 56 48 53 52 48 L58 56 L64 50 L57 43 C58 39 58 36 58 32 C58 18 48 8 35 8 Z M35 18 C43 18 48 24 48 32 C48 40 43 46 35 46 C27 46 22 40 22 32 C22 24 27 18 35 18 Z" fill="#FFFFFF"/>
+  </g>
+  <text x="50" y="85" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="11" fill="#FFFFFF" letter-spacing="0.5">Qualcomm</text>
+</svg>

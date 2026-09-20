@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="20" fill="#CC092F"/>
+  <!-- Broadcom Waveform -->
+  <g transform="translate(15, 20)">
+    <path d="M5 25 C15 5 25 45 35 25 C45 5 55 45 65 25" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <text x="50" y="80" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="11" fill="#FFFFFF" letter-spacing="0.5">BROADCOM</text>
+</svg>

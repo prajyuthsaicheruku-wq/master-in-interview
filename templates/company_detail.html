@@ -6,30 +6,32 @@
 <div class="container company-detail-page" style="max-width: 1240px; padding-top: 1.25rem; padding-bottom: 4rem;">
 
     <!-- TOP BREADCRUMB & COMPANY SWITCHER STRIP -->
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;">
+    <div class="company-top-switcher-strip">
         <a href="{{ url_for('practice') }}" class="btn btn-outline btn-sm company-back-btn">
-            <span>🏢</span> ← Back to Companies
+            <span>🏢</span> ← Back to Companies Hub
         </a>
 
-        <!-- QUICK COMPANY SWITCHER PILLS -->
-        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;">
-            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-right: 0.2rem;">Quick Switch:</span>
-            {% for comp in ['Accenture', 'TCS', 'Infosys', 'Amazon', 'Wipro', 'Google', 'Deloitte', 'Capgemini'] %}
-                <a href="{{ url_for('company_detail', company_name=comp) }}" 
-                   class="quick-comp-pill {{ 'active' if comp.lower() in company_name.lower() }}">
-                   {{ comp }}
-                </a>
-            {% endfor %}
+        <!-- QUICK COMPANY SWITCHER PILLS RIBBON -->
+        <div class="quick-comp-ribbon-wrap">
+            <span class="quick-comp-lbl">Switch:</span>
+            <div class="quick-comp-scroll">
+                {% for comp in ['Uber', 'Salesforce', 'Atlassian', 'NVIDIA', 'Walmart Global Tech', 'HCLTech', 'LTIMindtree', 'Mphasis', 'Hexaware', 'Persistent Systems', 'EY', 'PwC', 'KPMG', 'McKinsey & Company', 'Boston Consulting Group (BCG)', 'JPMorgan Chase', 'Goldman Sachs', 'Morgan Stanley', 'American Express', 'Barclays', 'Razorpay', 'PhonePe', 'Flipkart', 'Swiggy', 'Zomato', 'Texas Instruments', 'AMD', 'Qualcomm', 'Broadcom', 'Micron', 'Accenture', 'TCS', 'Infosys', 'Amazon', 'Google', 'Microsoft'] %}
+                    <a href="{{ url_for('company_detail', company_name=comp) }}" 
+                       class="quick-comp-pill {{ 'active' if comp.lower() in company_name.lower() }}">
+                       {{ comp }}
+                    </a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
     <!-- IN-PAGE NAVIGATION STICKY BAR -->
     <nav class="company-nav-tabs">
         <a href="#overview-section" class="tab-link active"><span>👁️</span> Overview</a>
-        <a href="#pipeline-section" class="tab-link"><span>🔄</span> Selection Pipeline</a>
+        <a href="#pipeline-section" class="tab-link"><span>🔄</span> Pipeline</a>
         <a href="#table-section" class="tab-link"><span>📋</span> Exam Pattern</a>
-        <a href="#syllabus-section" class="tab-link"><span>📚</span> Syllabus Breakdown</a>
-        <a href="#faq-section" class="tab-link"><span>💡</span> Preparation & FAQs</a>
+        <a href="#syllabus-section" class="tab-link"><span>📚</span> Syllabus</a>
+        <a href="#faq-section" class="tab-link"><span>💡</span> Prep & FAQs</a>
     </nav>
 
     <!-- 1. HERO COMPANY HEADER OVERVIEW -->
@@ -37,12 +39,15 @@
         <div class="hero-top-row">
             <div class="hero-identity">
                 <div class="company-logo-avatar" style="background: {{ company_meta.accent_bg }};">
-                    <span>{{ company_meta.logo_icon }}</span>
+                    {% if company_meta.logo_image %}
+                        <img src="{{ url_for('static', filename=company_meta.logo_image) }}" alt="{{ company_name }}" class="company-header-logo-img">
+                    {% else %}
+                        <span>{{ company_meta.logo_icon }}</span>
+                    {% endif %}
                 </div>
                 <div>
-                    <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.35rem;">
-                        <span class="badge badge-verified">✓ Official 2026 Recruitment Drive</span>
-                        <span class="badge {{ company_meta.difficulty_class }}">Difficulty: {{ company_meta.difficulty }}</span>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.35rem;">
+                        <span class="badge badge-verified">✓ Official 2026 Drive</span>
                     </div>
                     <h1 class="company-page-title">{{ company_name }} Placement Pattern & Exam Details</h1>
                     <p class="company-tagline">{{ company_meta.tagline }}</p>
@@ -55,21 +60,21 @@
             <div class="stat-chip">
                 <div class="stat-chip-icon">⏱️</div>
                 <div>
-                    <div class="stat-chip-label">Test Duration</div>
+                    <div class="stat-chip-label">Duration</div>
                     <div class="stat-chip-val">{{ total_mins }} Mins</div>
                 </div>
             </div>
             <div class="stat-chip">
                 <div class="stat-chip-icon">📝</div>
                 <div>
-                    <div class="stat-chip-label">Total Questions</div>
-                    <div class="stat-chip-val">{{ total_qs }} Questions</div>
+                    <div class="stat-chip-label">Questions</div>
+                    <div class="stat-chip-val">{{ total_qs }} Qs</div>
                 </div>
             </div>
             <div class="stat-chip">
                 <div class="stat-chip-icon">💰</div>
                 <div>
-                    <div class="stat-chip-label">Salary CTC</div>
+                    <div class="stat-chip-label">Fresher Salary CTC</div>
                     <div class="stat-chip-val">{{ company_meta.ctc }}</div>
                 </div>
             </div>
@@ -77,14 +82,14 @@
                 <div class="stat-chip-icon">💼</div>
                 <div>
                     <div class="stat-chip-label">Target Role</div>
-                    <div class="stat-chip-val" style="font-size: 0.88rem;">{{ company_meta.roles }}</div>
+                    <div class="stat-chip-val" style="font-size: 0.86rem;">{{ company_meta.roles }}</div>
                 </div>
             </div>
-            <div class="stat-chip" style="grid-column: span 1;">
+            <div class="stat-chip stat-chip-full">
                 <div class="stat-chip-icon">🎓</div>
                 <div>
                     <div class="stat-chip-label">Eligibility</div>
-                    <div class="stat-chip-val" style="font-size: 0.84rem;">{{ company_meta.eligibility }}</div>
+                    <div class="stat-chip-val" style="font-size: 0.82rem;">{{ company_meta.eligibility }}</div>
                 </div>
             </div>
         </div>
@@ -360,6 +365,14 @@
     font-size: 2rem;
     color: #ffffff;
     box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    overflow: hidden;
+    padding: 10px;
+    background-color: #ffffff;
+}
+.company-header-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 .badge-verified {
     background: rgba(16, 185, 129, 0.12);
@@ -969,69 +982,237 @@ html:not(.light-theme) .quick-comp-pill.active {
     border-color: #4f46e5;
 }
 
+/* TOP SWITCHER STRIP */
+.company-top-switcher-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.quick-comp-ribbon-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.quick-comp-lbl {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.quick-comp-scroll {
+    display: flex;
+    gap: 0.35rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 2px 0;
+}
+.quick-comp-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.quick-comp-pill {
+    padding: 0.28rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
 @media (max-width: 768px) {
-    .company-detail-page {
-        padding-top: 0.75rem !important;
-        padding-bottom: 2rem !important;
-    }
-    .hero-company-card {
-        padding: 1.25rem 1rem !important;
-    }
-    .hero-top-row {
+    .company-top-switcher-strip {
         flex-direction: column !important;
-        gap: 1rem !important;
-    }
-    .hero-identity {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 0.75rem !important;
-    }
-    .company-page-title {
-        font-size: 1.45rem !important;
-    }
-    .company-stats-grid {
-        grid-template-columns: 1fr 1fr !important;
+        align-items: stretch !important;
         gap: 0.65rem !important;
+        margin-bottom: 1rem !important;
     }
-    .stat-chip {
-        padding: 0.75rem 0.65rem !important;
-        gap: 0.6rem !important;
-    }
-    .stat-chip-icon {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 1.2rem !important;
-    }
-    .stat-chip-val {
+
+    .company-back-btn {
+        align-self: flex-start !important;
+        padding: 0.35rem 0.85rem !important;
         font-size: 0.82rem !important;
     }
+
+    .quick-comp-ribbon-wrap {
+        width: 100% !important;
+    }
+
+    .company-detail-page {
+        padding-top: 0.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    .hero-company-card {
+        padding: 1.15rem 1rem !important;
+        border-radius: 16px !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .hero-top-row {
+        flex-direction: column !important;
+        gap: 0.85rem !important;
+    }
+
+    .hero-identity {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 0.85rem !important;
+    }
+
+    .company-logo-avatar {
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 1.6rem !important;
+        border-radius: 12px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .company-page-title {
+        font-size: 1.25rem !important;
+        line-height: 1.25 !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .company-tagline {
+        font-size: 0.82rem !important;
+        line-height: 1.4 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .company-stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+        margin-top: 0.85rem !important;
+    }
+
+    .stat-chip {
+        padding: 0.65rem 0.65rem !important;
+        gap: 0.55rem !important;
+        border-radius: 10px !important;
+    }
+
+    .stat-chip-full {
+        grid-column: 1 / -1 !important;
+    }
+
+    .stat-chip-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1.05rem !important;
+        border-radius: 8px !important;
+    }
+
+    .stat-chip-label {
+        font-size: 0.66rem !important;
+    }
+
+    .stat-chip-val {
+        font-size: 0.8rem !important;
+    }
+
     .company-nav-tabs {
         overflow-x: auto !important;
         white-space: nowrap !important;
         display: flex !important;
-        gap: 0.4rem !important;
-        padding: 0.45rem 0.6rem !important;
-        top: 60px !important;
+        gap: 0.35rem !important;
+        padding: 0.35rem 0.45rem !important;
+        top: 56px !important;
         -webkit-overflow-scrolling: touch !important;
         scrollbar-width: none !important;
+        margin-bottom: 1rem !important;
+        border-radius: 12px !important;
     }
-    .company-nav-tabs::-webkit-scrollbar {
-        display: none !important;
-    }
+
     .tab-link {
         flex-shrink: 0 !important;
-        padding: 0.4rem 0.85rem !important;
-        font-size: 0.82rem !important;
+        padding: 0.35rem 0.75rem !important;
+        font-size: 0.78rem !important;
+        border-radius: 8px !important;
     }
+
     .section-card {
-        padding: 1.25rem 1rem !important;
+        padding: 1.15rem 0.95rem !important;
+        border-radius: 16px !important;
+        margin-bottom: 1rem !important;
     }
+
+    .section-title {
+        font-size: 1.15rem !important;
+    }
+
+    .section-subtitle {
+        font-size: 0.78rem !important;
+    }
+
     .pipeline-grid {
         grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
     }
-    .paper-card-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
+
+    .pipeline-stage-card {
+        padding: 0.95rem !important;
+        border-radius: 12px !important;
+    }
+
+    .stage-title {
+        font-size: 1rem !important;
+    }
+
+    .stage-desc {
+        font-size: 0.82rem !important;
+    }
+
+    .syllabus-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .syllabus-card {
+        padding: 0.95rem !important;
+        border-radius: 12px !important;
+    }
+
+    .topic-chip {
+        font-size: 0.72rem !important;
+        padding: 0.22rem 0.55rem !important;
+    }
+
+    .faq-question-btn {
+        padding: 0.75rem 0.85rem !important;
+        font-size: 0.86rem !important;
+    }
+
+    .faq-answer-body {
+        padding: 0.75rem 0.85rem !important;
+        font-size: 0.82rem !important;
+    }
+
+    .table-responsive-wrap {
+        margin-bottom: 1rem !important;
+    }
+
+    .exam-pattern-table th,
+    .exam-pattern-table td {
+        padding: 0.65rem 0.55rem !important;
+        font-size: 0.78rem !important;
+    }
+
+    .qs-badge {
+        font-size: 0.7rem !important;
+        padding: 0.12rem 0.45rem !important;
     }
 }
 </style>

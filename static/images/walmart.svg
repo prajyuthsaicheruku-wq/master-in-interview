@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="20" fill="#0071DC"/>
+  <!-- Walmart Spark Logo -->
+  <g transform="translate(50, 42)" fill="#FFC220">
+    <!-- 6 Petals / Sparks of Walmart -->
+    <path d="M-4 -28 C-4 -36 4 -36 4 -28 L3 -10 C3 -7 -3 -7 -3 -10 Z" />
+    <path d="M-4 -28 C-4 -36 4 -36 4 -28 L3 -10 C3 -7 -3 -7 -3 -10 Z" transform="rotate(60)" />
+    <path d="M-4 -28 C-4 -36 4 -36 4 -28 L3 -10 C3 -7 -3 -7 -3 -10 Z" transform="rotate(120)" />
+    <path d="M-4 -28 C-4 -36 4 -36 4 -28 L3 -10 C3 -7 -3 -7 -3 -10 Z" transform="rotate(180)" />
+    <path d="M-4 -28 C-4 -36 4 -36 4 -28 L3 -10 C3 -7 -3 -7 -3 -10 Z" transform="rotate(240)" />
+    <path d="M-4 -28 C-4 -36 4 -36 4 -28 L3 -10 C3 -7 -3 -7 -3 -10 Z" transform="rotate(300)" />
+  </g>
+  <text x="50" y="82" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="11.5" fill="#FFFFFF" letter-spacing="0.5">Walmart</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="20" fill="#00186B"/>
+  <g transform="translate(14, 25)">
+    <text x="36" y="28" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="22" fill="#00B4D8" letter-spacing="-0.5">HCL</text>
+    <text x="36" y="48" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="14" fill="#FFFFFF" letter-spacing="1.5">Tech</text>
+  </g>
+</svg>

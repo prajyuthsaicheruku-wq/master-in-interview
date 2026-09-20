@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 220" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bae6fd" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#e0f2fe" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#f0f9ff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bldgBlue1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="bldgBlue2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="bldgGlass1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="bldgDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#075985"/>
+    </linearGradient>
+    <linearGradient id="treeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+    <filter id="softGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Sky Backing -->
+  <rect x="0" y="0" width="520" height="220" fill="url(#skyGrad)" rx="16" />
+
+  <!-- Sun Rays / Glow -->
+  <circle cx="430" cy="50" r="70" fill="#38bdf8" opacity="0.12" filter="url(#softGlow)" />
+
+  <!-- Distant Background Buildings -->
+  <path d="M40 220 V120 H70 V220 Z" fill="#93c5fd" opacity="0.4"/>
+  <path d="M75 220 V90 H105 V220 Z" fill="#60a5fa" opacity="0.4"/>
+  <path d="M110 220 V140 H140 V220 Z" fill="#93c5fd" opacity="0.5"/>
+  <path d="M145 220 V100 H180 V220 Z" fill="#60a5fa" opacity="0.45"/>
+  <path d="M185 220 V115 H220 V220 Z" fill="#93c5fd" opacity="0.5"/>
+  <path d="M225 220 V85 H260 V220 Z" fill="#60a5fa" opacity="0.5"/>
+  <path d="M265 220 V130 H300 V220 Z" fill="#93c5fd" opacity="0.4"/>
+  <path d="M305 220 V95 H340 V220 Z" fill="#60a5fa" opacity="0.45"/>
+  <path d="M345 220 V110 H380 V220 Z" fill="#93c5fd" opacity="0.4"/>
+  <path d="M385 220 V125 H420 V220 Z" fill="#60a5fa" opacity="0.45"/>
+  <path d="M425 220 V105 H460 V220 Z" fill="#93c5fd" opacity="0.4"/>
+  <path d="M465 220 V135 H500 V220 Z" fill="#60a5fa" opacity="0.4"/>
+
+  <!-- Midground Glass Skyscrapers -->
+  <!-- Skyscraper 1 (Far Left Tower) -->
+  <polygon points="50,110 75,95 100,110 100,220 50,220" fill="url(#bldgBlue2)" />
+  <polygon points="75,95 100,110 100,220 75,220" fill="url(#bldgDark)" opacity="0.6"/>
+  <!-- Windows -->
+  <g fill="#e0f2fe" opacity="0.75">
+    <rect x="56" y="120" width="12" height="6" rx="1"/>
+    <rect x="56" y="132" width="12" height="6" rx="1"/>
+    <rect x="56" y="144" width="12" height="6" rx="1"/>
+    <rect x="56" y="156" width="12" height="6" rx="1"/>
+    <rect x="56" y="168" width="12" height="6" rx="1"/>
+    <rect x="56" y="180" width="12" height="6" rx="1"/>
+    <rect x="80" y="120" width="12" height="6" rx="1"/>
+    <rect x="80" y="132" width="12" height="6" rx="1"/>
+    <rect x="80" y="144" width="12" height="6" rx="1"/>
+    <rect x="80" y="156" width="12" height="6" rx="1"/>
+    <rect x="80" y="168" width="12" height="6" rx="1"/>
+    <rect x="80" y="180" width="12" height="6" rx="1"/>
+  </g>
+
+  <!-- Skyscraper 2 (Angled Spire Tower) -->
+  <polygon points="120,220 120,70 145,45 145,220" fill="url(#bldgGlass1)" />
+  <polygon points="145,45 170,70 170,220 145,220" fill="url(#bldgDark)" />
+  <line x1="145" y1="45" x2="145" y2="25" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Windows Grid -->
+  <g fill="#ffffff" opacity="0.8">
+    <rect x="126" y="78" width="13" height="7" rx="1"/>
+    <rect x="126" y="90" width="13" height="7" rx="1"/>
+    <rect x="126" y="102" width="13" height="7" rx="1"/>
+    <rect x="126" y="114" width="13" height="7" rx="1"/>
+    <rect x="126" y="126" width="13" height="7" rx="1"/>
+    <rect x="126" y="138" width="13" height="7" rx="1"/>
+    <rect x="126" y="150" width="13" height="7" rx="1"/>
+    <rect x="126" y="162" width="13" height="7" rx="1"/>
+    <rect x="126" y="174" width="13" height="7" rx="1"/>
+    <rect x="151" y="78" width="13" height="7" rx="1"/>
+    <rect x="151" y="90" width="13" height="7" rx="1"/>
+    <rect x="151" y="102" width="13" height="7" rx="1"/>
+    <rect x="151" y="114" width="13" height="7" rx="1"/>
+    <rect x="151" y="126" width="13" height="7" rx="1"/>
+    <rect x="151" y="138" width="13" height="7" rx="1"/>
+    <rect x="151" y="150" width="13" height="7" rx="1"/>
+    <rect x="151" y="162" width="13" height="7" rx="1"/>
+    <rect x="151" y="174" width="13" height="7" rx="1"/>
+  </g>
+
+  <!-- Skyscraper 3 (Main Center High-Rise Landmark) -->
+  <rect x="190" y="30" width="65" height="190" fill="url(#bldgBlue1)" rx="3" />
+  <rect x="222" y="30" width="33" height="190" fill="url(#bldgDark)" opacity="0.4" />
+  <!-- Architectural Top Crown -->
+  <polygon points="190,30 222,12 255,30" fill="#0369a1" />
+  <line x1="222" y1="12" x2="222" y2="2" stroke="#0369a1" stroke-width="3" stroke-linecap="round"/>
+  <!-- Glass Facade Vertical Stripes -->
+  <g fill="#bae6fd" opacity="0.85">
+    <rect x="196" y="38" width="8" height="6" rx="1"/>
+    <rect x="208" y="38" width="8" height="6" rx="1"/>
+    <rect x="228" y="38" width="8" height="6" rx="1"/>
+    <rect x="240" y="38" width="8" height="6" rx="1"/>
+    <rect x="196" y="48" width="8" height="6" rx="1"/>
+    <rect x="208" y="48" width="8" height="6" rx="1"/>
+    <rect x="228" y="48" width="8" height="6" rx="1"/>
+    <rect x="240" y="48" width="8" height="6" rx="1"/>
+    <rect x="196" y="58" width="8" height="6" rx="1"/>
+    <rect x="208" y="58" width="8" height="6" rx="1"/>
+    <rect x="228" y="58" width="8" height="6" rx="1"/>
+    <rect x="240" y="58" width="8" height="6" rx="1"/>
+    <rect x="196" y="68" width="8" height="6" rx="1"/>
+    <rect x="208" y="68" width="8" height="6" rx="1"/>
+    <rect x="228" y="68" width="8" height="6" rx="1"/>
+    <rect x="240" y="68" width="8" height="6" rx="1"/>
+    <rect x="196" y="78" width="8" height="6" rx="1"/>
+    <rect x="208" y="78" width="8" height="6" rx="1"/>
+    <rect x="228" y="78" width="8" height="6" rx="1"/>
+    <rect x="240" y="78" width="8" height="6" rx="1"/>
+    <rect x="196" y="88" width="8" height="6" rx="1"/>
+    <rect x="208" y="88" width="8" height="6" rx="1"/>
+    <rect x="228" y="88" width="8" height="6" rx="1"/>
+    <rect x="240" y="88" width="8" height="6" rx="1"/>
+    <rect x="196" y="98" width="8" height="6" rx="1"/>
+    <rect x="208" y="98" width="8" height="6" rx="1"/>
+    <rect x="228" y="98" width="8" height="6" rx="1"/>
+    <rect x="240" y="98" width="8" height="6" rx="1"/>
+    <rect x="196" y="108" width="8" height="6" rx="1"/>
+    <rect x="208" y="108" width="8" height="6" rx="1"/>
+    <rect x="228" y="108" width="8" height="6" rx="1"/>
+    <rect x="240" y="108" width="8" height="6" rx="1"/>
+    <rect x="196" y="118" width="8" height="6" rx="1"/>
+    <rect x="208" y="118" width="8" height="6" rx="1"/>
+    <rect x="228" y="118" width="8" height="6" rx="1"/>
+    <rect x="240" y="118" width="8" height="6" rx="1"/>
+    <rect x="196" y="128" width="8" height="6" rx="1"/>
+    <rect x="208" y="128" width="8" height="6" rx="1"/>
+    <rect x="228" y="128" width="8" height="6" rx="1"/>
+    <rect x="240" y="128" width="8" height="6" rx="1"/>
+    <rect x="196" y="138" width="8" height="6" rx="1"/>
+    <rect x="208" y="138" width="8" height="6" rx="1"/>
+    <rect x="228" y="138" width="8" height="6" rx="1"/>
+    <rect x="240" y="138" width="8" height="6" rx="1"/>
+    <rect x="196" y="148" width="8" height="6" rx="1"/>
+    <rect x="208" y="148" width="8" height="6" rx="1"/>
+    <rect x="228" y="148" width="8" height="6" rx="1"/>
+    <rect x="240" y="148" width="8" height="6" rx="1"/>
+    <rect x="196" y="158" width="8" height="6" rx="1"/>
+    <rect x="208" y="158" width="8" height="6" rx="1"/>
+    <rect x="228" y="158" width="8" height="6" rx="1"/>
+    <rect x="240" y="158" width="8" height="6" rx="1"/>
+    <rect x="196" y="168" width="8" height="6" rx="1"/>
+    <rect x="208" y="168" width="8" height="6" rx="1"/>
+    <rect x="228" y="168" width="8" height="6" rx="1"/>
+    <rect x="240" y="168" width="8" height="6" rx="1"/>
+  </g>
+
+  <!-- Skyscraper 4 (Curved Modern High-Tech Tower) -->
+  <path d="M275 220 V65 C275 45, 305 45, 320 65 V220 Z" fill="url(#bldgGlass1)" />
+  <path d="M298 50 C310 50, 320 56, 320 65 V220 H298 Z" fill="url(#bldgDark)" opacity="0.5"/>
+  <!-- Horizontal Window Ribbons -->
+  <g fill="#e0f2fe" opacity="0.8">
+    <rect x="282" y="70" width="30" height="4" rx="2"/>
+    <rect x="282" y="80" width="30" height="4" rx="2"/>
+    <rect x="282" y="90" width="30" height="4" rx="2"/>
+    <rect x="282" y="100" width="30" height="4" rx="2"/>
+    <rect x="282" y="110" width="30" height="4" rx="2"/>
+    <rect x="282" y="120" width="30" height="4" rx="2"/>
+    <rect x="282" y="130" width="30" height="4" rx="2"/>
+    <rect x="282" y="140" width="30" height="4" rx="2"/>
+    <rect x="282" y="150" width="30" height="4" rx="2"/>
+    <rect x="282" y="160" width="30" height="4" rx="2"/>
+    <rect x="282" y="170" width="30" height="4" rx="2"/>
+  </g>
+
+  <!-- Skyscraper 5 (Right Side Tall Slender Tower) -->
+  <rect x="335" y="55" width="45" height="165" fill="url(#bldgBlue2)" rx="2"/>
+  <rect x="357" y="55" width="23" height="165" fill="url(#bldgDark)" opacity="0.4"/>
+  <polygon points="335,55 357,40 380,55" fill="#0284c7"/>
+  <!-- Windows -->
+  <g fill="#ffffff" opacity="0.75">
+    <rect x="340" y="65" width="6" height="6" rx="1"/>
+    <rect x="348" y="65" width="6" height="6" rx="1"/>
+    <rect x="360" y="65" width="6" height="6" rx="1"/>
+    <rect x="368" y="65" width="6" height="6" rx="1"/>
+    <rect x="340" y="77" width="6" height="6" rx="1"/>
+    <rect x="348" y="77" width="6" height="6" rx="1"/>
+    <rect x="360" y="77" width="6" height="6" rx="1"/>
+    <rect x="368" y="77" width="6" height="6" rx="1"/>
+    <rect x="340" y="89" width="6" height="6" rx="1"/>
+    <rect x="348" y="89" width="6" height="6" rx="1"/>
+    <rect x="360" y="89" width="6" height="6" rx="1"/>
+    <rect x="368" y="89" width="6" height="6" rx="1"/>
+    <rect x="340" y="101" width="6" height="6" rx="1"/>
+    <rect x="348" y="101" width="6" height="6" rx="1"/>
+    <rect x="360" y="101" width="6" height="6" rx="1"/>
+    <rect x="368" y="101" width="6" height="6" rx="1"/>
+    <rect x="340" y="113" width="6" height="6" rx="1"/>
+    <rect x="348" y="113" width="6" height="6" rx="1"/>
+    <rect x="360" y="113" width="6" height="6" rx="1"/>
+    <rect x="368" y="113" width="6" height="6" rx="1"/>
+    <rect x="340" y="125" width="6" height="6" rx="1"/>
+    <rect x="348" y="125" width="6" height="6" rx="1"/>
+    <rect x="360" y="125" width="6" height="6" rx="1"/>
+    <rect x="368" y="125" width="6" height="6" rx="1"/>
+    <rect x="340" y="137" width="6" height="6" rx="1"/>
+    <rect x="348" y="137" width="6" height="6" rx="1"/>
+    <rect x="360" y="137" width="6" height="6" rx="1"/>
+    <rect x="368" y="137" width="6" height="6" rx="1"/>
+  </g>
+
+  <!-- Skyscraper 6 (Right Angled Tower) -->
+  <polygon points="395,220 395,95 425,75 425,220" fill="url(#bldgGlass1)" />
+  <polygon points="425,75 445,90 445,220 425,220" fill="url(#bldgDark)" opacity="0.6"/>
+  <g fill="#e0f2fe" opacity="0.8">
+    <rect x="402" y="105" width="15" height="5" rx="1"/>
+    <rect x="402" y="115" width="15" height="5" rx="1"/>
+    <rect x="402" y="125" width="15" height="5" rx="1"/>
+    <rect x="402" y="135" width="15" height="5" rx="1"/>
+    <rect x="402" y="145" width="15" height="5" rx="1"/>
+    <rect x="402" y="155" width="15" height="5" rx="1"/>
+    <rect x="402" y="165" width="15" height="5" rx="1"/>
+  </g>
+
+  <!-- Far Right Towers -->
+  <rect x="455" y="115" width="40" height="105" fill="url(#bldgBlue2)" rx="2"/>
+  <rect x="475" y="115" width="20" height="105" fill="url(#bldgDark)" opacity="0.4"/>
+
+  <!-- Foreground Green Treeline & Park Base -->
+  <path d="M20 220 Q40 195 60 220 Q85 190 110 220 Q135 192 160 220 Q190 188 220 220 Q250 192 280 220 Q310 185 340 220 Q370 190 400 220 Q430 186 460 220 Q485 195 510 220 Z" fill="url(#treeGrad)" opacity="0.95"/>
+  <path d="M10 220 Q35 202 55 220 Q75 198 100 220 Q125 200 150 220 Q180 195 210 220 Q240 200 270 220 Q300 194 330 220 Q360 198 390 220 Q420 194 450 220 Q475 202 505 220 Z" fill="#16a34a" opacity="0.8"/>
+
+  <!-- Decorative "Build Your Future" Script Typography -->
+  <g transform="translate(425, 45) rotate(-6)">
+    <text x="0" y="0" font-family="'Segoe Script', 'Brush Script MT', 'Dancing Script', cursive, sans-serif" font-size="19" font-weight="bold" fill="#0284c7" text-anchor="middle" filter="url(#softGlow)" opacity="0.3">
+      Build
+    </text>
+    <text x="0" y="0" font-family="'Segoe Script', 'Brush Script MT', 'Dancing Script', cursive, sans-serif" font-size="19" font-weight="bold" fill="#0369a1" text-anchor="middle">
+      Build
+    </text>
+    <text x="5" y="22" font-family="'Segoe Script', 'Brush Script MT', 'Dancing Script', cursive, sans-serif" font-size="20" font-weight="bold" fill="#0284c7" text-anchor="middle" filter="url(#softGlow)" opacity="0.3">
+      Your Future
+    </text>
+    <text x="5" y="22" font-family="'Segoe Script', 'Brush Script MT', 'Dancing Script', cursive, sans-serif" font-size="20" font-weight="bold" fill="#0284c7" text-anchor="middle">
+      Your Future
+    </text>
+    <!-- Stylish swoosh underline -->
+    <path d="M-40 32 Q5 40 50 30" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>
