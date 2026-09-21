@@ -152,6 +152,10 @@ def add_header(response):
     response.headers['Expires'] = '0'
     return response
 
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'ok', 'app': 'Interview Master Portal'}), 200
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
@@ -9793,7 +9797,10 @@ def update_role():
 
 # Automatic DB Initialization & Auto-seeding for Production Deployment
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+    except Exception as db_init_err:
+        print(f"Initial db.create_all notice: {db_init_err}")
     try:
         from sqlalchemy import inspect, text
         inspector = inspect(db.engine)

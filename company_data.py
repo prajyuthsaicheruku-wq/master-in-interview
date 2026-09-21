@@ -14,12 +14,12 @@ import os
 import sys
 
 # Import company groups
-from scratch.def_faang import FAANG_COMPANIES
-from scratch.def_finance import FINANCE_COMPANIES
-from scratch.def_startups import STARTUP_COMPANIES
-from scratch.def_semi import SEMI_COMPANIES
-from scratch.def_consulting import CONSULTING_COMPANIES
-from scratch.def_service import SERVICE_COMPANIES
+from company_profiles.def_faang import FAANG_COMPANIES
+from company_profiles.def_finance import FINANCE_COMPANIES
+from company_profiles.def_startups import STARTUP_COMPANIES
+from company_profiles.def_semi import SEMI_COMPANIES
+from company_profiles.def_consulting import CONSULTING_COMPANIES
+from company_profiles.def_service import SERVICE_COMPANIES
 
 # Master combined dictionary
 ALL_COMPANY_PROFILES = {}
