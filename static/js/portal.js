@@ -84,7 +84,7 @@ function finishProgressBar() {
 // Prefetch a given URL into memory cache in the background
 async function prefetchPage(url) {
     const cleanUrl = getCanonicalPath(url);
-    if (!cleanUrl || cleanUrl.startsWith('/logout') || cleanUrl.startsWith('/api/') || cleanUrl.startsWith('/auth') || cleanUrl.startsWith('/profile') || pageCache.has(cleanUrl)) {
+    if (!cleanUrl || cleanUrl.startsWith('/logout') || cleanUrl.startsWith('/api/') || cleanUrl.startsWith('/auth') || cleanUrl.startsWith('/profile') || cleanUrl.startsWith('/aptitude') || cleanUrl.startsWith('/mock-interview') || pageCache.has(cleanUrl)) {
         return;
     }
     try {
@@ -200,7 +200,7 @@ async function navigateTo(url, pushState = true) {
     updateActiveSidebarLink(targetPath);
     closeMobileSidebar();
 
-    if (targetPath.startsWith('/profile')) {
+    if (targetPath.startsWith('/profile') || targetPath.startsWith('/aptitude') || targetPath.startsWith('/mock-interview')) {
         pageCache.delete(targetPath);
     }
 

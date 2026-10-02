@@ -15807,3 +15807,19 @@ MOCK_TOPICS_DATA = {   'ai': {   'category': 'emerging',
                                                         '}\n',
                                         'title': 'Coding Task 10: Toggle Dark Mode Class on Body'}],
                    'questions_count': 40}}
+
+# =========================================================================
+# INTEGRATE AUTHENTIC LEETCODE CODING QUESTIONS FOR ALL TECHNICAL DOMAINS
+# Replaces coding questions (31-40) with domain-tailored LeetCode problems
+# =========================================================================
+try:
+    from leetcode_coding_data import DOMAIN_LEETCODE_QUESTIONS
+    for domain_key, lc_qs in DOMAIN_LEETCODE_QUESTIONS.items():
+        if domain_key in MOCK_TOPICS_DATA:
+            # Preserve first 30 MCQs
+            mcqs = MOCK_TOPICS_DATA[domain_key]['questions'][:30]
+            MOCK_TOPICS_DATA[domain_key]['questions'] = mcqs + lc_qs
+            MOCK_TOPICS_DATA[domain_key]['questions_count'] = len(MOCK_TOPICS_DATA[domain_key]['questions'])
+except Exception as _e:
+    pass
+

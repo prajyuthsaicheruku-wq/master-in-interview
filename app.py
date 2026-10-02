@@ -1081,6 +1081,10 @@ def aptitude():
             questions_by_topic[tp] = []
         questions_by_topic[tp].append(qd)
 
+    # Randomize / jumble questions within each topic so test papers are freshly shuffled on load/retake
+    for tp in questions_by_topic:
+        random.shuffle(questions_by_topic[tp])
+
     # Structure Quantitative Aptitude Modules with embedded questions
     aptitude_modules = [
         {
@@ -9071,6 +9075,18 @@ def mock_interview():
         
     return render_template('mock_interview.html', mock_stats=mock_stats, current_user=user, topics_by_cat=topics_by_cat, all_tech_topics=all_tech_topics)
 
+@app.route('/api/execute-code', methods=['POST'])
+@login_required
+def execute_code_api():
+    data = request.get_json() or {}
+    code = data.get('code', '')
+    test_cases = data.get('test_cases', [])
+    language = data.get('language', 'python')
+    
+    import code_executor
+    result = code_executor.execute_code_submission(code, test_cases, language=language)
+    return jsonify(result)
+
 @app.route('/api/submit-mock-test', methods=['POST'])
 @login_required
 def submit_mock_test():
@@ -9160,12 +9176,32 @@ def mock_test_session(topic_key):
 
         jumbled_questions.append(q)
 
-    return render_template(
+    # Jumble first 30 questions (MCQs 1-30) and jumble next 10 questions (Coding 31-40)
+    if len(jumbled_questions) >= 40:
+        first_30 = jumbled_questions[:30]
+        next_10 = jumbled_questions[30:40]
+        remainder = jumbled_questions[40:]
+        random.shuffle(first_30)
+        random.shuffle(next_10)
+        final_questions = first_30 + next_10 + remainder
+    else:
+        # For topics with different structure, jumble MCQs and Coding tasks separately
+        mcqs = [q for q in jumbled_questions if not (q.get('is_coding') and not q.get('options'))]
+        codings = [q for q in jumbled_questions if (q.get('is_coding') and not q.get('options'))]
+        random.shuffle(mcqs)
+        random.shuffle(codings)
+        final_questions = mcqs + codings
+
+    resp = make_response(render_template(
         'mock_test_session.html',
         topic_key=topic_key,
         topic_name=topic_info['name'],
-        questions=jumbled_questions
-    )
+        questions=final_questions
+    ))
+    resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    resp.headers["Pragma"] = "no-cache"
+    resp.headers["Expires"] = "0"
+    return resp
 
 @app.route('/bookmarks')
 @login_required

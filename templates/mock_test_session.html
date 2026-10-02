@@ -62,86 +62,364 @@
     }
 
     /* IDE Header Bar */
-    .ide-header-bar {
-        background: #f8fafc;
-        color: #0f172a;
-        padding: 0.5rem 1rem;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        font-size: 0.82rem;
-        font-weight: 800;
+    /* =========================================================================
+       LEETCODE WORKSPACE MODERN THEMED STYLES
+       ========================================================================= */
+    .leetcode-workspace-container {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1.5px solid #334155;
+        background: #0f172a;
+        box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.35);
+        margin-top: 0.75rem;
+    }
+
+    .leetcode-editor-header {
+        background: #1e293b;
+        color: #f8fafc;
+        padding: 0.6rem 1rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border: 1.5px solid #cbd5e1;
-        border-bottom: 1px solid #cbd5e1;
+        border-bottom: 1.5px solid #334155;
     }
 
-    /* IDE Editor Container & Textarea */
-    .ide-editor-container {
+    .leetcode-brand-badge {
         display: flex;
-        background: #ffffff;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        border: 1.5px solid #cbd5e1;
-        border-top: none;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        align-items: center;
+        gap: 0.45rem;
+        font-weight: 800;
+        font-size: 0.85rem;
+        color: #f59e0b;
+        letter-spacing: 0.02em;
     }
 
-    .line-number-gutter {
-        width: 42px;
-        background: #f1f5f9;
-        color: #64748b;
+    .leetcode-lang-badge {
+        background: #0f172a;
+        color: #38bdf8;
+        border: 1px solid #0284c7;
+        padding: 0.2rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.74rem;
+        font-family: 'Consolas', 'Fira Code', monospace;
+        font-weight: 700;
+    }
+
+    .leetcode-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .lc-btn-subtle {
+        background: #0f172a;
+        border: 1px solid #475569;
+        color: #cbd5e1;
+        padding: 0.28rem 0.65rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-weight: 700;
+        transition: all 0.18s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .lc-btn-subtle:hover {
+        background: #334155;
+        color: #ffffff;
+        border-color: #64748b;
+    }
+
+    .leetcode-editor-body {
+        display: flex;
+        background: #090d16;
+        min-height: 280px;
+    }
+
+    .leetcode-gutter {
+        width: 48px;
+        background: #090d16;
+        color: #475569;
         font-family: 'Consolas', 'Fira Code', monospace;
         font-size: 0.88rem;
-        line-height: 1.5;
-        padding: 0.75rem 0.4rem 0.75rem 0;
+        line-height: 1.55;
+        padding: 0.85rem 0.5rem 0.85rem 0;
         text-align: right;
         user-select: none;
-        border-right: 1.5px solid #cbd5e1;
+        border-right: 1.5px solid #1e293b;
         box-sizing: border-box;
         overflow: hidden;
         flex-shrink: 0;
         font-weight: 600;
     }
 
-    .code-editor-textarea {
+    .leetcode-textarea {
         flex: 1;
         width: 100%;
-        min-height: 250px !important;
+        min-height: 280px !important;
         font-family: 'Consolas', 'Fira Code', monospace;
-        font-size: 0.88rem;
-        line-height: 1.5;
-        background: #ffffff !important;
-        color: #0f172a !important;
+        font-size: 0.9rem;
+        line-height: 1.55;
+        background: #090d16 !important;
+        color: #e2e8f0 !important;
         border: none !important;
-        padding: 0.75rem 0.85rem;
+        padding: 0.85rem 1rem;
         outline: none;
         resize: vertical;
         box-sizing: border-box;
-        caret-color: #0f172a;
+        caret-color: #38bdf8;
         tab-size: 4;
         white-space: pre;
         overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: #cbd5e1 #f8fafc;
     }
 
-    /* Sleek Dark Minimal Scrollbar */
-    .code-editor-textarea::-webkit-scrollbar {
-        width: 6px;
+    /* LeetCode Testcase & Console Box */
+    .leetcode-console-box {
+        background: #0f172a;
+        border-top: 1.5px solid #1e293b;
+        padding: 0.85rem 1.1rem;
+        color: #f8fafc;
     }
-    .code-editor-textarea::-webkit-scrollbar-track {
+
+    .leetcode-console-tabs-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1.5px solid #1e293b;
+        padding-bottom: 0.65rem;
+        margin-bottom: 0.85rem;
+    }
+
+    .leetcode-console-tabs-left {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+
+    .lc-tab-btn {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 0.82rem;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .lc-tab-btn.active {
         background: #1e293b;
+        color: #38bdf8;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
-    .code-editor-textarea::-webkit-scrollbar-thumb {
-        background: #475569;
-        border-radius: 4px;
+    .lc-tab-btn:hover:not(.active) {
+        color: #e2e8f0;
     }
 
-    .code-editor-textarea:focus {
-        outline: none !important;
+    .lc-run-button {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        font-weight: 800;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1.35rem;
+        font-size: 0.88rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        transition: all 0.2s ease;
+    }
+    .lc-run-button:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+    .lc-run-button:active {
+        transform: translateY(0);
+    }
+
+    .lc-cases-pills-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+    }
+
+    .lc-case-pill {
+        background: #1e293b;
+        color: #94a3b8;
+        border: 1px solid #334155;
+        border-radius: 6px;
+        padding: 0.35rem 0.85rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    .lc-case-pill.active {
+        background: #334155;
+        color: #ffffff;
+        border-color: #64748b;
+    }
+    .lc-case-pill.pill-passed {
+        border-color: #10b981 !important;
+        color: #34d399 !important;
+        background: rgba(16, 185, 129, 0.15) !important;
+    }
+    .lc-case-pill.pill-failed {
+        border-color: #f43f5e !important;
+        color: #fb7185 !important;
+        background: rgba(244, 63, 94, 0.15) !important;
+    }
+
+    .lc-io-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 0.25rem;
+    }
+
+    .lc-io-box {
+        background: #090d16;
+        border: 1.5px solid #1e293b;
+        border-radius: 8px;
+        padding: 0.65rem 0.95rem;
+        font-family: 'Consolas', 'Fira Code', monospace;
+        font-size: 0.85rem;
+        color: #f8fafc;
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.45;
+    }
+    .lc-io-box.expected-box {
+        border-color: #065f46;
+        color: #34d399;
+    }
+    .lc-io-box.output-passed {
+        border-color: #065f46;
+        color: #34d399;
+        background: rgba(16, 185, 129, 0.05);
+    }
+    .lc-io-box.output-failed {
+        border-color: #881337;
+        color: #fb7185;
+        background: rgba(244, 63, 94, 0.05);
+    }
+
+    .lc-result-idle {
+        color: #64748b;
+        font-size: 0.86rem;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        background: #090d16;
+        border: 1px dashed #334155;
+        border-radius: 8px;
+    }
+
+    .lc-result-running {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        color: #38bdf8;
+        font-size: 0.88rem;
+        font-weight: 700;
+        padding: 1.75rem 1rem;
+        background: #090d16;
+        border-radius: 8px;
+    }
+
+    .lc-spinner {
+        width: 18px;
+        height: 18px;
+        border: 2.5px solid #1e293b;
+        border-top-color: #38bdf8;
+        border-radius: 50%;
+        animation: lcSpin 0.7s linear infinite;
+    }
+    @keyframes lcSpin {
+        to { transform: rotate(360deg); }
+    }
+
+    .lc-status-banner {
+        padding: 0.85rem 1.15rem;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+    }
+    .banner-accepted {
+        background: rgba(16, 185, 129, 0.12);
+        border: 1.5px solid #10b981;
+        color: #34d399;
+    }
+    .banner-wrong {
+        background: rgba(244, 63, 94, 0.12);
+        border: 1.5px solid #f43f5e;
+        color: #fb7185;
+    }
+    .banner-error {
+        background: rgba(225, 29, 72, 0.15);
+        border: 1.5px solid #e11d48;
+        color: #fda4af;
+    }
+
+    .lc-status-title-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .lc-status-text {
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+    }
+
+    .lc-meta-chips {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .lc-chip {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #f8fafc;
+        padding: 0.2rem 0.55rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        font-family: monospace;
+    }
+
+    .lc-stdout-pre {
+        background: #090d16;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 0.65rem 0.95rem;
+        font-family: 'Consolas', 'Fira Code', monospace;
+        font-size: 0.82rem;
+        color: #94a3b8;
+        max-height: 140px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        margin: 0.25rem 0 0 0;
     }
 
     /* SLEEK FLOATING GLASS ACTION CARD FOR NAVIGATION & SUBMIT */
@@ -361,7 +639,7 @@
                 <div class="question-page-card" id="question-card-{{ q_idx }}" style="display: {% if q_idx == 1 %}block{% else %}none{% endif %}; padding: 1.4rem 1.5rem; border-radius: 16px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 1.5rem;">
                     
                     <!-- CARD HEADER -->
-                    <div style="margin-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.55rem; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="margin-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.55rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
                         <span style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); color: #ffffff; font-weight: 800; font-size: 0.85rem; padding: 0.3rem 0.8rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);">
                             Question {{ q_idx }} of {{ questions | length }}
                         </span>
@@ -370,9 +648,14 @@
                             🗣️ Section: General HR Round
                         </span>
                         {% elif q.is_coding and not q.options %}
-                        <span style="background: rgba(16, 185, 129, 0.1); color: #047857; font-weight: 800; font-size: 0.8rem; padding: 0.3rem 0.75rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2); display: flex; align-items: center; gap: 0.35rem;">
-                            💻 Section: Programming Task
-                        </span>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: rgba(245, 158, 11, 0.12); color: #d97706; font-weight: 800; font-size: 0.8rem; padding: 0.3rem 0.75rem; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-flex; align-items: center; gap: 0.35rem;">
+                                ⚡ LeetCode Problem
+                            </span>
+                            <span style="font-size: 0.76rem; font-weight: 800; padding: 0.25rem 0.65rem; border-radius: 6px; {% if q.difficulty == 'Easy' %}background: #ecfdf5; color: #059669; border: 1.5px solid #a7f3d0;{% elif q.difficulty == 'Medium' %}background: #fffbeb; color: #d97706; border: 1.5px solid #fde68a;{% else %}background: #fff1f2; color: #e11d48; border: 1.5px solid #fecdd3;{% endif %}">
+                                {{ q.difficulty or 'Medium' }}
+                            </span>
+                        </div>
                         {% else %}
                         <span style="background: rgba(99, 102, 241, 0.1); color: #4f46e5; font-weight: 800; font-size: 0.8rem; padding: 0.3rem 0.75rem; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2);">
                             📝 Multiple Choice Question (MCQ)
@@ -381,11 +664,11 @@
                     </div>
 
                     <!-- QUESTION TITLE & TEXT -->
-                    <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 0.65rem; line-height: 1.35;">
-                        {{ q.title }}
+                    <h3 style="font-size: 1.22rem; font-weight: 800; color: #0f172a; margin-bottom: 0.65rem; line-height: 1.35; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                        <span>{{ q.title }}</span>
                     </h3>
 
-                    <div style="font-size: 0.92rem; color: #334155; line-height: 1.55; margin-bottom: 1rem; background: #f8fafc; padding: 0.85rem 1.1rem; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #4f46e5;">
+                    <div style="font-size: 0.93rem; color: #334155; line-height: 1.6; margin-bottom: 1rem; background: #ffffff; padding: 1.1rem 1.35rem; border-radius: 12px; border: 1.5px solid #e2e8f0; border-left: 5px solid {% if q.is_coding %}#f59e0b{% else %}#4f46e5{% endif %}; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
                         {{ q.question_text | safe }}
                     </div>
 
@@ -413,50 +696,130 @@
                         </div>
                     </div>
                     {% elif q.is_coding and not q.options %}
-                    <!-- PROGRAMMING CODE EDITOR INPUT -->
-                    <div>
-                        <div class="ide-header-bar">
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span style="display: flex; align-items: center; gap: 0.35rem; font-weight: 800; color: #0f172a;">
-                                    💻 IDE Workspace
+                    <!-- =========================================================================
+                         AUTHENTIC LEETCODE INTERACTIVE CODING WORKSPACE
+                         ========================================================================= -->
+                    <div class="leetcode-workspace-container" id="leetcode_workspace_q_{{ q_idx }}">
+                        <!-- LEETCODE IDE TOP TOOLBAR -->
+                        <div class="leetcode-editor-header">
+                            <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                                <span class="leetcode-brand-badge">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    LeetCode Workspace
                                 </span>
-                                <span style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-family: monospace; font-weight: 700;">
-                                    {{ topic_name.split(' ')[0] }} Runtime
+                                <span class="leetcode-lang-badge" id="lang_badge_q_{{ q_idx }}">
+                                    {% if 'sql' in topic_key %}SQL (SQLite Engine){% elif 'javascript' in topic_key or 'react' in topic_key or 'node' in topic_key %}JavaScript (Node.js){% else %}Python 3 (v3.13 Runtime){% endif %}
+                                </span>
+                                <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">
+                                    (Write only solution logic)
                                 </span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 0.4rem;">
-                                <button type="button" onclick="resetCode({{ q_idx }})" style="background: #ffffff; border: 1px solid #cbd5e1; color: #0f172a; padding: 0.2rem 0.55rem; border-radius: 4px; font-size: 0.72rem; cursor: pointer; font-weight: 700;">
-                                    🔄 Reset Code
+                            <div class="leetcode-header-actions">
+                                <button type="button" class="lc-btn-subtle" onclick="resetCode({{ q_idx }})" title="Reset code to original starter template">
+                                    🔄 Reset Template
+                                </button>
+                                <button type="button" class="lc-btn-subtle" onclick="copyEditorCode({{ q_idx }})" title="Copy code to clipboard">
+                                    📋 Copy
                                 </button>
                             </div>
                         </div>
-                        
-                        <div class="ide-editor-container">
-                            <!-- LINE NUMBER GUTTER -->
-                            <div class="line-number-gutter" id="line_numbers_q_{{ q_idx }}">1</div>
-                            
-                            <!-- CODE TEXTAREA WITH ANTI-COPY PROTECTION -->
-                            <textarea class="code-editor-textarea" id="text_answer_q_{{ q_idx }}" spellcheck="false" autocorrect="off" autocapitalize="off" oncopy="return false;" oncut="return false;" placeholder="// Write your solution code here..." onscroll="syncScroll({{ q_idx }})" onkeydown="handleCodeTab(event, {{ q_idx }})" oninput="updateLineNumbers({{ q_idx }}); markAnswered({{ q_idx }});"></textarea>
+
+                        <!-- CODE EDITOR TEXTAREA WITH LINE NUMBERS -->
+                        <div class="leetcode-editor-body">
+                            <div class="leetcode-gutter" id="line_numbers_q_{{ q_idx }}">1</div>
+                            <textarea class="leetcode-textarea" id="text_answer_q_{{ q_idx }}" spellcheck="false" autocorrect="off" autocapitalize="off" oncopy="return false;" oncut="return false;" placeholder="// Write your solution logic here..." onscroll="syncScroll({{ q_idx }})" onkeydown="handleCodeTab(event, {{ q_idx }})" oninput="updateLineNumbers({{ q_idx }}); markAnswered({{ q_idx }});">{{ q.starter_code | default('', true) }}</textarea>
                         </div>
 
-                        <!-- RUN CODE CONTROL BAR & TERMINAL OUTPUT CONSOLE DIRECTLY UNDER THE IDE WORKSPACE -->
-                        <div style="margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.6rem;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 0.5rem 0.85rem; border-radius: 10px; border: 1px solid #cbd5e1;">
-                                <button type="button" onclick="runUserCode({{ q_idx }})" style="background: #ffffff; color: #0f172a; font-weight: 800; border-radius: 8px; border: 1.5px solid #0f172a; padding: 0.5rem 1.35rem; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 0.45rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                                    ▶️ Run Code
-                                </button>
-                                <span style="font-size: 0.78rem; color: #475569; font-weight: 700;">
-                                    Click <strong>Run Code</strong> to execute and verify your code against test cases
-                                </span>
-                            </div>
-
-                            <!-- TERMINAL OUTPUT CONSOLE (Hidden until Run Code is clicked) -->
-                            <div id="terminal_output_q_{{ q_idx }}" style="display: none; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 0.85rem 1.1rem; font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.84rem; color: #0f172a; line-height: 1.5; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
-                                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.4rem; margin-bottom: 0.5rem; color: #475569; font-weight: 700; font-size: 0.78rem;">
-                                    <span>🖥️ IDE Terminal Output Console</span>
-                                    <span id="terminal_status_q_{{ q_idx }}" style="color: #059669; font-weight: 800;">✓ EXECUTED</span>
+                        <!-- LEETCODE CONSOLE & TEST RUNNER PANEL -->
+                        <div class="leetcode-console-box" id="console_box_q_{{ q_idx }}">
+                            <!-- CONSOLE TABS BAR -->
+                            <div class="leetcode-console-tabs-bar">
+                                <div class="leetcode-console-tabs-left">
+                                    <button type="button" class="lc-tab-btn active" id="tab_btn_cases_{{ q_idx }}" onclick="switchConsoleTab({{ q_idx }}, 'cases')">
+                                        📋 Testcases ({{ (q.test_cases | length) if q.test_cases else 3 }})
+                                    </button>
+                                    <button type="button" class="lc-tab-btn" id="tab_btn_result_{{ q_idx }}" onclick="switchConsoleTab({{ q_idx }}, 'result')">
+                                        ⚡ Test Result
+                                    </button>
                                 </div>
-                                <pre id="terminal_text_q_{{ q_idx }}" style="margin: 0; white-space: pre-wrap; font-family: inherit; font-size: inherit; color: #0f172a;"></pre>
+                                <div class="leetcode-console-tabs-right">
+                                    <button type="button" class="lc-run-button" id="run_btn_q_{{ q_idx }}" onclick="runUserCode({{ q_idx }})">
+                                        <span id="run_icon_q_{{ q_idx }}">▶️</span> Run Code
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- TAB 1: TESTCASES VIEW -->
+                            <div class="leetcode-tab-content" id="tab_content_cases_{{ q_idx }}">
+                                <div class="lc-cases-pills-row">
+                                    {% if q.test_cases %}
+                                        {% for tc in q.test_cases %}
+                                        <button type="button" class="lc-case-pill {% if loop.first %}active{% endif %}" id="pill_btn_{{ q_idx }}_{{ loop.index }}" onclick="showTestCaseDetails({{ q_idx }}, {{ loop.index }})">
+                                            Case {{ loop.index }}
+                                        </button>
+                                        {% endfor %}
+                                    {% else %}
+                                        <button type="button" class="lc-case-pill active" id="pill_btn_{{ q_idx }}_1" onclick="showTestCaseDetails({{ q_idx }}, 1)">Case 1</button>
+                                        <button type="button" class="lc-case-pill" id="pill_btn_{{ q_idx }}_2" onclick="showTestCaseDetails({{ q_idx }}, 2)">Case 2</button>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Individual Test Case Details -->
+                                <div class="lc-case-detail-container" id="case_details_container_{{ q_idx }}">
+                                    {% if q.test_cases %}
+                                        {% for tc in q.test_cases %}
+                                        <div class="lc-single-case-view" id="case_view_{{ q_idx }}_{{ loop.index }}" style="display: {% if loop.first %}block{% else %}none{% endif %};">
+                                            <div class="lc-io-label">Input:</div>
+                                            <pre class="lc-io-box">{{ tc.input }}</pre>
+                                            <div class="lc-io-label" style="margin-top: 0.55rem;">Expected Output:</div>
+                                            <pre class="lc-io-box expected-box">{{ tc.expected_output }}</pre>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="lc-single-case-view" id="case_view_{{ q_idx }}_1" style="display: block;">
+                                            <div class="lc-io-label">Input:</div>
+                                            <pre class="lc-io-box">Sample Case 1</pre>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- TAB 2: TEST RESULT VIEW -->
+                            <div class="leetcode-tab-content" id="tab_content_result_{{ q_idx }}" style="display: none;">
+                                <div class="lc-result-idle" id="result_idle_{{ q_idx }}">
+                                    <span>You have not run the test cases yet. Click <strong>▶️ Run Code</strong> to test your solution logic.</span>
+                                </div>
+
+                                <div class="lc-result-running" id="result_running_{{ q_idx }}" style="display: none;">
+                                    <div class="lc-spinner"></div>
+                                    <span>Compiling & executing solution logic against all test cases...</span>
+                                </div>
+
+                                <div class="lc-result-live" id="result_live_{{ q_idx }}" style="display: none;">
+                                    <!-- Result Status Banner -->
+                                    <div class="lc-status-banner banner-accepted" id="status_banner_{{ q_idx }}">
+                                        <div class="lc-status-title-row">
+                                            <span class="lc-status-text" id="status_text_{{ q_idx }}">Accepted ✅</span>
+                                            <div class="lc-meta-chips">
+                                                <span class="lc-chip" id="runtime_chip_{{ q_idx }}">⏱️ Runtime: 12 ms</span>
+                                                <span class="lc-chip" id="memory_chip_{{ q_idx }}">💾 Memory: 13.8 MB</span>
+                                                <span class="lc-chip" id="pass_count_chip_{{ q_idx }}">🎯 3/3 Passed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Case Result Pills -->
+                                    <div class="lc-cases-pills-row" id="result_pills_row_{{ q_idx }}"></div>
+
+                                    <!-- Case Result Details Box -->
+                                    <div class="lc-case-result-cards" id="result_cards_container_{{ q_idx }}"></div>
+
+                                    <!-- Standard Output / Print Console -->
+                                    <div id="stdout_box_wrapper_{{ q_idx }}" style="display: none; margin-top: 0.75rem;">
+                                        <div class="lc-io-label" style="color: #64748b;">Stdout / Debug Log Output:</div>
+                                        <pre class="lc-stdout-pre" id="stdout_text_{{ q_idx }}"></pre>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -676,7 +1039,7 @@
             <button type="button" onclick="closeResultsModalAndReview()" class="btn btn-primary" style="font-weight: 800; border-radius: 12px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff !important; padding: 0.75rem 1.5rem; font-size: 0.92rem; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);">
                 🔍 Review Questions & Solutions
             </button>
-            <button type="button" onclick="window.location.reload();" class="btn btn-outline" style="font-weight: 800; border-radius: 12px; padding: 0.75rem 1.35rem; border-color: #cbd5e1; color: #334155; font-size: 0.92rem; background: #ffffff;">
+            <button type="button" onclick="retakeTestSession();" class="btn btn-outline" style="font-weight: 800; border-radius: 12px; padding: 0.75rem 1.35rem; border-color: #cbd5e1; color: #334155; font-size: 0.92rem; background: #ffffff;">
                 🔄 Retake Assessment
             </button>
             <a href="{{ url_for('mock_interview') }}" data-no-spa="true" class="btn btn-outline" style="font-weight: 700; border-radius: 12px; padding: 0.75rem 1.35rem; border-color: #cbd5e1; color: #64748b; font-size: 0.92rem; text-decoration: none; background: #ffffff;">
@@ -711,6 +1074,10 @@
             const qNum = idx + 1;
             if (q.starter_code) {
                 starterCodes[qNum] = q.starter_code.trim();
+                const ta = document.getElementById(`text_answer_q_${qNum}`);
+                if (ta && !ta.value.trim()) {
+                    ta.value = q.starter_code.trim();
+                }
             }
             updateLineNumbers(qNum);
         });
@@ -861,47 +1228,215 @@
         }
     }
 
-    function resetCode(qIdx) {
-        const textarea = document.getElementById(`text_answer_q_${qIdx}`);
-        if (textarea) {
-            textarea.value = '';
-            updateLineNumbers(qIdx);
-            delete answeredState[qIdx];
-            updateWizardUI();
-            showToast("🔄 Code workspace cleared!");
+    // =========================================================================
+    // LEETCODE WORKSPACE INTERACTIVE TAB CONTROLS & TEST RUNNER
+    // =========================================================================
+    function switchConsoleTab(qIdx, tabName) {
+        const tabCases = document.getElementById(`tab_content_cases_${qIdx}`);
+        const tabResult = document.getElementById(`tab_content_result_${qIdx}`);
+        const btnCases = document.getElementById(`tab_btn_cases_${qIdx}`);
+        const btnResult = document.getElementById(`tab_btn_result_${qIdx}`);
+
+        if (tabName === 'cases') {
+            if (tabCases) tabCases.style.display = 'block';
+            if (tabResult) tabResult.style.display = 'none';
+            if (btnCases) btnCases.classList.add('active');
+            if (btnResult) btnResult.classList.remove('active');
+        } else {
+            if (tabCases) tabCases.style.display = 'none';
+            if (tabResult) tabResult.style.display = 'block';
+            if (btnCases) btnCases.classList.remove('active');
+            if (btnResult) btnResult.classList.add('active');
         }
     }
 
-    // ▶️ RUN CODE BUTTON EXECUTION & TERMINAL CONSOLE DISPATCHER FOR ALL MOCK TESTS
-    function runUserCode(qIdx) {
+    function showTestCaseDetails(qIdx, caseIdx) {
+        const container = document.getElementById(`case_details_container_${qIdx}`);
+        if (!container) return;
+        const allViews = container.querySelectorAll('.lc-single-case-view');
+        allViews.forEach((v, i) => {
+            v.style.display = (i + 1 === caseIdx) ? 'block' : 'none';
+        });
+
+        const allPills = document.querySelectorAll(`[id^="pill_btn_${qIdx}_"]`);
+        allPills.forEach((p, i) => {
+            if (i + 1 === caseIdx) p.classList.add('active');
+            else p.classList.remove('active');
+        });
+    }
+
+    function showResultCaseDetails(qIdx, caseIdx) {
+        const container = document.getElementById(`result_cards_container_${qIdx}`);
+        if (!container) return;
+        const allViews = container.querySelectorAll('.lc-single-result-view');
+        allViews.forEach((v, i) => {
+            v.style.display = (i + 1 === caseIdx) ? 'block' : 'none';
+        });
+
+        const allPills = document.querySelectorAll(`[id^="res_pill_btn_${qIdx}_"]`);
+        allPills.forEach((p, i) => {
+            if (i + 1 === caseIdx) p.classList.add('active');
+            else p.classList.remove('active');
+        });
+    }
+
+    function copyEditorCode(qIdx) {
         const textarea = document.getElementById(`text_answer_q_${qIdx}`);
-        const terminal = document.getElementById(`terminal_output_q_${qIdx}`);
-        const terminalText = document.getElementById(`terminal_text_q_${qIdx}`);
-        const terminalStatus = document.getElementById(`terminal_status_q_${qIdx}`);
-        if (!terminal || !terminalText) return;
+        if (textarea && textarea.value) {
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                showToast("📋 Code copied to clipboard!");
+            });
+        }
+    }
 
-        const code = textarea ? textarea.value.trim() : '';
-        terminal.style.display = 'block';
+    function resetCode(qIdx) {
+        const textarea = document.getElementById(`text_answer_q_${qIdx}`);
+        if (textarea) {
+            const starter = starterCodes[qIdx] || '';
+            textarea.value = starter;
+            updateLineNumbers(qIdx);
+            delete answeredState[qIdx];
+            updateWizardUI();
+            showToast("🔄 Reset to original problem template!");
+        }
+    }
 
-        if (terminalStatus) {
-            terminalStatus.style.color = '#059669';
-            terminalStatus.innerText = '✓ TEST CASES PASSED';
+    // ▶️ REAL LEETCODE RUN CODE BUTTON EXECUTION & TEST RESULTS DISPATCHER
+    async function runUserCode(qIdx) {
+        const textarea = document.getElementById(`text_answer_q_${qIdx}`);
+        const userCode = textarea ? textarea.value.trim() : '';
+
+        // Switch to result tab immediately
+        switchConsoleTab(qIdx, 'result');
+
+        const idleView = document.getElementById(`result_idle_${qIdx}`);
+        const runningView = document.getElementById(`result_running_${qIdx}`);
+        const liveView = document.getElementById(`result_live_${qIdx}`);
+        const runBtn = document.getElementById(`run_btn_q_${qIdx}`);
+
+        if (idleView) idleView.style.display = 'none';
+        if (runningView) runningView.style.display = 'flex';
+        if (liveView) liveView.style.display = 'none';
+        if (runBtn) {
+            runBtn.disabled = true;
+            runBtn.style.opacity = '0.7';
         }
 
-        const topicLower = ("{{ topic_name }}").toLowerCase();
-        let consoleOutput = '';
+        const qData = questionsData[qIdx - 1] || {};
+        const testCases = qData.test_cases || [];
+        const topicKey = "{{ topic_key }}";
 
-        if (topicLower.includes('sql')) {
-            consoleOutput = `<span style="color: #0284c7; font-weight: 700;">[RUNNING] Executing SQL Query against Database Schema...</span>\n\n<span style="color: #0f172a; font-weight: 700;">[QUERY STDOUT RESULT TABLE]:</span>\n<span style="color: #334155;">+----+-------------------+-------------------+------------+\n| ID | Candidate_Name    | Department        | Status     |\n+----+-------------------+-------------------+------------+\n| 101| Alex Morgan       | Software Dev      | ACTIVE     |\n| 102| Jordan Lee        | Data Engineering  | COMPLETED  |\n+----+-------------------+-------------------+------------+\n(2 rows retrieved successfully in 4ms)</span>\n\n<span style="color: #059669; font-weight: 700;">✓ Test Case 1 (Standard Query): PASSED</span>\n<span style="color: #059669; font-weight: 700;">✓ Test Case 2 (Schema Constraint Check): PASSED</span>\n<span style="color: #059669; font-weight: 700;">✓ Test Case 3 (Performance Optimization): PASSED</span>\n\n<span style="color: #0f172a; font-weight: 800;">🚀 Execution Summary: 3/3 Test Cases Passed | Query Runtime: 4ms | Exit Code: 0 (SUCCESS)</span>`;
-        } else {
-            consoleOutput = `<span style="color: #0284c7; font-weight: 700;">[RUNNING] Compiling & executing solution against test suite...</span>\n<span style="color: #047857;">✓ Compilation: 0 Errors, 0 Warnings (Exit Code: 0)</span>\n\n<span style="color: #0f172a; font-weight: 700;">[PROGRAM STDOUT OUTPUT]:</span>\n<span style="color: #334155;">Input Array: [1, 2, 3, 4, 5]\nExecuting Solution Logic...\nOutput Result: [5, 4, 3, 2, 1]</span>\n\n<span style="color: #059669; font-weight: 700;">✓ Test Case 1 (Standard Dataset): PASSED</span>\n<span style="color: #059669; font-weight: 700;">✓ Test Case 2 (Boundary Edge Case): PASSED</span>\n<span style="color: #059669; font-weight: 700;">✓ Test Case 3 (Stress & Memory Limit): PASSED</span>\n\n<span style="color: #0f172a; font-weight: 800;">🚀 Execution Summary: 3/3 Test Cases Passed | Runtime: 8ms | Memory Used: 12.4 MB | Exit Code: 0 (SUCCESS)</span>`;
+        try {
+            const response = await fetch('/api/execute-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code: userCode,
+                    test_cases: testCases,
+                    language: topicKey
+                })
+            });
+
+            const data = await response.json();
+
+            if (runningView) runningView.style.display = 'none';
+            if (liveView) liveView.style.display = 'block';
+            if (runBtn) {
+                runBtn.disabled = false;
+                runBtn.style.opacity = '1';
+            }
+
+            const statusBanner = document.getElementById(`status_banner_${qIdx}`);
+            const statusText = document.getElementById(`status_text_${qIdx}`);
+            const runtimeChip = document.getElementById(`runtime_chip_${qIdx}`);
+            const memoryChip = document.getElementById(`memory_chip_${qIdx}`);
+            const passCountChip = document.getElementById(`pass_count_chip_${qIdx}`);
+            const pillsRow = document.getElementById(`result_pills_row_${qIdx}`);
+            const cardsContainer = document.getElementById(`result_cards_container_${qIdx}`);
+            const stdoutWrapper = document.getElementById(`stdout_box_wrapper_${qIdx}`);
+            const stdoutText = document.getElementById(`stdout_text_${qIdx}`);
+
+            if (runtimeChip) runtimeChip.innerText = `⏱️ Runtime: ${data.runtime_ms || 12} ms`;
+            if (memoryChip) memoryChip.innerText = `💾 Memory: ${data.memory_mb || '13.8 MB'}`;
+            if (passCountChip) passCountChip.innerText = `🎯 ${data.passed_count || 0}/${data.total_count || 0} Passed`;
+
+            if (data.status === 'Accepted' && data.all_passed) {
+                if (statusBanner) {
+                    statusBanner.className = 'lc-status-banner banner-accepted';
+                }
+                if (statusText) statusText.innerHTML = 'Accepted ✅ All Test Cases Passed!';
+                showToast(`🎉 All test cases passed for Q${qIdx}!`);
+
+                // Mark answered in state and update UI
+                answeredState[qIdx] = userCode;
+                delete skippedState[qIdx];
+                updateWizardUI();
+            } else if (data.status === 'Wrong Answer') {
+                if (statusBanner) {
+                    statusBanner.className = 'lc-status-banner banner-wrong';
+                }
+                if (statusText) statusText.innerHTML = `Wrong Answer ❌ (${data.passed_count}/${data.total_count} Passed)`;
+                answeredState[qIdx] = userCode;
+                updateWizardUI();
+            } else {
+                if (statusBanner) {
+                    statusBanner.className = 'lc-status-banner banner-error';
+                }
+                if (statusText) statusText.innerHTML = `${data.status || 'Execution Error'} ❌`;
+            }
+
+            // Render result case pills and details
+            if (pillsRow && cardsContainer) {
+                pillsRow.innerHTML = '';
+                cardsContainer.innerHTML = '';
+
+                (data.cases || []).forEach((c, cIdx) => {
+                    const pill = document.createElement('button');
+                    pill.type = 'button';
+                    pill.id = `res_pill_btn_${qIdx}_${cIdx + 1}`;
+                    pill.className = `lc-case-pill ${cIdx === 0 ? 'active' : ''} ${c.passed ? 'pill-passed' : 'pill-failed'}`;
+                    pill.innerHTML = `Case ${cIdx + 1} ${c.passed ? '✓' : '✗'}`;
+                    pill.onclick = () => showResultCaseDetails(qIdx, cIdx + 1);
+                    pillsRow.appendChild(pill);
+
+                    const card = document.createElement('div');
+                    card.className = 'lc-single-result-view';
+                    card.id = `res_case_view_${qIdx}_${cIdx + 1}`;
+                    card.style.display = (cIdx === 0) ? 'block' : 'none';
+
+                    card.innerHTML = `
+                        <div class="lc-io-label">Input:</div>
+                        <pre class="lc-io-box">${c.input_display || ''}</pre>
+                        <div class="lc-io-label" style="margin-top: 0.5rem;">Your Output:</div>
+                        <pre class="lc-io-box ${c.passed ? 'output-passed' : 'output-failed'}">${c.actual_display || ''}</pre>
+                        <div class="lc-io-label" style="margin-top: 0.5rem;">Expected Output:</div>
+                        <pre class="lc-io-box expected-box">${c.expected_display || ''}</pre>
+                    `;
+                    cardsContainer.appendChild(card);
+                });
+            }
+
+            // Stdout display
+            if (data.stdout && data.stdout.trim()) {
+                if (stdoutWrapper) stdoutWrapper.style.display = 'block';
+                if (stdoutText) stdoutText.textContent = data.stdout;
+            } else {
+                if (stdoutWrapper) stdoutWrapper.style.display = 'none';
+            }
+
+        } catch (err) {
+            if (runningView) runningView.style.display = 'none';
+            if (liveView) liveView.style.display = 'block';
+            if (runBtn) {
+                runBtn.disabled = false;
+                runBtn.style.opacity = '1';
+            }
+            const statusBanner = document.getElementById(`status_banner_${qIdx}`);
+            const statusText = document.getElementById(`status_text_${qIdx}`);
+            if (statusBanner) statusBanner.className = 'lc-status-banner banner-error';
+            if (statusText) statusText.innerText = 'Network / Execution Error ❌';
+            showToast("⚠️ Could not reach execution engine.");
         }
-
-        terminalText.innerHTML = consoleOutput;
-
-        // Mark question as answered in question palette
-        answeredState[qIdx] = code || 'executed';
-        updateWizardUI();
     }
 
     let secondsRemaining = 20 * 60;
@@ -1055,6 +1590,12 @@
     function proceedSubmitTest() {
         closeConfirmModal();
         submitTest(true);
+    }
+
+    function retakeTestSession() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('retake', Date.now());
+        window.location.href = url.toString();
     }
 
     function closeResultsModalAndReview() {
@@ -1222,7 +1763,7 @@
                     solBox.style.fontSize = '0.9rem';
                     solBox.style.color = '#334155';
                     solBox.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.08)';
-                    solBox.innerHTML = `
+                    let solHtml = `
                         <div style="font-weight: 800; color: #4f46e5; font-size: 0.95rem; margin-bottom: 0.45rem; display: flex; align-items: center; gap: 0.4rem;">
                             <span>💡</span> Technical Explanation & Solution Notes
                         </div>
@@ -1230,6 +1771,15 @@
                             ${q.explanation}
                         </div>
                     `;
+                    if (q.solution_code) {
+                        solHtml += `
+                            <div style="font-weight: 800; color: #047857; font-size: 0.88rem; margin-top: 0.85rem; margin-bottom: 0.35rem;">
+                                ✅ Optimal LeetCode Reference Solution:
+                            </div>
+                            <pre style="background: #0f172a; color: #38bdf8; padding: 0.85rem; border-radius: 8px; font-size: 0.85rem; overflow-x: auto; font-family: monospace; border: 1px solid #1e293b;"><code>${q.solution_code}</code></pre>
+                        `;
+                    }
+                    solBox.innerHTML = solHtml;
                     qCard.appendChild(solBox);
                 }
             }
@@ -1247,6 +1797,16 @@
                     ? `<div style="font-weight: 700; color: #1e293b;">Option ${userAns}</div>`
                     : `<pre style="background: #0f172a; color: #38bdf8; padding: 0.75rem 1rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; max-height: 180px; overflow-y: auto;">${userAns}</pre>`;
 
+                let solutionDisplay = '';
+                if (q.solution_code) {
+                    solutionDisplay = `
+                        <div style="margin-top: 0.65rem; border-top: 1px dashed #cbd5e1; padding-top: 0.55rem;">
+                            <strong style="color: #047857; font-size: 0.82rem;">Optimal Solution:</strong>
+                            <pre style="background: #0f172a; color: #34d399; padding: 0.65rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; max-height: 140px; overflow-y: auto; margin-top: 0.25rem;">${q.solution_code}</pre>
+                        </div>
+                    `;
+                }
+
                 item.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem; padding-bottom: 0.45rem; border-bottom: 1px solid ${isCorrect ? '#d1fae5' : '#ffe4e6'};">
                         <strong style="font-size: 0.98rem; color: #0f172a;">Q${qNum}: ${q.title}</strong>
@@ -1261,6 +1821,7 @@
                     ${isMcq ? `<div style="font-size: 0.88rem; color: #047857; margin-bottom: 0.5rem; background: #d1fae5; padding: 0.4rem 0.75rem; border-radius: 6px; display: inline-block;"><strong>Correct Answer:</strong> Option ${q.correct_option}</div>` : ''}
                     <div style="font-size: 0.85rem; color: #334155; background: #ffffff; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #4f46e5; margin-top: 0.65rem; line-height: 1.5;">
                         <strong style="color: #4f46e5;">Technical Review & Solution Notes:</strong><br>${q.explanation}
+                        ${solutionDisplay}
                     </div>
                 `;
                 reviewContainer.appendChild(item);

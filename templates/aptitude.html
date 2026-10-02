@@ -501,12 +501,12 @@
 
                 <!-- QUESTIONS LIST -->
                 {% if top_obj.questions %}
-                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;" class="topic-questions-container" id="questions-container-{{ file_slug }}">
                     {% for q in top_obj.questions %}
                     <div class="aptitude-q-card" id="q-card-{{ q.id }}">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span style="background: var(--primary); color: #ffffff; font-weight: 800; font-size: 0.8rem; padding: 0.3rem 0.65rem; border-radius: 6px;">Q{{ loop.index }}</span>
+                                <span class="q-number-pill" style="background: var(--primary); color: #ffffff; font-weight: 800; font-size: 0.8rem; padding: 0.3rem 0.65rem; border-radius: 6px;">Q{{ loop.index }}</span>
                                 {% if q.title and (q.title | clean_title) != top_obj.name %}
                                 <h4 class="aptitude-q-title">{{ q.title | clean_title }}</h4>
                                 {% endif %}
@@ -801,9 +801,40 @@ function openTopicStudy(fileSlug) {
 
     const target = document.getElementById('doc-panel-' + fileSlug);
     if (target) {
+        // Automatically jumble questions whenever user opens this topic test paper
+        autoJumbleTopicQuestions(fileSlug);
         target.style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+}
+
+/* Automatically Jumble Questions within this topic test paper */
+function autoJumbleTopicQuestions(fileSlug) {
+    const panel = document.getElementById('doc-panel-' + fileSlug);
+    if (!panel) return;
+
+    const container = panel.querySelector('.topic-questions-container') || panel.querySelector('#questions-container-' + fileSlug);
+    if (!container) return;
+
+    const qCards = Array.from(container.querySelectorAll('.aptitude-q-card'));
+    if (!qCards || qCards.length === 0) return;
+
+    // Fisher-Yates array shuffle for questions
+    for (let i = qCards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [qCards[i], qCards[j]] = [qCards[j], qCards[i]];
+    }
+
+    // Re-append in newly shuffled order
+    qCards.forEach((card, idx) => {
+        container.appendChild(card);
+
+        // Update sequential question numbering pill (Q1, Q2, Q3...)
+        const pill = card.querySelector('.q-number-pill');
+        if (pill) {
+            pill.innerText = `Q${idx + 1}`;
+        }
+    });
 }
 
 function closeTopicStudy() {
